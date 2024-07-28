@@ -1,0 +1,35 @@
+###############################################################################
+# Bazel now uses Bzlmod by default to manage external dependencies.
+# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
+#
+# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
+###############################################################################
+
+module(
+    name = "the-game",
+    repo_name = "the-game",
+)
+
+bazel_dep(name = "rules_cc", version = "0.0.9", dev_dependency = True) 
+
+# Hedron's Compile Commands Extractor for Bazel
+# https://github.com/hedronvision/bazel-compile-commands-extractor
+bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
+git_override(
+    module_name = "hedron_compile_commands",
+    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+    commit = "1e08f8e0507b6b6b1f4416a9a22cf5c28beaba93",
+)
+
+# Google testing framework
+bazel_dep(name = "googletest", version = "1.15.0")
+
+# A C++11 single-file header-only cross platform HTTP/HTTPS library.
+# https://github.com/yhirose/cpp-httplib/
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "cpp_httplib",
+    urls = ["https://github.com/yhirose/cpp-httplib/archive/refs/tags/v0.16.0.tar.gz"],
+    strip_prefix = "cpp-httplib-0.16.0",
+    build_file = "//utils/third-party:cpp_httplib.BUILD"  
+)

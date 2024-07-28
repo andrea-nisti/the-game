@@ -5,5 +5,5 @@ compile_commands.json
 .bazelrc
 
 # artifacts ignores
-game/MODULE.*
 game/bazel-*
+MODULE.bazel.lock
