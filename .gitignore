@@ -1,5 +1,7 @@
 # ide/config ignores
 .vscode
+game/compile_commands.json
+.clang-format
 
 # artifacts ignores
 game/MODULE.*
