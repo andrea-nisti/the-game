@@ -36,6 +36,15 @@ int main()
             std::cout << "The Game !! " << std::endl;
           });
 
+  svr.Post("/set_state",
+           [](const httplib::Request& req, httplib::Response& res)
+           {
+             std::string_view sw{req.body};
+             game_state_json = sw;
+             res.status = httplib::StatusCode::OK_200;
+             std::cout << "The Game !! " << std::endl;
+           });
+
   svr.listen("0.0.0.0", 8080);
 
   std::cout << "The Game !! " << std::endl;
