@@ -1,0 +1,6 @@
+# ide/config ignores
+.vscode
+
+# artifacts ignores
+game/MODULE.*
+game/bazel-*
