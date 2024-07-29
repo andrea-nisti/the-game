@@ -1,9 +1,3 @@
 # ide/config ignores
 .vscode
 .idea
-compile_commands.json
-.bazelrc
-
-# artifacts ignores
-game/bazel-*
-MODULE.bazel.lock
