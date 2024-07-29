@@ -16,3 +16,14 @@ export async function getStatus(): Promise<String[]> {
       return [];
     }
   };
+
+
+  export function generateRandomNumbers(count: number, min: number, max: number): number[] {
+    const result: number[] = [];
+  
+    for (let i = 0; i < count; i++) {
+      result.push(Math.floor(Math.random() * (max - min + 1)) + min);
+    }
+  
+    return result;
+  }

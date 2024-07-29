@@ -3,6 +3,7 @@ import { Box, ChakraProvider, Tab, TabList, TabPanel, TabPanels, Tabs, theme } f
 import { getStatus } from "./utils/Common"
 import { DebugPage } from "./components/DebugPage"
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher"
+import { GamePage } from "./components/GamePage"
 
 export function App() {
   const [state, setState] = useState<String[]>(['No state available'])
@@ -14,7 +15,7 @@ export function App() {
   return (
     <ChakraProvider theme={theme}>
       <Box display={'flex'}>
-        <Tabs minWidth={'98%'}>
+        <Tabs minWidth={'98%'} defaultIndex={1}>
           <TabList>
             <Tab>Debug Panel </Tab>
             <Tab>Game</Tab>
@@ -26,7 +27,7 @@ export function App() {
                 onUpdateStatusButtonClick={updateStatus} />
             </TabPanel>
             <TabPanel>
-              <p>two!</p>
+              <GamePage/>
             </TabPanel>
           </TabPanels>
         </Tabs>
