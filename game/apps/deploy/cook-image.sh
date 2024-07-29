@@ -5,7 +5,8 @@ set -e
 
 # Usage function
 usage() {
-    echo "Usage: $0 -t <tag> -f <tar_file>"
+    echo "Usage: $0 -n <name> -t <tag> -f <tar_file>"
+    echo "  -n <tag>        Docker image name"
     echo "  -t <tag>        Docker image tag"
     echo "  -f <tar_file>   Name of the tar file in the Bazel exec root (e.g., bazel-bin/apps/game.tar)"
     echo "  -h print help"
@@ -13,8 +14,12 @@ usage() {
 }
 
 # Parse command-line arguments
-while getopts "t:f:h" opt; do
+while getopts "n:t:f:h" opt; do
     case $opt in
+    n)
+        NAME=$OPTARG
+        echo image name: $TAG
+        ;;
     t)
         TAG=$OPTARG
         echo image tag: $TAG
@@ -30,7 +35,7 @@ while getopts "t:f:h" opt; do
 done
 
 # Check if both arguments are provided
-if [ -z "$TAG" ] || [ -z "$TAR_FILE" ]; then
+if [ -z "$TAG" ] || [ -z "$TAR_FILE" ] || [ -z "$NAME" ]; then
     usage
 fi
 

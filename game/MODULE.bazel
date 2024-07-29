@@ -35,16 +35,16 @@ http_archive(
     build_file = "//utils/third-party:cpp_httplib.BUILD"  
 )
 
-bazel_dep(name = "rules_oci", version = "1.8.0")
+# bazel_dep(name = "rules_oci", version = "1.8.0")
 
-oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
-# Declare external images you need to pull, for example: 
-oci.pull(
-    name = "debian_base",
-    tag = "stable-slim",
-    image = "docker.io/debian",
-    platforms = ["linux/amd64"],
-)
+# oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+# # Declare external images you need to pull, for example: 
+# oci.pull(
+#     name = "debian_base",
+#     tag = "stable-slim",
+#     image = "docker.io/debian",
+#     platforms = ["linux/amd64"],
+# )
 
-# For each oci.pull call, repeat the "name" here to expose them as dependencies.
-use_repo(oci, "debian_base")
+# # For each oci.pull call, repeat the "name" here to expose them as dependencies.
+# use_repo(oci, "debian_base")
