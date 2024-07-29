@@ -11,6 +11,7 @@ module(
 )
 
 bazel_dep(name = "rules_cc", version = "0.0.9", dev_dependency = True) 
+bazel_dep(name = "rules_pkg", version = "0.10.1")
 
 # Hedron's Compile Commands Extractor for Bazel
 # https://github.com/hedronvision/bazel-compile-commands-extractor
@@ -33,3 +34,17 @@ http_archive(
     strip_prefix = "cpp-httplib-0.16.0",
     build_file = "//utils/third-party:cpp_httplib.BUILD"  
 )
+
+bazel_dep(name = "rules_oci", version = "1.8.0")
+
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+# Declare external images you need to pull, for example: 
+oci.pull(
+    name = "debian_base",
+    tag = "stable-slim",
+    image = "docker.io/debian",
+    platforms = ["linux/amd64"],
+)
+
+# For each oci.pull call, repeat the "name" here to expose them as dependencies.
+use_repo(oci, "debian_base")
