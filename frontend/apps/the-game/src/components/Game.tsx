@@ -9,7 +9,6 @@ interface GameProps {
 }
 
 interface GameState {
-  userCardsValue: number[];
   userHand: GameCard[];
 }
 
@@ -27,7 +26,6 @@ class Game extends React.Component<GameProps, GameState> {
         new GameCard({ value: getRandomInt(1, 99), isActive: false }),
         new GameCard({ value: getRandomInt(1, 99), isActive: false })
       ],
-      userCardsValue: generateRandomNumbers(6, 1, 99),
     };
   }
 
