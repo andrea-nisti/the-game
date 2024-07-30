@@ -3,6 +3,8 @@ import React from 'react';
 import { Player, TableCard } from '../components/GameComponents';
 import {getRandomInt } from "../utils/Common"
 import GameCard from '../components/GameCard';
+import GameTable from '../components/Table';
+import UserDeck from '../components/UserDeck';
 
 interface GameProps {
   title: string;
@@ -11,7 +13,6 @@ interface GameProps {
 interface GameState {
   userHand: GameCard[];
 }
-
 
 
 class Game extends React.Component<GameProps, GameState> {
@@ -39,37 +40,9 @@ class Game extends React.Component<GameProps, GameState> {
         width='98.5vw'
         gap='100px'>
 
-        <Box
-          // sx={{ border: '10px solid white' }}
-          justifyContent='center'
-          display='flex'
-          flexDirection='row'
-          gap='10px'
-          marginBottom='100px'>
+        <UserDeck cards={this.state.userHand}/>
+        <GameTable />
 
-          {this.state.userHand.map((card: GameCard) => (
-            <GameCard isActive={false} value={getRandomInt(1, 99)} />
-
-          ))}
-        </Box>
-
-        <Box
-          // sx={{ border: '10px solid white' }}
-          justifyContent='center'
-          alignItems='center'
-          display='flex'
-          flexDirection='column'
-          gap='10px'>
-
-          <Box display='flex' flexDirection='row' gap='10px'>
-            <TableCard value={1} direction="up" />
-            <TableCard value={1} direction="up" />
-          </Box>
-          <Box display='flex' flexDirection='row' gap='10px'>
-            <TableCard value={99} direction="down" />
-            <TableCard value={99} direction="down" />
-          </Box>
-        </Box>
         <Box
           // sx={{ border: '10px solid white' }}
           justifyContent='center'
@@ -79,7 +52,7 @@ class Game extends React.Component<GameProps, GameState> {
           gap='50px'>
           <Player name="Prosepio Finacchioni" cardNumber={3} />
           <Player name="Marchionne Pampalone" cardNumber={3} />
-          <Player name="Frano Sticchiano" cardNumber={3} />
+          <Player name="Franco Sticchiano" cardNumber={3} />
         </Box>
       </Box>
     );
