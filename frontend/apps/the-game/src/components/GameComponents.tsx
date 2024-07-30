@@ -1,26 +1,27 @@
 import { Avatar, Box, Card, CardBody, CardHeader, Flex, Heading, Icon, Text } from "@chakra-ui/react"
 import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
 
-type SingleCardProps = {
-    cardValue: number
-}
+// type SingleCardProps = {
+//     cardValue: number
+// }
 
-export function UserCard(props: SingleCardProps) {
-    return (
-        <Card variant='filled' align='center' width='100px' height='170px' >
+// export function UserCard(props: SingleCardProps) {
+//     return (
+//         <Card variant='filled' align='center' width='100px' height='170px' >
 
-            <CardBody fontSize='30px' alignItems='stretch' alignContent='center'>
-                <Text align='center'> {props.cardValue} </Text>
-            </CardBody>
-        </Card>
-    )
-}
+//             <CardBody fontSize='30px' alignItems='stretch' alignContent='center'>
+//                 <Text align='center'> {props.cardValue} </Text>
+//             </CardBody>
+//         </Card>
+//     )
+// }
 
 
 type PlayerProps = {
     name: string
     cardNumber: number
 }
+
 export function Player({ name, cardNumber }: PlayerProps) {
     return (
         <Box display='flex' flexDirection='row' justifyContent='center' alignItems='center' gap='10px'>

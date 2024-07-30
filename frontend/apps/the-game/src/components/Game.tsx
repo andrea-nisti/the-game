@@ -1,7 +1,8 @@
 import { Box, Card } from '@chakra-ui/react';
 import React from 'react';
-import { Player, TableCard, UserCard } from './GameComponents';
-import { generateRandomNumbers } from "../utils/Common"
+import { Player, TableCard } from './GameComponents';
+import { generateRandomNumbers, getRandomInt } from "../utils/Common"
+import GameCard from './GameCard';
 
 interface GameProps {
   title: string;
@@ -9,12 +10,23 @@ interface GameProps {
 
 interface GameState {
   userCardsValue: number[];
+  userHand: GameCard[];
 }
+
+
 
 class Game extends React.Component<GameProps, GameState> {
   constructor(props: GameProps) {
     super(props);
     this.state = {
+      userHand: [
+        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
+        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
+        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
+        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
+        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
+        new GameCard({ value: getRandomInt(1, 99), isActive: false })
+      ],
       userCardsValue: generateRandomNumbers(6, 1, 99),
     };
   }
@@ -37,10 +49,10 @@ class Game extends React.Component<GameProps, GameState> {
           gap='10px'
           marginBottom='100px'>
 
-          {this.state.userCardsValue.map((number: number) => (
-                    <UserCard cardValue={number} />
+          {this.state.userHand.map((card: GameCard) => (
+            <GameCard isActive={false} value={getRandomInt(1, 99)} />
 
-                ))}
+          ))}
         </Box>
 
         <Box
