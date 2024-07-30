@@ -1,8 +1,8 @@
-import { Box, Card } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import React from 'react';
-import { Player, TableCard } from './GameComponents';
-import { generateRandomNumbers, getRandomInt } from "../utils/Common"
-import GameCard from './GameCard';
+import { Player, TableCard } from '../components/GameComponents';
+import {getRandomInt } from "../utils/Common"
+import GameCard from '../components/GameCard';
 
 interface GameProps {
   title: string;

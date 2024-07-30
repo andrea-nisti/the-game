@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { Box, ChakraProvider, Tab, TabList, TabPanel, TabPanels, Tabs, theme } from "@chakra-ui/react"
 import { getStatus } from "./utils/Common"
-import { DebugPage } from "./components/DebugPage"
+import { DebugPage } from "./pages/DebugPage"
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher"
-import Game from "./components/Game"
+import Game from "./pages/Game"
 
 export function App() {
   const [state, setState] = useState<String[]>(['No state available'])
