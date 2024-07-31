@@ -15,7 +15,7 @@ RUN tar -xvf /game.tar -C /app
 WORKDIR /app
 
 # Expose port 8080
-# EXPOSE 8080
+EXPOSE 8080
 
 # Run the game executable (replace 'game_executable' with the actual executable name)
 # CMD ["bash"]

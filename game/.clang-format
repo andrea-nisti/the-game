@@ -2,9 +2,10 @@
 Language: Cpp
 BasedOnStyle: Google
 AccessModifierOffset: -2
-AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: false
+AlignAfterOpenBracket: BlockIndent
 AllowShortLoopsOnASingleLine: false
 BinPackArguments: false
 BinPackParameters: false
@@ -33,6 +34,6 @@ IncludeCategories:
     Priority: 3
   - Regex: '^".*"'
     Priority: 4
-IndentWidth: 2
+IndentWidth: 4
 KeepEmptyLinesAtTheStartOfBlocks: true
 ...
