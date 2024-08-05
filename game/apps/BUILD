@@ -15,15 +15,3 @@ pkg_tar(
     ],
 )
 
-# oci_image(
-#     name = "image",
-#     base = "@debian_base",
-#     tars = [":tar"],
-#     entrypoint = ["/game"],
-# )
-
-# oci_load(
-#     name = "image_load",
-#     image = ":image",
-#     repo_tags = ["example:latest"],
-# )
