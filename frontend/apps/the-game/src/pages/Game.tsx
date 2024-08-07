@@ -46,7 +46,7 @@ class Game extends React.Component<GameProps, GameState> {
         flexDirection='column-reverse'
         height='94vh'
         width='98.5vw'
-        gap='100px'>
+        gap='8vh'>
 
         <UserDeck cards={this.state.userHand} />
 
