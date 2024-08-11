@@ -2,11 +2,12 @@ load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
     name = "deck_tests",
+    size = "small",
     srcs = ["deck_tests.cpp"],
+    args = ["--gtest_color=yes"],
     deps = [
+        "//core:deck",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
-        "//core:deck",
     ],
-    args = ["--gtest_color=yes"],
 )

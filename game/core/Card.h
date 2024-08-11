@@ -1,14 +1,15 @@
 #ifndef GAME_CORE_CARD_H
 #define GAME_CORE_CARD_H
 
-#include <cstdint>
+#include <cstddef>
 
 namespace game::core
 {
 class Card
 {
   public:
-    Card(std::int8_t val) : value_(val) {}
+    using value_t = std::size_t;
+    Card(std::size_t val) : value_(val) {}
 
     bool operator<(const Card& other) const
     {
@@ -19,13 +20,13 @@ class Card
         return value_ == other.value_;
     }
 
-    std::int8_t GetValue()
+    std::size_t GetValue()
     {
         return value_;
     }
 
   private:
-    std::int8_t value_{};
+    std::size_t value_{};
 };
 }  // namespace game::core
 
