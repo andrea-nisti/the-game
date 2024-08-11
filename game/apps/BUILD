@@ -5,8 +5,12 @@ cc_binary(
     name = "game",
     srcs = ["main.cpp"],
     # linkstatic = True,
-    deps = ["@cpp_httplib"],
+    deps = [
+        "@cpp_httplib",
+        "@nlohmann_json//:json",
+    ],
 )
+
 # Packaging the binary into tar, which is needed by oci_image rule
 pkg_tar(
     name = "tar",
@@ -14,4 +18,3 @@ pkg_tar(
         ":game",
     ],
 )
-
