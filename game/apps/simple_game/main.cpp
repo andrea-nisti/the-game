@@ -30,15 +30,15 @@ int main()
 
     // HTTP
     httplib::Server svr;
-    // clang-format off
+
     svr.Get(
         "/get(.*)",
-        [sw = std::string_view{game_state_json}]
-        (const httplib::Request& req, httplib::Response& res)
+        [sw = std::string_view{game_state_json
+         }](const httplib::Request& req, httplib::Response& res)
         {
             res.set_content(sw.data(), "text/plain");
             std::this_thread::sleep_for(std::chrono::seconds{1});
-            std::cout << req.method << " " << req.path << " " << req.target << std::endl;
+            std::cout << req.method << req.path << req.target <<  std::endl;
             std::for_each(
                 req.params.begin(),
                 req.params.end(),
@@ -50,8 +50,8 @@ int main()
 
     svr.Get(
         "/get_state",
-        [sw = std::string_view{game_state_json}]
-        (const httplib::Request&, httplib::Response& res)
+        [sw = std::string_view{game_state_json
+         }](const httplib::Request&, httplib::Response& res)
         {
             res.set_content(sw.data(), "text/plain");
             std::this_thread::sleep_for(std::chrono::seconds{2});
@@ -69,7 +69,6 @@ int main()
             std::cout << "The Game !! " << std::endl;
         }
     );
-    // clang-format on
 
     svr.listen("0.0.0.0", 8080);
 
