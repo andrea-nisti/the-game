@@ -22,16 +22,18 @@ class Deck
     Deck& operator=(Deck&&) = delete;
 
     [[nodiscard]] bool IsSorted() const;
+    [[nodiscard]] bool IsEmpty() const;
 
     void Sort();
-
     void Shuffle();
 
     // adds a card to the top of the deck
     void AddCard(Card&& card);
 
     // removes a card from the top of the deck
-    [[__nodiscard__]] Card PickCard();
+    [[nodiscard]] Card PickCard();
+
+    [[nodiscard]] const Card& GetTopCard() const;
 
   private:
     std::vector<Card> cards_{};

@@ -7,35 +7,35 @@
 
 #include "httplib.h"
 
-std::string game_state_json = R"({
-    "number_of_players": 2,
-    "players": [
-        {
-            "name": "Alice",
-            "hand": [5, 10, 15]
-        },
-        {
-            "name": "Bob",
-            "hand": [3, 8, 13]
-        }
-    ],
-    "decks": {
-        "ascending_deck": [1, 2, 3, 4, 5],
-        "descending_deck": [100, 99, 98, 97, 96]
-    },
-    "current_turn": "Alice"
-})";
-
 int main()
 {
+    std::string game_state_json = R"({
+        "number_of_players": 2,
+        "players": [
+            {
+                "name": "Alice",
+                "hand": [5, 10, 15]
+            },
+            {
+                "name": "Bob",
+                "hand": [3, 8, 13]
+            }
+        ],
+        "decks": {
+            "ascending_deck": [1, 2, 3, 4, 5],
+            "descending_deck": [100, 99, 98, 97, 96]
+        },
+        "current_turn": "Alice"
+    })";
+
     // HTTP
     httplib::Server svr;
 
     svr.Get(
         "/get(.*)",
-        [](const httplib::Request& req, httplib::Response& res)
+        [sw = std::string_view{game_state_json
+         }](const httplib::Request& req, httplib::Response& res)
         {
-            std::string_view sw{game_state_json};
             res.set_content(sw.data(), "text/plain");
             std::this_thread::sleep_for(std::chrono::seconds{1});
             std::cout << req.method << req.path << std::endl;
@@ -50,9 +50,9 @@ int main()
 
     svr.Get(
         "/get_state",
-        [](const httplib::Request&, httplib::Response& res)
+        [sw = std::string_view{game_state_json
+         }](const httplib::Request&, httplib::Response& res)
         {
-            std::string_view sw{game_state_json};
             res.set_content(sw.data(), "text/plain");
             std::this_thread::sleep_for(std::chrono::seconds{2});
             std::cout << "The Game 2!! " << std::endl;
@@ -61,7 +61,7 @@ int main()
 
     svr.Post(
         "/set_state",
-        [](const httplib::Request& req, httplib::Response& res)
+        [&game_state_json](const httplib::Request& req, httplib::Response& res)
         {
             std::string_view sw{req.body};
             game_state_json = sw;

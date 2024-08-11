@@ -10,6 +10,11 @@ bool Deck::IsSorted() const
     return std::is_sorted(cards_.begin(), cards_.end());
 }
 
+bool Deck::IsEmpty() const
+{
+    return cards_.empty();
+}
+
 void Deck::Sort()
 {
     std::sort(cards_.begin(), cards_.end());
@@ -35,4 +40,9 @@ Card Deck::PickCard()
     auto card = std::move(cards_.back());
     cards_.pop_back();
     return card;
+}
+
+const Card& Deck::GetTopCard() const
+{   
+    return cards_.back();
 }

@@ -1,8 +1,8 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
-    name = "hello_test",
-    srcs = ["simple_tests.cpp"],
+    name = "deck_tests",
+    srcs = ["deck_tests.cpp"],
     deps = [
         "@googletest//:gtest",
         "@googletest//:gtest_main",
