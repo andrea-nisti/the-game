@@ -19,7 +19,7 @@ struct Property
 
     constexpr Property(const char* name) : name_{name} {}
 
-    Getter getter_{};
+    Getter getter_;
     const char* name_;
 };
 

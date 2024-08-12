@@ -10,20 +10,18 @@
 namespace game::support
 {
 
-namespace
-{
-
 struct VisitableTag
 {
 };
 
-}  // namespace
-
-struct VisitorBase
+template <typename Derived>
+class VisitorBase
 {
-    template <typename Visitor, typename Visitable>
-    auto as(Visitable&& visitable
-    ) -> std::enable_if_t<std::is_base_of_v<Visitable, VisitableTag>>
+  public:
+    template <typename Visitable>
+    auto as(Visitable&& visitable)
+        -> std::enable_if_t<
+            std::is_base_of_v<game::support::VisitableTag, std::decay_t<Visitable>>>
     {
         as_visitable(std::forward<Visitable>(visitable));
     }
@@ -32,8 +30,9 @@ struct VisitorBase
     template <typename Visitable>
     auto as_visitable(Visitable&& visitable)
     {
+        auto& derived = *static_cast<Derived*>(this);
         constexpr auto prop_size = std::tuple_size<decltype(visitable.props_)>::value;
-        visitable.visit_impl(this, std::make_index_sequence<prop_size>{});
+        visitable.visit_impl(derived, std::make_index_sequence<prop_size>{});
     }
 };
 
@@ -45,7 +44,7 @@ struct VisitorBase
 
 // Visitable mixin
 template <typename... Properties>
-class Visitable : private VisitableTag
+class Visitable : public VisitableTag
 {
   public:
     constexpr Visitable(Properties&&... properties)
@@ -53,7 +52,6 @@ class Visitable : private VisitableTag
     {
     }
 
-  private:
     template <typename Visitor, std::size_t... Is>
     void visit_impl(Visitor&& v, std::index_sequence<Is...>) const
     {
@@ -65,13 +63,12 @@ class Visitable : private VisitableTag
         (void)std::initializer_list<int>{
             (field_name = std::get<Is>(props_).name_,
              std::cout << field_name << std::endl,
-             v.as(std::get<Is>(props_)::Type),
+             v.as(std::string{field_name}),
              0)...
         };
     }
 
     using visitable_t = Visitable<Properties...>;
-    friend VisitorBase;
 
     std::tuple<Properties...> props_;
 };

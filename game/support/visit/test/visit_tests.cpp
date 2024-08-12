@@ -9,18 +9,30 @@ struct Mock
 {
     int c{9};
     double d{6.5};
-    std::string s{"cane"};
+    // std::string s{"cane"};
 };
 
-struct SimpleVisitor : game::support::VisitorBase
+struct SimpleVisitor : public game::support::VisitorBase<SimpleVisitor>
 {
-    template <typename Visitor, typename Visitable>
-    auto as(Visitable&& visitable) -> std::enable_if_t<std::is_arithmetic_v<Visitable>>
+
+    using game::support::VisitorBase<SimpleVisitor>::as;
+
+    template <typename Visitable>
+    auto as(Visitable&& visitable)
+        -> std::enable_if_t<
+            std::is_base_of_v<game::support::VisitableTag, std::decay_t<Visitable>>>
+    {
+        as_visitable(std::forward<Visitable>(visitable));
+    }
+
+    template <typename Visitable>
+    auto as(Visitable&& visitable
+    ) -> std::enable_if_t<std::is_arithmetic_v<std::decay_t<Visitable>>>
     {
         std::cout << "number" << std::endl;
     }
 
-    auto as(std::string&& visitable)
+    auto as(const std::string& visitable)
     {
         std::cout << "string" << std::endl;
     }
@@ -28,11 +40,15 @@ struct SimpleVisitor : game::support::VisitorBase
 
 TEST(Visitable, SimpleTest)
 {
+    Mock m{};
     auto v = game::support::visitable(
         game::support::property<Mock, int>("c"),
         game::support::property<Mock, double>("d"),
         game::support::property<Mock, std::string>("s")
     );
 
-    v.visit_impl(std::make_index_sequence<3>{});
+    auto r = std::is_base_of_v<game::support::VisitableTag, decltype(v)>;
+    ASSERT_TRUE(r);
+
+    SimpleVisitor{}.as(v);
 }
