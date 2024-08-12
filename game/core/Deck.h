@@ -47,10 +47,11 @@ class Deck
     {
         return cards_.end();
     }
-    
+
     [[nodiscard]] bool IsSorted() const;
     [[nodiscard]] bool IsEmpty() const;
     [[nodiscard]] std::size_t GetSize() const;
+    [[nodiscard]] const Hand& GetCards() const;
 
     void Sort();
     void Shuffle();

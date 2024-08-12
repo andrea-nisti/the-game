@@ -46,7 +46,13 @@ const Card& Deck::GetTopCard() const
 {   
     return cards_.back();
 }
+
 std::size_t Deck::GetSize() const
 {
     return cards_.size();
+}
+
+const Hand& Deck::GetCards() const
+{
+    return cards_;
 }

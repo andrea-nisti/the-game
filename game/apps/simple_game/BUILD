@@ -7,6 +7,7 @@ cc_binary(
     # linkstatic = True,
     deps = ["@cpp_httplib"],
 )
+
 # Packaging the binary into tar, which is needed by oci_image rule
 pkg_tar(
     name = "tar",
@@ -14,4 +15,3 @@ pkg_tar(
         ":game",
     ],
 )
-
