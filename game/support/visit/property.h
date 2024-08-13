@@ -9,25 +9,24 @@ struct Property
 {
     using Type = MemberType;
 
-    constexpr Property(MemberType Class::*member, const char* name)
-        : member_ {member}, name_ {name}
+    constexpr Property(const char* name, MemberType Class::*member)
+        : name_ {name}, member_ {member}
     {
     }
-    constexpr Property(const char* name) : name_ {name} {}
 
     Type& Get(Class& instance) const
     {
         return instance.*member_;
     }
 
-    MemberType Class::*member_;
     const char* name_;
+    MemberType Class::*member_;
 };
 
-template <typename Class, typename PropertyType>
-constexpr inline auto property(const char* name)
+template <typename Class, typename MemberType>
+constexpr inline auto property(const char* name, MemberType Class::*member)
 {
-    return Property<Class, PropertyType> {name};
+    return Property<Class, MemberType> {name, member};
 }
 
 }  // namespace game::support
