@@ -7,13 +7,6 @@
 #include "support/visit/property.h"
 #include "support/visit/visitable.h"
 
-struct Mock
-{
-    int c {9};
-    double d {6.5};
-    std::string s {"cane"};
-};
-
 namespace game::support
 {
 
@@ -50,22 +43,45 @@ struct SimpleVisitor : public VisitorBase<SimpleVisitor>
     std::pair<std::string_view, double> d_result;
     std::pair<std::string_view, std::string> s_result;
 };
-
 }  // namespace game::support
+
+struct Mock
+{
+    int c {9};
+    double d {6.5};
+    std::string s {"cane"};
+
+    static auto GetVisitable()
+    {
+        auto v = game::support::visitable<Mock>(
+            game::support::property("c", &Mock::c),
+            game::support::property("d", &Mock::d),
+            game::support::property("s", &Mock::s));
+
+        return v;
+    }
+};
 
 TEST(Visitable, GivenMockStructure_MembersAreVisited)
 {
-    Mock m {};
-    auto v = game::support::visitable<Mock>(
-        game::support::property("c", &Mock::c),
-        game::support::property("d", &Mock::d),
-        game::support::property("s", &Mock::s));
 
-    auto r = std::is_base_of_v<game::support::VisitableTag, decltype(v)>;
+    auto r =
+        std::is_base_of_v<game::support::VisitableTag, decltype(Mock::GetVisitable())>;
     ASSERT_TRUE(r);
-    game::support::SimpleVisitor visitor {};
-    v.accept(visitor, m);
 
+    Mock m {};
+    game::support::SimpleVisitor visitor {};
+
+    Mock::GetVisitable().accept(visitor, m);
+    EXPECT_TRUE(visitor.c_result.first == "c" and visitor.c_result.second == m.c);
+    EXPECT_TRUE(visitor.d_result.first == "d" and visitor.d_result.second == m.d);
+    EXPECT_TRUE(visitor.s_result.first == "s" and visitor.s_result.second == m.s);
+
+    m.c = 33;
+    m.d = 33.3;
+    m.s = "maiale";
+
+    Mock::GetVisitable().accept(visitor, m);
     EXPECT_TRUE(visitor.c_result.first == "c" and visitor.c_result.second == m.c);
     EXPECT_TRUE(visitor.d_result.first == "d" and visitor.d_result.second == m.d);
     EXPECT_TRUE(visitor.s_result.first == "s" and visitor.s_result.second == m.s);
