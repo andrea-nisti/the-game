@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <string_view>
-#include <tuple>
 #include <type_traits>
 
 #include "support/visit/property.h"

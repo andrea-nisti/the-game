@@ -56,7 +56,7 @@ class Visitable : public VisitableTag
     void accept(Visitor&& visitor, InstanceT& instance)
     {
         constexpr auto prop_size = std::tuple_size<decltype(props_)>::value;
-        visit_impl(
+        visit_foreach_property(
             std::forward<Visitor>(visitor),
             instance,
             std::make_index_sequence<prop_size> {});
@@ -85,7 +85,8 @@ class Visitable : public VisitableTag
     }
 
     template <typename Visitor, std::size_t... Is>
-    void visit_impl(Visitor&& visitor, InstanceT& instance, std::index_sequence<Is...>)
+    void visit_foreach_property(
+        Visitor&& visitor, InstanceT& instance, std::index_sequence<Is...>)
     {
         (visit_property(visitor, instance, std::get<Is>(props_)), ...);
     }
