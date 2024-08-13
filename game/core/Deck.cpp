@@ -26,8 +26,7 @@ void Deck::Shuffle()
     std::default_random_engine rng(rd());
 
     std::shuffle(
-        cards_.begin(), cards_.end(), std::default_random_engine{std::random_device{}()}
-    );
+        cards_.begin(), cards_.end(), std::default_random_engine{std::random_device{}()});
 }
 
 void Deck::AddCard(Card&& card)
@@ -43,7 +42,7 @@ Card Deck::PickCard()
 }
 
 const Card& Deck::GetTopCard() const
-{   
+{
     return cards_.back();
 }
 

@@ -1,8 +1,7 @@
 #ifndef GAME_SUPPORT_VISIT_VISITABLE_H
 #define GAME_SUPPORT_VISIT_VISITABLE_H
 
-#include <iostream>
-#include <string>
+#include <string_view>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -10,40 +9,41 @@
 namespace game::support
 {
 
+namespace
+{
+
 struct VisitableTag
 {
 };
+
+}  // namespace
 
 template <typename Derived>
 class VisitorBase
 {
   public:
-    template <typename Visitable>
-    auto as(Visitable&& visitable)
-        -> std::enable_if_t<
-            std::is_base_of_v<game::support::VisitableTag, std::decay_t<Visitable>>>
+    template <typename T>
+    void visit(std::string_view name, T& value)
     {
-        as_visitable(std::forward<Visitable>(visitable));
+        derived_->template visit(name, value);
+    }
+
+    auto visit_nested(std::string_view name)
+    {
+        derived_->visit_nested(name);
+    }
+
+    auto exit_nested(std::string_view name)
+    {
+        derived_->exit_nested(name);
     }
 
   private:
-    template <typename Visitable>
-    auto as_visitable(Visitable&& visitable)
-    {
-        auto& derived = *static_cast<Derived*>(this);
-        constexpr auto prop_size = std::tuple_size<decltype(visitable.props_)>::value;
-        visitable.visit_impl(derived, std::make_index_sequence<prop_size>{});
-    }
+    Derived* derived_ = static_cast<Derived*>(this);
 };
 
-// template <typename T, T... S, typename F>
-// constexpr void for_sequence(std::integer_sequence<T, S...>, F&& f)
-// {
-//     (static_cast<void>(f(std::integral_constant<T, S>{})), ...);
-// }
-
 // Visitable mixin
-template <typename... Properties>
+template <typename InstanceT, typename... Properties>
 class Visitable : public VisitableTag
 {
   public:
@@ -52,31 +52,53 @@ class Visitable : public VisitableTag
     {
     }
 
-    template <typename Visitor, std::size_t... Is>
-    void visit_impl(Visitor&& v, std::index_sequence<Is...>) const
+    template <typename Visitor>
+    void accept(Visitor&& visitor, InstanceT& instance) const
     {
-        std::string_view field_name{};
-        // ((field_name = std::get<Is>(props_).name_, std::cout << field_name <<
-        // std::endl),
-        //  ...);
-
-        (void)std::initializer_list<int>{
-            (field_name = std::get<Is>(props_).name_,
-             std::cout << field_name << std::endl,
-             v.as(std::string{field_name}),
-             0)...
-        };
+        constexpr auto prop_size = std::tuple_size<decltype(props_)>::value;
+        visit_impl(
+            std::forward<Visitor>(visitor),
+            instance,
+            std::make_index_sequence<prop_size> {});
     }
 
-    using visitable_t = Visitable<Properties...>;
+  private:
+    template <typename Visitor, typename PropertyT>
+    void visit_property(
+        Visitor&& visitor, InstanceT& instance, const PropertyT& prop) const
+    {
+        if constexpr (std::is_base_of_v<
+                          game::support::VisitableTag,
+                          std::decay_t<InstanceT>>)
+        {
+            std::string_view name {prop.name_};
+            visitor.visit_nested(name);
+
+            auto& nested_instance = prop.Get(instance);
+            nested_instance.accept(visitor, nested_instance);
+
+            visitor.exit_nested(name);
+        }
+        else
+        {
+            visitor.visit(prop.name_, prop.Get(instance));
+        }
+    }
+
+    template <typename Visitor, std::size_t... Is>
+    void visit_impl(
+        Visitor&& visitor, InstanceT& instance, std::index_sequence<Is...>) const
+    {
+        (visit_property(visitor, instance, std::get<Is>(props_)), ...);
+    }
 
     std::tuple<Properties...> props_;
 };
 
-template <typename... Properties>
+template <typename InstanceT, typename... Properties>
 constexpr inline auto visitable(Properties&&... p)
 {
-    return Visitable{std::forward<Properties>(p)...};
+    return Visitable<InstanceT, Properties...> {std::forward<Properties>(p)...};
 }
 
 }  // namespace game::support
