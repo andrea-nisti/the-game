@@ -20,27 +20,27 @@ namespace game::support
 struct SimpleVisitor : public VisitorBase<SimpleVisitor>
 {
     template <typename T>
-    void visit(std::string_view name, T& value)
+    void visit(std::string_view name, const T& value)
     {
         std::cout << name << " " << value << std::endl;
     }
 
     template <>
-    void visit(std::string_view name, int& value)
+    void visit(std::string_view name, const int& value)
     {
         c_result.first = name;
         c_result.second = value;
     }
 
     template <>
-    void visit(std::string_view name, double& value)
+    void visit(std::string_view name, const double& value)
     {
         d_result.first = name;
         d_result.second = value;
     }
 
     template <>
-    void visit(std::string_view name, std::string& value)
+    void visit(std::string_view name, const std::string& value)
     {
         s_result.first = name;
         s_result.second = value;

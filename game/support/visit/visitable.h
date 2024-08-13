@@ -53,7 +53,7 @@ class Visitable : public VisitableTag
     }
 
     template <typename Visitor>
-    void accept(Visitor&& visitor, InstanceT& instance) const
+    void accept(Visitor&& visitor, InstanceT& instance)
     {
         constexpr auto prop_size = std::tuple_size<decltype(props_)>::value;
         visit_impl(
@@ -64,8 +64,7 @@ class Visitable : public VisitableTag
 
   private:
     template <typename Visitor, typename PropertyT>
-    void visit_property(
-        Visitor&& visitor, InstanceT& instance, const PropertyT& prop) const
+    void visit_property(Visitor&& visitor, InstanceT& instance, const PropertyT& prop)
     {
         if constexpr (std::is_base_of_v<
                           game::support::VisitableTag,
@@ -86,8 +85,7 @@ class Visitable : public VisitableTag
     }
 
     template <typename Visitor, std::size_t... Is>
-    void visit_impl(
-        Visitor&& visitor, InstanceT& instance, std::index_sequence<Is...>) const
+    void visit_impl(Visitor&& visitor, InstanceT& instance, std::index_sequence<Is...>)
     {
         (visit_property(visitor, instance, std::get<Is>(props_)), ...);
     }
