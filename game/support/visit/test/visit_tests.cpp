@@ -6,10 +6,10 @@
 #include "support/visit/property.h"
 #include "support/visit/visitable.h"
 
-namespace game::support
+namespace game::test
 {
 
-struct SimpleVisitor : public VisitorBase<SimpleVisitor>
+struct SimpleVisitor : public game::support::VisitorBase<SimpleVisitor>
 {
     template <typename T>
     void visit(std::string_view name, const T& value)
@@ -42,7 +42,6 @@ struct SimpleVisitor : public VisitorBase<SimpleVisitor>
     std::pair<std::string_view, double> d_result;
     std::pair<std::string_view, std::string> s_result;
 };
-}  // namespace game::support
 
 struct Mock
 {
@@ -61,15 +60,16 @@ struct Mock
     }
 };
 
+}  // namespace game::test
+
 TEST(Visitable, GivenMockStructure_MembersAreVisited)
 {
-
-    auto r =
-        std::is_base_of_v<game::support::VisitableTag, decltype(Mock::GetVisitable())>;
+    using namespace game::test;
+    auto r = game::support::is_i_visitable_v<decltype(Mock::GetVisitable())>;
     ASSERT_TRUE(r);
 
     Mock m {};
-    game::support::SimpleVisitor visitor {};
+    SimpleVisitor visitor {};
 
     Mock::GetVisitable().accept(visitor, m);
     EXPECT_TRUE(visitor.c_result.first == "c" and visitor.c_result.second == m.c);

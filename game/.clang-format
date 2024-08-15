@@ -3,7 +3,7 @@ Language: Cpp
 BasedOnStyle: Google
 AccessModifierOffset: -2
 AllowAllParametersOfDeclarationOnNextLine: true
-AllowShortFunctionsOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: false
 AlignAfterOpenBracket: AlwaysBreak
 AllowShortLoopsOnASingleLine: false
