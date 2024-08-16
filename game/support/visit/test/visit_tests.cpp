@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
 #include <string_view>
-#include <type_traits>
 
-#include "support/visit/property.h"
-#include "support/visit/visitable.h"
+#include "support/visit/property.hpp"
+#include "support/visit/visitable.hpp"
+#include "support/visit/visitor_base.hpp"
 
 namespace game::test
 {
@@ -38,9 +38,9 @@ struct SimpleVisitor : public game::support::VisitorBase<SimpleVisitor>
         s_result.second = value;
     }
 
-    std::pair<std::string_view, int> c_result;
-    std::pair<std::string_view, double> d_result;
-    std::pair<std::string_view, std::string> s_result;
+    std::pair<std::string_view, int> c_result {};
+    std::pair<std::string_view, double> d_result {};
+    std::pair<std::string_view, std::string> s_result {};
 };
 
 struct Mock

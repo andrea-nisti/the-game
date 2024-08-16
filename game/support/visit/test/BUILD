@@ -7,6 +7,7 @@ cc_test(
     args = ["--gtest_color=yes"],
     deps = [
         "//support/visit:visitable",
+        "//support/visit:visitor_base",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],

@@ -7,7 +7,6 @@ namespace game::support
 /**
  * \addtogroup support Support
  * \brief Supporting classes and functions
- * \ingroup support
  * @{
  */
 
