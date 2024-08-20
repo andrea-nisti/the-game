@@ -1,5 +1,4 @@
 // #include <gtest/gtest.h>
-
 #include "support/networking/net_utils.hpp"
 #include "support/networking/tcp_listener_base.h"
 
@@ -18,7 +17,21 @@ class TestListener : public support::TcpListenerBase
     {
         if (not ec)
         {
-            std::cout << "Accepted connection" << std::endl;
+
+            const std::string response =
+                "HTTP/1.1 200 OK\r\nContent-Type: text/plain; "
+                "charset=utf-8\r\n\r\n UwU Kawaiiiiiiii!";
+
+            std::array<char, 1024> buffer {};
+            std::size_t bytes_received = 0;
+
+            bytes_received = socket.receive(net::buffer(buffer));
+
+            std::cout << "Received " << bytes_received << " bytes: "
+                      << std::string(buffer.begin(), buffer.begin() + bytes_received)
+                      << std::endl;
+
+            socket.send(net::buffer(response));
             return;
         }
         support::Fail(ec, "OnAccept");
