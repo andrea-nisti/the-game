@@ -8,3 +8,4 @@ apps/deploy/*.tar
 MODULE.bazel.lock
 bazel-*
 docs/generated
+external

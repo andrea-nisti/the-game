@@ -10,11 +10,6 @@ module(
     repo_name = "the-game",
 )
 
-bazel_dep(name = "rules_cc", version = "0.0.9", dev_dependency = True) 
-# bazel_dep(name = "rules_foreign_cc", version = "0.11.1", dev_dependency = True)
-bazel_dep(name = "nlohmann_json", version = "3.11.3")
-bazel_dep(name = "rules_pkg", version = "0.10.1")
-
 # Hedron's Compile Commands Extractor for Bazel
 # https://github.com/hedronvision/bazel-compile-commands-extractor
 bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
@@ -22,6 +17,28 @@ git_override(
     module_name = "hedron_compile_commands",
     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
     commit = "1e08f8e0507b6b6b1f4416a9a22cf5c28beaba93",
+)
+
+bazel_dep(name = "rules_cc", version = "0.0.9")
+bazel_dep(name = "rules_foreign_cc", version = "0.12.0")
+bazel_dep(name = "nlohmann_json", version = "3.11.3")
+bazel_dep(name = "rules_pkg", version = "0.10.1")
+
+# Makes @boost available for use: For example, add `@boost//:algorithm` to your deps.
+# For more, see https://github.com/nelhage/rules_boost and https://www.boost.org
+bazel_dep(name = "rules_boost", repo_name = "com_github_nelhage_rules_boost")
+archive_override(
+    module_name = "rules_boost",
+    urls = "https://github.com/nelhage/rules_boost/archive/refs/heads/master.tar.gz",
+    strip_prefix = "rules_boost-master",
+    # It is recommended to edit the above URL and the below sha256 to point to a specific version of this repository.
+    integrity = "sha256-xqio9MINvtGWX+qzC+vDMhvWpY6L8Om8QqTJ8CunzHM=",
+)
+
+non_module_boost_repositories = use_extension("@com_github_nelhage_rules_boost//:boost/repositories.bzl", "non_module_dependencies")
+use_repo(
+    non_module_boost_repositories,
+    "boost",
 )
 
 # Google testing framework
@@ -34,19 +51,5 @@ http_archive(
     name = "cpp_httplib",
     urls = ["https://github.com/yhirose/cpp-httplib/archive/refs/tags/v0.16.0.tar.gz"],
     strip_prefix = "cpp-httplib-0.16.0",
-    build_file = "//support/third-party:cpp_httplib.BUILD"  
+    build_file = "//support/third-party:cpp_httplib.BUILD",
 )
-
-# bazel_dep(name = "rules_oci", version = "1.8.0")
-
-# oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
-# # Declare external images you need to pull, for example: 
-# oci.pull(
-#     name = "debian_base",
-#     tag = "stable-slim",
-#     image = "docker.io/debian",
-#     platforms = ["linux/amd64"],
-# )
-
-# # For each oci.pull call, repeat the "name" here to expose them as dependencies.
-# use_repo(oci, "debian_base")
