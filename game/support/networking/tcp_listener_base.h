@@ -116,7 +116,7 @@ class TcpListenerBase : public INetworkServer
      *
      * @param ec The error code from the error.
      */
-    void OnError(boost::system::error_code ec);
+    virtual void OnError(boost::system::error_code ec, std::string_view what);
 
   private:
     void DoAccept();

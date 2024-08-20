@@ -9,7 +9,7 @@ namespace game::support
 {
 
 namespace net = boost::asio;
-inline void Fail(boost::system::error_code ec, char const* what)
+inline void Fail(boost::system::error_code ec, std::string_view what)
 {
     std::cerr << what << ": " << ec.message() << "\n";
 }
