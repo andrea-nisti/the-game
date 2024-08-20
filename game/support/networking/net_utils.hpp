@@ -1,7 +1,7 @@
 #ifndef SUPPORT_NETWORKING_NET_UTILS_H
 #define SUPPORT_NETWORKING_NET_UTILS_H
 
-#include <boost/asio.hpp>
+#include <boost/asio/ip/tcp.hpp>
 #include <boost/system/error_code.hpp>
 #include <iostream>
 

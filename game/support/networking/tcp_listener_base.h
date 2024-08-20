@@ -1,7 +1,8 @@
 #ifndef SUPPORT_NETWORKING_TCP_LISTENER_BASE_H
 #define SUPPORT_NETWORKING_TCP_LISTENER_BASE_H
 
-#include <boost/asio.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/system/error_code.hpp>
 
 #include "interfaces/i_network_server.h"
 #include "support/networking/net_utils.hpp"
@@ -105,7 +106,7 @@ class TcpListenerBase : public INetworkServer
      *
      * @param ec The error code from the close operation.
      */
-    virtual void OnClose(boost::system::error_code ec) = 0;
+    virtual void OnClose() {}
 
     /**
      * @brief Handle errors.

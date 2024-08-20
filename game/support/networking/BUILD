@@ -1,8 +1,9 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
-cc_binary(
+cc_library(
     name = "tcp_listener_base",
     srcs = [
+        "interfaces/i_network_server.h",
         "net_utils.hpp",
         "tcp_listener_base.cpp",
     ],

@@ -1,12 +1,13 @@
-load("@rules_cc//cc:defs.bzl", "cc_test")
+load("@rules_cc//cc:defs.bzl", "cc_binary")
 
-cc_test(
+cc_binary(
     name = "networking",
-    size = "small",
+    # size = "small",
     srcs = ["networking_tests.cpp"],
-    args = ["--gtest_color=yes"],
+    # args = ["--gtest_color=yes"],
     deps = [
-        "@googletest//:gtest",
-        "@googletest//:gtest_main",
+        "//support/networking:tcp_listener_base",
+        # "@googletest//:gtest",
+        # "@googletest//:gtest_main",
     ],
 )

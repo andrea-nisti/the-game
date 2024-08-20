@@ -1,8 +1,6 @@
 #ifndef SUPPORT_NETWORKING_INTERFACES_I_NETWORK_SERVER_H
 #define SUPPORT_NETWORKING_INTERFACES_I_NETWORK_SERVER_H
 
-#include <cstddef>
-
 namespace game::support
 {
 /**
@@ -28,14 +26,6 @@ struct INetworkServer
      * operations on the acceptor.
      */
     virtual void Stop() = 0;
-
-    /**
-     * @brief The destructor.
-     *
-     * @details This is a pure virtual destructor to allow for derived classes to
-     * have a proper destructor.
-     */
-    virtual ~INetworkServer() = 0;
 };
 
 }  // namespace game::support
