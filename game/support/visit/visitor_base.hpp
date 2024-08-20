@@ -14,6 +14,14 @@ namespace game::support
  */
 
 /**
+ * \addtogroup serialization Visitable and serialization utilities
+ * \brief Supporting classes and functions for serializing, deserializing and visiting
+ * objects
+ * \ingroup support
+ * @{
+ */
+
+/**
  * @brief Base class for visitors. This class uses CRTP pattern to forward function calls
  * to the Derived class
  * @tparam Derived The derived visitor class.
@@ -55,9 +63,8 @@ class VisitorBase
     Derived* derived_ = static_cast<Derived*>(this);
 };
 
-/**
- * @}
- */
+///@}
+///@}
 
 }  // namespace game::support
 #endif  // GAME_SUPPORT_VISIT_VISITOR_BASE_H

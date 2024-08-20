@@ -11,6 +11,14 @@ namespace game::support
  */
 
 /**
+ * \addtogroup serialization Visitable and serialization utilities
+ * \brief Supporting classes and functions for serializing, deserializing and visiting
+ * objects
+ * \ingroup support
+ * @{
+ */
+
+/**
  * @brief Represents a visitable property of a struct.
  *
  * This struct template allows for the creation of named ***public*** properties that are
@@ -68,7 +76,7 @@ constexpr inline auto property(const char* name, MemberType Class::*member)
 
 }  // namespace game::support
 
-/**
- * @}
- */
+/// @}
+/// @}
+
 #endif  // GAME_SUPPORT_VISIT_PROPERTY_H

@@ -18,6 +18,14 @@ namespace game::support
  */
 
 /**
+ * \addtogroup serialization Visitable and serialization utilities
+ * \brief Supporting classes and functions for serializing, deserializing and visiting
+ * objects
+ * \ingroup support
+ * @{
+ */
+
+/**
  * @brief Interface (or simple tag) class for visitable objects.
  */
 struct IVisitable
@@ -108,9 +116,8 @@ constexpr inline auto visitable(Properties&&... p)
     return Visitable<InstanceT, Properties...> {std::forward<Properties>(p)...};
 }
 
-/**
- * @}
- */
+///@}
+///@}
 
 }  // namespace game::support
 #endif  // GAME_SUPPORT_VISIT_VISITABLE_H
