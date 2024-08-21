@@ -40,6 +40,29 @@ template <typename T>
 inline constexpr bool is_i_visitable_v = std::is_base_of_v<IVisitable, std::decay_t<T>>;
 
 /**
+ * @brief Type trait to check if a type has a member function called GetVisitable() that
+ * returns a type derived from IVisitable.
+ * @tparam T The type to check.
+ */
+template <typename T, typename = void>
+struct has_get_visitable : std::false_type
+{
+};
+
+/**
+ * @brief Type trait that checks if a type has a static member function GetVisitable()
+ * that returns an object derived from IVisitable.
+ *
+ * @tparam T The type to check.
+ */
+template <typename T>
+struct has_get_visitable<
+    T,
+    std::enable_if_t<is_i_visitable_v<decltype(T::GetVisitable())>>> : std::true_type
+{
+};
+
+/**
  * @brief Class to make a type visitable.
  * Look at tests for usage examples. This class
  * creates a visitable object that defines how the instance of an object should be
@@ -77,19 +100,21 @@ class Visitable : public IVisitable
     template <typename Visitor, typename PropertyT>
     void visit_property(Visitor&& visitor, InstanceT& instance, const PropertyT& prop)
     {
-        if constexpr (is_i_visitable_v<InstanceT>)
+        auto& inner_instance = prop.Get(instance);
+        using inner_instance_t = std::decay_t<decltype(inner_instance)>;
+
+        constexpr auto is_visitable = has_get_visitable<inner_instance_t>::value;
+        if constexpr (is_visitable)
         {
             std::string_view name {prop.name_};
-            visitor.visit_nested(name);
+            visitor.visit_nested_base(name);
+            inner_instance_t::GetVisitable().accept(visitor, inner_instance);
 
-            auto& nested_instance = prop.Get(instance);
-            nested_instance.accept(visitor, nested_instance);
-
-            visitor.exit_nested(name);
+            visitor.exit_nested_base(name);
         }
         else
         {
-            visitor.visit(prop.name_, prop.Get(instance));
+            visitor.visit_base(prop.name_, inner_instance);
         }
     }
 

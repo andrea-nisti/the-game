@@ -1,6 +1,7 @@
 #ifndef GAME_SUPPORT_VISIT_PROPERTY_H
 #define GAME_SUPPORT_VISIT_PROPERTY_H
 
+#include <string_view>
 namespace game::support
 {
 
