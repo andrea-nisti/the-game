@@ -2,6 +2,7 @@
 
 #include "support/visit/property.hpp"
 #include "support/visit/visitable.hpp"
+#include "support/visit/visitor_base.hpp"
 #include "test_visitors.hpp"
 
 namespace game::test
@@ -62,6 +63,17 @@ TEST(Visitable, GivenMockNestedStructureType_MembersTraitAreCorrect)
     EXPECT_TRUE(r);
     EXPECT_FALSE(r1);
     EXPECT_TRUE(r2);
+
+    constexpr auto rr = game::support::has_exit_nested_v<SimpleVisitor>;
+    constexpr auto rr1 = game::support::has_exit_nested_v<SimpleVisitor>;
+    constexpr auto rr2 = game::support::has_visit_nested_v<NestedVisitor>;
+    constexpr auto rr3 = game::support::has_visit_nested_v<NestedVisitor>;
+
+    EXPECT_FALSE(rr);
+    EXPECT_FALSE(rr1);
+
+    EXPECT_TRUE(rr2);
+    EXPECT_TRUE(rr3);
 }
 
 TEST(Visitable, GivenMockStructure_MembersAreVisited)
