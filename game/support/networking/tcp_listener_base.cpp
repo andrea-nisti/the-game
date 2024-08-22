@@ -27,7 +27,15 @@ void TcpListenerBase::DoAccept()
 
 void TcpListenerBase::OnAcceptContinue(boost::system::error_code ec, tcp::socket socket)
 {
-    OnAccept(ec, std::move(socket));
+    if (ec)
+    {
+        OnError(ec, "accept");
+        // do not return for now, pass the error code to OnAccept
+    }
+    else
+    {
+        OnAccept(std::move(socket));
+    }
 
     // Accept another connection
     DoAccept();

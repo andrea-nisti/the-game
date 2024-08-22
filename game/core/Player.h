@@ -24,10 +24,10 @@ class Player
     Player& operator=(Player&&) = delete;
 
   private:
-    inline static int n_of_players_{0};
-    const int uid_{};
-    const std::string name_{};
-    Deck hand_{};
+    inline static int n_of_players_ {0};
+    const int uid_ {};
+    const std::string name_ {};
+    Hand hand_ {};
 };
 }  // namespace game::core
 #endif  // GAME_CORE_PLAYER_H

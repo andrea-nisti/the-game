@@ -57,23 +57,14 @@ TEST(Visitable, GivenMockNestedStructureType_MembersTraitAreCorrect)
     {
     };
 
-    constexpr auto r = game::support::has_get_visitable<decltype(m)>::value;
-    constexpr auto r1 = game::support::has_get_visitable<decltype(m.c_nested)>::value;
-    constexpr auto r2 = game::support::has_get_visitable<decltype(m.m)>::value;
-    EXPECT_TRUE(r);
-    EXPECT_FALSE(r1);
-    EXPECT_TRUE(r2);
+    EXPECT_FALSE(game::support::has_get_visitable<decltype(m.c_nested)>::value);
+    EXPECT_TRUE(game::support::has_get_visitable<decltype(m)>::value);
+    EXPECT_TRUE(game::support::has_get_visitable<decltype(m.m)>::value);
 
-    constexpr auto rr = game::support::has_exit_nested_v<SimpleVisitor>;
-    constexpr auto rr1 = game::support::has_exit_nested_v<SimpleVisitor>;
-    constexpr auto rr2 = game::support::has_visit_nested_v<NestedVisitor>;
-    constexpr auto rr3 = game::support::has_visit_nested_v<NestedVisitor>;
-
-    EXPECT_FALSE(rr);
-    EXPECT_FALSE(rr1);
-
-    EXPECT_TRUE(rr2);
-    EXPECT_TRUE(rr3);
+    EXPECT_FALSE(game::support::has_exit_nested_v<SimpleVisitor>);
+    EXPECT_FALSE(game::support::has_exit_nested_v<SimpleVisitor>);
+    EXPECT_TRUE(game::support::has_visit_nested_v<NestedVisitor>);
+    EXPECT_TRUE(game::support::has_visit_nested_v<NestedVisitor>);
 }
 
 TEST(Visitable, GivenMockStructure_MembersAreVisited)

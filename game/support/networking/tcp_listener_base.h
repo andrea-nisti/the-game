@@ -48,8 +48,7 @@ class TcpListenerBase : public INetworkServer
 
         if (not InitializeAcceptor(acceptor_, endpoint, ec))
         {
-            Fail(ec, "InitializeAcceptor");
-            return;
+            throw std::runtime_error(Fail(ec, "InitializeAcceptor"));
         }
     }
 
@@ -70,33 +69,9 @@ class TcpListenerBase : public INetworkServer
      * This function is called when a new connection is accepted. It will
      * create a new socket object and start reading from it.
      *
-     * @param ec The error code from the accept operation.
      * @param socket The socket object for the new connection.
      */
-    virtual void OnAccept(
-        boost::system::error_code ec, boost::asio::ip::tcp::socket socket) = 0;
-
-    /**
-     * @brief Handle incoming data.
-     *
-     * This function is called when data is received from the client. It will
-     * write the data back to the client.
-     *
-     * @param ec The error code from the read operation.
-     * @param bytes_transferred The number of bytes transferred.
-     */
-    virtual void OnRead(boost::system::error_code ec, std::size_t bytes_transferred) {}
-
-    /**
-     * @brief Handle write completion.
-     *
-     * This function is called when a write operation completes. It will
-     * start a new read operation.
-     *
-     * @param ec The error code from the write operation.
-     * @param bytes_transferred The number of bytes transferred.
-     */
-    virtual void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) {}
+    virtual void OnAccept(tcp::socket socket) = 0;
 
     /**
      * @brief Handle close notifications.
@@ -104,7 +79,6 @@ class TcpListenerBase : public INetworkServer
      * This function is called when a close notification is received from the
      * client. It will close the socket.
      *
-     * @param ec The error code from the close operation.
      */
     virtual void OnClose() {}
 

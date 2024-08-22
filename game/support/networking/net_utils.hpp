@@ -4,14 +4,18 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/system/error_code.hpp>
 #include <iostream>
+#include <sstream>
 
 namespace game::support
 {
 
 namespace net = boost::asio;
-inline void Fail(boost::system::error_code ec, std::string_view what)
+inline std::string Fail(boost::system::error_code ec, std::string_view what)
 {
-    std::cerr << what << ": " << ec.message() << "\n";
+    std::ostringstream ss {};
+    ss << what << ": " << ec.message() << "\n";
+    std::cerr << ss.str();
+    return ss.str();
 }
 
 inline bool InitializeAcceptor(
