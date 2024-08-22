@@ -30,6 +30,7 @@ export default class CompanionTab extends React.Component<CompanionTabProp, Comp
                 gap='50px'>
                 {this.state.players.map((player: Player) => (
                     <Player
+                        key={player.props.name}
                         name={player.state.name}
                         cardNumber={player.state.cardNumber}
                         isUser={false}

@@ -44,6 +44,7 @@ export default class UserDeck extends React.Component<UserDeckProp, UserDeckStat
                     this.state.cards.map((card: GameCard) => (
 
                         <GameCard
+                            key={card.state.index}
                             isActive={card.state.index == this.state.activeIndex}
                             index={card.state.index}
                             value={card.state.value}

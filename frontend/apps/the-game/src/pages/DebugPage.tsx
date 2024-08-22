@@ -28,7 +28,7 @@ export function DebugPage(props : DebugPageProps) {
                 <Heading size='md' sx={{display:'flex'}}> Current Status </Heading>
               </CardHeader>
               <CardBody>
-                {props.state.map((item) => <Text> {item} </Text>)}
+                {props.state.map((item) => <Text key='state-text'> {item} </Text>)}
               </CardBody>
             </Card>
           </VStack>

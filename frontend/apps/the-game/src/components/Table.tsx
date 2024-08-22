@@ -16,12 +16,12 @@ export default class GameTable extends React.Component<GameTableProp, GameTableS
 
         this.state = {
             upCards: [
-                new TableCard({ value: 1, direction: 'up' }),
-                new TableCard({ value: 1, direction: 'up' })
+                new TableCard({ value: 1, direction: 'up' , index: 0}),
+                new TableCard({ value: 1, direction: 'up' , index: 1})
             ],
             downCards: [
-                new TableCard({ value: 99, direction: 'down' }),
-                new TableCard({ value: 99, direction: 'down' })
+                new TableCard({ value: 99, direction: 'down', index: 2 }),
+                new TableCard({ value: 99, direction: 'down', index: 3 })
             ]
         };
     }
@@ -38,12 +38,12 @@ export default class GameTable extends React.Component<GameTableProp, GameTableS
 
                 <Box display='flex' flexDirection='row' gap='10px'>
                     {this.state.upCards.map((card: TableCard) => (
-                        <TableCard value={card.state.value} direction={card.state.direction} />
+                        <TableCard key={card.state.index} value={card.state.value} direction={card.state.direction} />
                     ))}
                 </Box>
                 <Box display='flex' flexDirection='row' gap='10px'>
                     {this.state.downCards.map((card: TableCard) => (
-                        <TableCard value={card.state.value} direction={card.state.direction} />
+                        <TableCard key={card.state.index} value={card.state.value} direction={card.state.direction} />
                     ))}
                 </Box>
             </Box>
@@ -54,11 +54,13 @@ export default class GameTable extends React.Component<GameTableProp, GameTableS
 
 interface TableCardProp {
     value: number;
+    index?: number;
     direction: string;
 }
 
 interface TableCardState {
     value: number;
+    index?: number
     direction: string;
 }
 
@@ -68,6 +70,7 @@ class TableCard extends React.Component<TableCardProp, TableCardState> {
 
         this.state = {
             value: props.value,
+            index: props.index,
             direction: props.direction
         };
     }
