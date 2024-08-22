@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Card } from '@chakra-ui/react';
 import React from 'react';
 // import { Player, TableCard } from '../components/GameComponents';
 import { getRandomInt } from "../utils/Common"
@@ -14,7 +14,7 @@ interface GameProps {
 
 interface GameState {
   userHand: GameCard[];
-  companions: Player[]
+  companions: Player[];
 }
 
 
@@ -22,20 +22,22 @@ class Game extends React.Component<GameProps, GameState> {
   constructor(props: GameProps) {
     super(props);
     this.state = {
-      userHand: [
-        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
-        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
-        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
-        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
-        new GameCard({ value: getRandomInt(1, 99), isActive: false }),
-        new GameCard({ value: getRandomInt(1, 99), isActive: false })
-      ],
+      userHand: this.createInitialUserHand(6),
+
       companions: [
         new Player({ name: 'Prosepio Doroni', cardNumber: getRandomInt(1, 6), isUser: false }),
         new Player({ name: 'Prosepio dei Finacchioni', cardNumber: getRandomInt(1, 6), isUser: false }),
         new Player({ name: 'Madonnina Salutare', cardNumber: getRandomInt(1, 6), isUser: false })
-      ]
-    };
+      ],
+    }
+  }
+
+  private createInitialUserHand(elements: number): GameCard[] {
+    const newHand: GameCard[] = [];
+    for (let i = 0; i < elements; i++) {
+      newHand.push(new GameCard({ value: getRandomInt(1, 99), isActive: false, index: i }));
+    }
+    return newHand;
   }
 
   render() {
@@ -52,7 +54,7 @@ class Game extends React.Component<GameProps, GameState> {
 
         <GameTable />
 
-        <CompanionTab players={this.state.companions}/>
+        <CompanionTab players={this.state.companions} />
 
       </Box>
     );

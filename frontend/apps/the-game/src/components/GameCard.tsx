@@ -4,31 +4,30 @@ import { Card, CardBody, Text } from "@chakra-ui/react";
 
 interface GameCardProp {
     value: number;
-    isActive: boolean;
+    index: number;
+    isActive?: boolean;
+    onClick?: () => void
 }
 
 interface GameCardState {
     value: number;
-    isActive: boolean;
+    index: number;
 }
 
 class GameCard extends React.Component<GameCardProp, GameCardState> {
+
     constructor(props: GameCardProp) {
         super(props);
 
         this.state = {
             value: props.value,
-            isActive: false
+            index: props.index,
         };
     }
 
-    handleCardClick = () => {
-        this.setState({ isActive: !this.state.isActive });
-      };
-
     render() {
         return (
-            <Card onClick={this.handleCardClick} border={this.state.isActive ? '2px solid rgb(112, 185, 212)' : 'inherit'} variant='filled' align='center' width='100px' height='170px' >
+            <Card onClick={this.props.onClick} border={this.props.isActive ? '2px solid rgb(112, 185, 212)' : 'inherit'} variant='filled' align='center' width='100px' height='170px' >
                 <CardBody fontSize='30px' alignItems='stretch' alignContent='center'>
                     <Text align='center'> {this.state.value} </Text>
                 </CardBody>
