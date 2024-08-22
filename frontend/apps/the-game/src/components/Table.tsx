@@ -96,7 +96,7 @@ class TableCard extends React.Component<TableCardProp, TableCardState> {
 
     render() {
         return (
-            <Card onClick={this.props.onClick} border={this.props.isActive ? '2px solid rgb(156, 88, 76)' : 'outline'} variant='outline' align='center' width='100px' height='170px' >
+            <Card onClick={this.props.onClick} border={this.props.isActive ? '3px solid rgb(156, 88, 76)' : 'outline'} variant='outline' align='center' width='100px' height='170px' >
                 <CardBody fontSize='30px' alignItems='stretch' alignContent='center'>
                     {this.state.direction == 'up' ? <ArrowUpIcon /> : <ArrowDownIcon />}
                     <Text align='center'> {this.state.value} </Text>
