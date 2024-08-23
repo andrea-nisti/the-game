@@ -67,4 +67,4 @@ docker build -t game_image:$TAG .
 echo "Docker image built successfully: game_image:$TAG"
 
 echo "Removing temporary file: $DEST_DIR/$TAR_FILE"
-rm "$DEST_DIR/$TAR_FILE"
+rm -rf "$DEST_DIR/$TAR_FILE"

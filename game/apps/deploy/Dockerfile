@@ -14,9 +14,8 @@ RUN tar -xvf /game.tar -C /app
 # Set the working directory
 WORKDIR /app
 
-# Expose port 8080
-EXPOSE 8080
+EXPOSE 8888
 
 # Run the game executable (replace 'game_executable' with the actual executable name)
 # CMD ["bash"]
-ENTRYPOINT [ "./game" ]
+ENTRYPOINT [ "./kawai" ]

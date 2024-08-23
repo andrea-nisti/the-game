@@ -30,7 +30,6 @@ void TcpListenerBase::OnAcceptContinue(boost::system::error_code ec, tcp::socket
     if (ec)
     {
         OnError(ec, "accept");
-        // do not return for now, pass the error code to OnAccept
     }
     else
     {
