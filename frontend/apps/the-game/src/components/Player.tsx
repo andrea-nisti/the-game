@@ -28,7 +28,7 @@ export default class Player extends React.Component<PlayerProp, PlayerState> {
 
     render() {
         return (
-            <Box display='flex' flexDirection='row' justifyContent='center' alignItems='center' gap='1vh'>
+            <Box key= {this.state.name} display='flex' flexDirection='row' justifyContent='center' alignItems='center' gap='1vh'>
                 <Avatar
                     size='xl'
                 >

@@ -1,12 +1,11 @@
 import { Box, Card } from '@chakra-ui/react';
 import React from 'react';
-// import { Player, TableCard } from '../components/GameComponents';
-import { getRandomInt } from "../utils/Common"
 import GameCard from '../components/GameCard';
-import GameTable from '../components/Table';
 import UserDeck from '../components/UserDeck';
 import CompanionTab from '../components/CompanionTab';
 import Player from '../components/Player';
+import { createCompanions, createInitialUserHand, createTableCards } from '../utils/GameUtils';
+import GameTable from '../components/Table';
 
 interface GameProps {
   title: string;
@@ -15,6 +14,11 @@ interface GameProps {
 interface GameState {
   userHand: GameCard[];
   companions: Player[];
+  // tableCards: TableCard[];
+  activeUserCardIndex: number;
+  activeUserCardValue: number;
+  activeTableCardIndex: number;
+  activeTableCardValue: number
 }
 
 
@@ -22,52 +26,31 @@ class Game extends React.Component<GameProps, GameState> {
   constructor(props: GameProps) {
     super(props);
     this.state = {
-      userHand: this.createInitialUserHand(6),
+      companions: createCompanions(['Prosepio Doroni', 'Prosepio dei Finacchioni', 'Madonnina Salutare']),
+      userHand: createInitialUserHand(6),
+      // tableCards: createTableCards(6),
+      activeUserCardIndex: -1,
+      activeUserCardValue: -1,
+      activeTableCardIndex: -1,
+      activeTableCardValue: -1,
+    }
+  }
 
-      companions: [
-        new Player({ 
-          name: 'Prosepio Doroni', 
-          cardNumber: getRandomInt(1, 6), 
-          isUser: false, 
-          // imgSource: this.fetchRandomAvatarImage()
-        }),
-        new Player({ 
-          name: 'Prosepio dei Finacchioni',
-          cardNumber: getRandomInt(1, 6), 
-          isUser: false, 
-          // imgSource: this.fetchRandomAvatarImage()
-        }),
-        new Player({ 
-          name: 'Madonnina Salutare', 
-          cardNumber: getRandomInt(1, 6), 
-          isUser: false, 
-          // imgSource: this.fetchRandomAvatarImage()
-        })
-      ],
-    }
+  private onPlayClick = () => {
+    console.log('VALUE USER CARD: ', this.state.activeUserCardIndex)
+    console.log('VALUE TABLE CARD: ', this.state.activeUserCardIndex)
+
+    console.log('this.state.userDeck.state.cards')
   }
-  async fetchRandomAvatarImage(): Promise<string> {
-    try {
-      const response = await fetch('https://thispersondoesnotexist.com');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch image: ${response.status}`);
-      }
-      const blob = await response.blob();
-      const value = URL.createObjectURL(blob);
-      console.log('Fetched image: ', value);
-      return value;
-    } catch (error) {
-      console.error('Error fetching image: ', error);
-      throw error;
-    }
+
+  private onUserCardClick = (index: number) => {
+    console.log('INDEX USER CARD: ', this.state.activeUserCardIndex)
+    console.log('VALUE USER CARD: ', this.state.activeUserCardValue)
+    this.setState({ activeUserCardIndex: index, activeUserCardValue: this.state.userHand[index].state.value })
   }
-  
-  private createInitialUserHand(elements: number): GameCard[] {
-    const newHand: GameCard[] = [];
-    for (let i = 0; i < elements; i++) {
-      newHand.push(new GameCard({ value: getRandomInt(1, 99), isActive: false, index: i }));
-    }
-    return newHand;
+
+  private onTableCardClick = (index: number) => {
+    this.setState({ activeTableCardIndex: index, activeTableCardValue: this.state.userHand[index].state.value })
   }
 
   render() {
@@ -79,8 +62,8 @@ class Game extends React.Component<GameProps, GameState> {
         height='94vh'
         width='98.5vw'
         gap='6vh'>
-
-        <UserDeck cards={this.state.userHand} />
+          
+        <UserDeck cards={this.state.userHand} activeIndex={this.state.activeUserCardIndex} onCardClick={(index) => this.onUserCardClick(index)} />
 
         <GameTable />
 

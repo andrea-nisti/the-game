@@ -3,6 +3,8 @@ import { Box, Button, Card, CardBody, Text } from "@chakra-ui/react";
 import React from "react";
 
 interface GameTableProp {
+    onPlayClick?: () => void
+    onCardClick?: (index: number) => void 
 }
 
 interface GameTableState {
@@ -43,6 +45,7 @@ export default class GameTable extends React.Component<GameTableProp, GameTableS
                     {this.state.upCards.map((card: TableCard) => (
                         <TableCard
                             onClick={() => this.setState({ activeIndex: card.props.index })}
+                            onPlayClick={() => this.props.onPlayClick}
                             key={card.state.index}
                             value={card.state.value}
                             index={card.state.index}
@@ -55,6 +58,7 @@ export default class GameTable extends React.Component<GameTableProp, GameTableS
                     {this.state.downCards.map((card: TableCard) => (
                         <TableCard
                             onClick={() => this.setState({ activeIndex: card.props.index })}
+                            onPlayClick={this.props.onPlayClick}
                             key={card.state.index}
                             value={card.state.value}
                             index={card.state.index}
@@ -75,6 +79,7 @@ interface TableCardProp {
     isActive?: boolean;
     direction: string;
     onClick?: () => void
+    onPlayClick?: () => void
 }
 
 interface TableCardState {
@@ -112,6 +117,7 @@ class TableCard extends React.Component<TableCardProp, TableCardState> {
                     <Text align='center'> {this.state.value} </Text>
                     {
                         <Button
+                            onClick={this.props.onPlayClick}
                             fontSize='2vh' variant={!this.props.isActive ? 'ghost' : 'solid'}
                             textColor= {!this.props.isActive ? 'grey': 'inherit' }
                         >

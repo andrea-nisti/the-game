@@ -1,18 +1,17 @@
 import React from "react";
 import GameCard from "./GameCard";
 import { Box } from "@chakra-ui/react";
-import { getRandomInt } from "../utils/Common";
 
 interface UserDeckProp {
     cards: GameCard[],
     activeIndex?: number,
     selectedCardValue?: number,
     debugBorder?: boolean
+    onCardClick: (index: number) => void
 }
 
 interface UserDeckState {
     cards: GameCard[],
-    selectedCardValue?: number,
     activeIndex?: number,
     debugBorder?: boolean
 }
@@ -23,8 +22,7 @@ export default class UserDeck extends React.Component<UserDeckProp, UserDeckStat
 
         this.state = {
             cards: props.cards,
-            activeIndex: -1,
-            selectedCardValue: props.selectedCardValue,
+            activeIndex: props.activeIndex,
             debugBorder: props.debugBorder
         };
     }
@@ -45,10 +43,10 @@ export default class UserDeck extends React.Component<UserDeckProp, UserDeckStat
 
                         <GameCard
                             key={card.state.index}
-                            isActive={card.state.index == this.state.activeIndex}
+                            isActive={card.state.index == this.props.activeIndex}
                             index={card.state.index}
                             value={card.state.value}
-                            onClick={() => this.setState({ activeIndex: card.props.index })}
+                            onClick={() => this.props.onCardClick(card.state.index)}
                         />
                     ))}
             </Box>
