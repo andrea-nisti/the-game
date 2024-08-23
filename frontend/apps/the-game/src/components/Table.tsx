@@ -1,5 +1,5 @@
 import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
-import { Box, Card, CardBody, Text } from "@chakra-ui/react";
+import { Box, Button, Card, CardBody, Text } from "@chakra-ui/react";
 import React from "react";
 
 interface GameTableProp {
@@ -37,9 +37,9 @@ export default class GameTable extends React.Component<GameTableProp, GameTableS
                 alignItems='center'
                 display='flex'
                 flexDirection='column'
-                gap='10px'>
+                gap='1vh'>
 
-                <Box display='flex' flexDirection='row' gap='10px'>
+                <Box display='flex' flexDirection='row' gap='1vh'>
                     {this.state.upCards.map((card: TableCard) => (
                         <TableCard
                             onClick={() => this.setState({ activeIndex: card.props.index })}
@@ -51,7 +51,7 @@ export default class GameTable extends React.Component<GameTableProp, GameTableS
                         />
                     ))}
                 </Box>
-                <Box display='flex' flexDirection='row' gap='10px'>
+                <Box display='flex' flexDirection='row' gap='1vh'>
                     {this.state.downCards.map((card: TableCard) => (
                         <TableCard
                             onClick={() => this.setState({ activeIndex: card.props.index })}
@@ -96,11 +96,31 @@ class TableCard extends React.Component<TableCardProp, TableCardState> {
 
     render() {
         return (
-            <Card onClick={this.props.onClick} border={this.props.isActive ? '3px solid rgb(156, 88, 76)' : 'outline'} variant='outline' align='center' width='100px' height='170px' >
-                <CardBody fontSize='30px' alignItems='stretch' alignContent='center'>
+            <Card
+                onClick={this.props.onClick}
+                border={this.props.isActive ? '5px solid rgb(156, 88, 76)' : 'outline'}
+                variant='outline'
+                align='center'
+                width='12vh'
+                height='20vh'
+                display='flex'
+
+            >
+
+                <CardBody display='flex' alignItems='center' flexDirection='column' gap='1px' fontSize='4.5vh' alignContent='bottom'  >
                     {this.state.direction == 'up' ? <ArrowUpIcon /> : <ArrowDownIcon />}
                     <Text align='center'> {this.state.value} </Text>
+                    {
+                        <Button
+                            fontSize='2vh' variant={!this.props.isActive ? 'ghost' : 'solid'}
+                            textColor= {!this.props.isActive ? 'grey': 'inherit' }
+                        >
+                            PLAY
+                        </Button>
+                    }
+
                 </CardBody>
+
             </Card>
         )
     }

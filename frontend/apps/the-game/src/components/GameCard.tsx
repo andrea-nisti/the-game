@@ -27,8 +27,8 @@ class GameCard extends React.Component<GameCardProp, GameCardState> {
 
     render() {
         return (
-            <Card key={this.props.index} onClick={this.props.onClick} border={this.props.isActive ? '2px solid rgb(112, 185, 212)' : 'inherit'} variant='filled' align='center' width='100px' height='170px' >
-                <CardBody fontSize='30px' alignItems='stretch' alignContent='center'>
+            <Card key={this.props.index} onClick={this.props.onClick} border={this.props.isActive ? '4px solid rgb(112, 185, 212)' : 'inherit'} variant='filled' align='center' width='12vh' height='20vh' >
+                <CardBody fontSize='7vh' alignItems='stretch' alignContent='center'>
                     <Text align='center'> {this.state.value} </Text>
                 </CardBody>
             </Card>

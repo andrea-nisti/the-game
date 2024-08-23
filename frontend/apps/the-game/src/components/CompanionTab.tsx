@@ -24,10 +24,12 @@ export default class CompanionTab extends React.Component<CompanionTabProp, Comp
             <Box
                 // sx={{ border: '10px solid white' }}
                 justifyContent='center'
+                alignContent='center'
                 alignItems='flex-end'
                 display='flex'
                 flexDirection='row'
-                gap='50px'>
+                alignSelf= 'center'
+                gap='90px'>
                 {this.state.players.map((player: Player) => (
                     <Player
                         key={player.props.name}
