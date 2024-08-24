@@ -16,6 +16,10 @@ WORKDIR /app
 
 EXPOSE 8888
 
-# Run the game executable (replace 'game_executable' with the actual executable name)
-# CMD ["bash"]
-ENTRYPOINT [ "./kawai" ]
+# Define a parameter for the entrypoint executable
+ARG EXECUTABLE_NAME
+ENV APP ${EXECUTABLE_NAME}
+CMD ./${APP}
+
+# Run the game executable (replace 'EXECUTABLE_NAME' with the actual executable name)
+# ENTRYPOINT [ echo ./$APP ]

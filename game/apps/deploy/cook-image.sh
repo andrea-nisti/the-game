@@ -17,8 +17,8 @@ usage() {
 while getopts "n:t:f:h" opt; do
     case $opt in
     n)
-        NAME=$OPTARG
-        echo image name: $TAG
+        IMAGE_NAME=$OPTARG
+        echo image name: $IMAGE_NAME
         ;;
     t)
         TAG=$OPTARG
@@ -43,10 +43,15 @@ fi
 # Get the directory containing the script
 
 SCRIPT_DIR=$(dirname $(realpath "$0"))
-BAZEL_EXEC_ROOT=$(bazel info execution_root)
 DEST_DIR=$SCRIPT_DIR
 DOCKERFILE="Dockerfile"
-# BASE_PATH = "../../bazel-bin/apps"
+
+for f in "$DEST_DIR"/*.tar; do
+    if [ -f "$f" ]; then
+        echo "Removing temporary file: $f"
+        rm -rf "$f"
+    fi
+done
 
 # Copy the tar file from Bazel exec root to the destination directory
 cp "$(realpath -m "$SCRIPT_DIR/../../bazel-bin/apps/$TAR_FILE")" "$DEST_DIR/"
@@ -57,14 +62,24 @@ if [ ! -f "$DOCKERFILE" ]; then
     exit 1
 fi
 
+# Strip "_tar" from the tar file name to get the executable name (e.g., "game_tar" -> "game")
+# This is the name of the file that will be the entrypoint in the Docker image
+EXECUTABLE_NAME=$(basename $TAR_FILE .tar)
+EXECUTABLE_NAME="${EXECUTABLE_NAME%_tar}"
+echo executable name: $EXECUTABLE_NAME
+
 # Change to the destination directory
 cd $DEST_DIR
 
 # Build the Docker image
-docker build -t game_image:$TAG .
+docker build -t $IMAGE_NAME:$TAG --build-arg "EXECUTABLE_NAME=$EXECUTABLE_NAME" .
 
 # Print success message
-echo "Docker image built successfully: game_image:$TAG"
+echo "Docker image built successfully: $IMAGE_NAME:$TAG"
 
 echo "Removing temporary file: $DEST_DIR/$TAR_FILE"
-rm -rf "$DEST_DIR/$TAR_FILE"
+for f in "$DEST_DIR"/*.tar; do
+    if [ -f "$f" ]; then
+        rm -rf "$f"
+    fi
+done
