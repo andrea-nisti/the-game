@@ -48,6 +48,7 @@ class SessionBase
      */
     virtual void Close() = 0;
 
+  protected:
     Stream stream_;
     Buffer buffer_;
 };

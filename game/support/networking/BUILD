@@ -30,14 +30,26 @@ cc_library(
 cc_library(
     name = "session_base",
     srcs = [
-        "interfaces/i_network_server.h",
-        "tcp_listener_base.cpp",
+        "session_base.h",
     ],
-    hdrs = ["tcp_listener_base.h"],
+    hdrs = ["session_base.h"],
     visibility = ["//visibility:public"],
     deps = [
         ":net_utils",
         "@boost//:asio",
         "@boost//:beast",
+    ],
+)
+
+cc_library(
+    name = "http_session",
+    srcs = [
+        "http_session.cpp",
+    ],
+    hdrs = ["http_session.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":net_utils",
+        ":session_base"
     ],
 )

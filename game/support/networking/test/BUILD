@@ -7,6 +7,7 @@ cc_binary(
     # args = ["--gtest_color=yes"],
     deps = [
         "//support/networking:tcp_listener_base",
+        "//support/networking:http_session",
         # "@googletest//:gtest",
         # "@googletest//:gtest_main",
     ],
