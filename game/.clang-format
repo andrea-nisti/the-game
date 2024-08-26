@@ -7,16 +7,25 @@ AllowShortFunctionsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: false
 AlignAfterOpenBracket: AlwaysBreak
 AllowShortLoopsOnASingleLine: false
+AlwaysBreakBeforeMultilineStrings: true
 BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: Allman
 ColumnLimit: 90
-DerivePointerAlignment: false
-AlwaysBreakBeforeMultilineStrings: true
 IndentWidth: 4
+IncludeCategories:
+  - Regex: '^(<|")(cstdlib|csignal|csetjmp|cstdarg|typeinfo|typeindex|type_traits|bitset|functional|utility|ctime|chrono|cstddef|initializer_list|tuple|any|optional|variant|new|memory|scoped_allocator|memory_resource|climits|cfloat|cstdint|cinttypes|limits|exception|stdexcept|cassert|system_error|cerrno|cctype|cwctype|cstring|cwchar|cuchar|string|string_view|array|vector|deque|list|forward_list|set|map|unordered_set|unordered_map|stack|queue|algorithm|execution|teratorslibrary|iterator|cmath|complex|valarray|random|numeric|ratio|cfenv|iosfwd|ios|istream|ostream|iostream|fstream|sstream|strstream|iomanip|streambuf|cstdio|locale|clocale|codecvt|regex|atomic|thread|mutex|shared_mutex|future|condition_variable|filesystem|ciso646|ccomplex|ctgmath|cstdalign|cstdbool)(>|")$'
+    Priority: 2
+  - Regex: '^<.*\.(h|hpp)>'
+    Priority: 3
+  - Regex: '"*.hpp"'
+    Priority: 4
+  - Regex: '"*.h"'
+    Priority: 4
 KeepEmptyLinesAtTheStartOfBlocks: true
 Cpp11BracedListStyle: true
 EmptyLineBeforeAccessModifier: LogicalBlock
+
 # spaces in parenthesis
 SpaceBeforeParens: ControlStatements
 SpacesInParentheses: false
@@ -27,3 +36,4 @@ SpacesInContainerLiterals: true
 SpaceBeforeCpp11BracedList: true
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
+SortIncludes: CaseInsensitive
