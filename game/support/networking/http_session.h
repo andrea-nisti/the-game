@@ -1,6 +1,8 @@
 #ifndef SUPPORT_NETWORKING_HTTP_SESSION_H
 #define SUPPORT_NETWORKING_HTTP_SESSION_H
 
+#include <cstdlib>
+
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/http/message.hpp>
@@ -8,7 +10,6 @@
 #include <boost/beast/version.hpp>
 #include <boost/optional.hpp>
 #include <boost/throw_exception.hpp>
-#include <cstdlib>
 
 #include "net_utils.hpp"
 #include "session_base.h"
@@ -39,18 +40,7 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
     void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) override;
 
     void Read() override;
-    void Write() override
-    {
-        keep_alive_ = response_.keep_alive();
-        response_.prepare_payload();
-
-        beast::async_write(
-            stream_,
-            http::message_generator {std::move(response_)},
-            [self = shared_from_this()](
-                boost::system::error_code ec, std::size_t bytes_transferred)
-            { self->OnWrite(ec, bytes_transferred); });
-    }
+    void Write() override;
     void Close() override;
 
     boost::optional<http::request_parser<http::string_body>> parser_;

@@ -1,9 +1,8 @@
-
-#include "support/networking/http_session.h"
+#include "http_session.h"
 
 #include <boost/beast/http/message.hpp>
 
-#include "support/networking/net_utils.hpp"
+#include "net_utils.hpp"
 
 namespace game::support
 {
@@ -21,7 +20,6 @@ http::response<http::string_body> handle_request(
     response.set(http::field::content_type, "text/plain; charset=utf-8");
     response.body() = res_body;
     response.keep_alive(request.keep_alive());
-    std::cout << "is keep alive: " << response.keep_alive() << std::endl;
 
     return response;
 }
@@ -33,7 +31,12 @@ void HttpSession::Run()
     net::dispatch(
         stream_.get_executor(), [self = this->shared_from_this()]() { self->Read(); });
 }
-
+void HttpSession::Close()
+{
+    // Send a TCP shutdown
+    boost::system::error_code ec;
+    stream_.socket().shutdown(tcp::socket::shutdown_send, ec);
+}
 void HttpSession::Read()
 {
     std::cout << "read" << std::endl;
@@ -56,12 +59,6 @@ void HttpSession::Read()
             boost::system::error_code ec, std::size_t bytes_transferred)
         { self->OnRead(ec, bytes_transferred); });
 }
-void HttpSession::Close()
-{
-    // Send a TCP shutdown
-    boost::system::error_code ec;
-    stream_.socket().shutdown(tcp::socket::shutdown_send, ec);
-}
 void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transferred)
 {
     std::cout << "on read" << std::endl;
@@ -80,6 +77,18 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     response_ = handle_request(parser_->release());
     Write();
     Read();
+}
+void HttpSession::Write()
+{
+    keep_alive_ = response_.keep_alive();
+    response_.prepare_payload();
+
+    beast::async_write(
+        stream_,
+        http::message_generator {std::move(response_)},
+        [self = shared_from_this()](
+            boost::system::error_code ec, std::size_t bytes_transferred)
+        { self->OnWrite(ec, bytes_transferred); });
 }
 void HttpSession::OnWrite(boost::system::error_code ec, std::size_t bytes_transferred)
 {
