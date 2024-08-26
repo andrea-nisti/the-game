@@ -1,6 +1,7 @@
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/address_v4.hpp>
 
+#include "support/networking/http_session.h"
 #include "support/networking/tcp_listener_base.h"
 
 namespace game::test
@@ -14,22 +15,11 @@ class TestListener : public support::TcpListenerBase
   private:
     void OnAccept(tcp::socket socket) override
     {
-        const std::string response =
-            "HTTP/1.1 200 OK\r\nContent-Type: text/plain; "
-            "charset=utf-8\r\n\r\n UwU Kawaiiiiiiii!";
-
-        std::array<char, 1024> buffer {};
-        std::size_t bytes_received = 0;
-
-        bytes_received = socket.receive(net::buffer(buffer));
-
-        std::cout << "Received " << bytes_received << " bytes: "
-                  << std::string(buffer.begin(), buffer.begin() + bytes_received)
-                  << std::endl;
-
-        socket.send(net::buffer(response));
+        http = std::make_shared<HttpSession>(std::move(socket));
+        http->Run();
         return;
     }
+    std::shared_ptr<HttpSession> http;
 };
 
 }  // namespace game::test
