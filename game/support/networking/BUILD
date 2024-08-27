@@ -53,3 +53,13 @@ cc_library(
         ":session_base"
     ],
 )
+
+cc_library(
+    name = "route_manager_base",
+    srcs = [
+        "route_manager_base.hpp",
+    ],
+    hdrs = ["route_manager_base.hpp"],
+    visibility = ["//visibility:public"],
+    deps = [],
+)

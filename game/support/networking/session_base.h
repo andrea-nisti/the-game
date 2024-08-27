@@ -1,12 +1,13 @@
 #ifndef SUPPORT_NETWORKING_SESSION_BASE_H
 #define SUPPORT_NETWORKING_SESSION_BASE_H
 
+#include <cstdlib>
+
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/optional.hpp>
 #include <boost/throw_exception.hpp>
-#include <cstdlib>
 
 namespace game::support
 {
