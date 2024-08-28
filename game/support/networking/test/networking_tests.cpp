@@ -12,6 +12,10 @@ namespace game::test
 template <typename V>
 constexpr auto ConvertVerbBeast(const V value)
 {
+    static_assert(
+        std::is_same_v<V, http::verb> or std::is_same_v<V, support::HttpMethod>,
+        "Must be http::verb or support::HttpMethod");
+
     auto find = [&value](const auto& map)
     {
         return std::find_if(
@@ -33,7 +37,7 @@ constexpr auto ConvertVerbBeast(const V value)
 
         return find(map);
     }
-    else if constexpr (std::is_same_v<V, support::HttpMethod>)
+    else
     {
         constexpr auto map = std::array<std::pair<support::HttpMethod, http::verb>, 6> {
             std::make_pair(support::HttpMethod::GET, http::verb::get),

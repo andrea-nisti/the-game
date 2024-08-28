@@ -60,15 +60,20 @@ class RouteManagerBase
         const RequestT& request,
         ResponseT& response)
     {
+        auto& cb = GetCallback(method, endpoint);
+        std::invoke(cb, request, response);
+    }
+
+  protected:
+    virtual CallbackT& GetCallback(HttpMethod method, const Endpoint& endpoint)
+    {
         auto method_it = callbacks_.find(method);
         if (method_it != callbacks_.end())
         {
             auto endpointIt = method_it->second.find(endpoint);
             if (endpointIt != method_it->second.end())
             {
-                auto& cb = endpointIt->second;
-
-                std::invoke(cb, request, response);
+                return endpointIt->second;
             }
         }
     }
