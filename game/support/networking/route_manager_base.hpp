@@ -50,6 +50,7 @@ class RouteManagerBase
     RouteManagerBase(RouteManagerBase&&) = delete;
     RouteManagerBase& operator=(const RouteManagerBase&) = delete;
     RouteManagerBase& operator=(RouteManagerBase&&) = delete;
+    friend class PocBuilder<CallbackT>;
 
     template <typename RequestT, typename ResponseT>
     void HandleRequest(
@@ -58,7 +59,7 @@ class RouteManagerBase
         const RequestT& request,
         ResponseT& response)
     {
-        auto cb = GetCallback(method, endpoint);
+        const auto cb = GetCallback(method, endpoint);
         if (cb)
         {
             std::invoke(*cb, request, response);
@@ -81,7 +82,6 @@ class RouteManagerBase
     }
 
   private:
-    friend class PocBuilder<CallbackT>;
     void AddCallback(HttpMethod method, const Endpoint& endpoint, CallbackT&& callback)
     {
         callbacks_[method].emplace(endpoint, std::move(callback));

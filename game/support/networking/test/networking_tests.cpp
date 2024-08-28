@@ -18,11 +18,24 @@ constexpr auto ConvertVerbBeast(const V value)
 
     auto find = [&value](const auto& map)
     {
-        return std::find_if(
-                   map.begin(),
-                   map.end(),
-                   [value](const auto& pair) { return pair.first == value; })
-            ->second;
+        auto it = std::find_if(
+            map.begin(),
+            map.end(),
+            [value](const auto& pair) { return pair.first == value; });
+
+        if (it != map.end())
+        {
+            return it->second;
+        }
+
+        if constexpr (std::is_same_v<V, support::HttpMethod>)
+        {
+            return http::verb::unknown;
+        }
+        else
+        {
+            return support::HttpMethod::UNKNOWN;
+        }
     };
 
     if constexpr (std::is_same_v<V, http::verb>)
@@ -73,6 +86,12 @@ TEST(RouteManager, WhenCallbackIsCalled_ThenCallbackIsCalled)
     ResT res2 {false};
 
     route_manager_ptr->HandleRequest(
-        game::test::ConvertVerbBeast(http::verb::get), "/", req, res);
+        game::test::ConvertVerbBeast(http::verb::link), "/test", req, res);
     EXPECT_FALSE(res2);
+
+    ResT res3 {false};
+
+    route_manager_ptr->HandleRequest(
+        game::test::ConvertVerbBeast(http::verb::get), "/", req, res);
+    EXPECT_FALSE(res3);
 }
