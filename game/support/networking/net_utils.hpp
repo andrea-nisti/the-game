@@ -1,10 +1,11 @@
 #ifndef SUPPORT_NETWORKING_NET_UTILS_H
 #define SUPPORT_NETWORKING_NET_UTILS_H
 
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/system/error_code.hpp>
 #include <iostream>
 #include <sstream>
+
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/system/error_code.hpp>
 
 namespace game::support
 {
@@ -13,7 +14,7 @@ namespace net = boost::asio;
 inline std::string Fail(boost::system::error_code ec, std::string_view what)
 {
     std::ostringstream ss {};
-    ss << what << ": " << ec.message() << "\n";
+    ss << what << ": " << ec.message() << " ec: " << ec << "\n";
     std::cerr << ss.str();
     return ss.str();
 }

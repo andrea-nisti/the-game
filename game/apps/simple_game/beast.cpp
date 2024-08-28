@@ -24,6 +24,8 @@ class TestListener : public support::TcpListenerBase
 
 }  // namespace game::test
 
+// TODO: create an app that uses a post to set the state and the websocket to notify
+// clients
 int main()
 {
     using namespace game::test;
