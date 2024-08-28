@@ -16,13 +16,34 @@ constexpr auto ConvertVerbBeast(const V& value)
         std::is_same_v<V, http::verb> or std::is_same_v<V, support::HttpMethod>,
         "Must be http::verb or support::HttpMethod");
 
+    constexpr auto map = std::array<std::pair<http::verb, support::HttpMethod>, 6> {
+        std::make_pair(http::verb::get, support::HttpMethod::GET),
+        std::make_pair(http::verb::post, support::HttpMethod::POST),
+        std::make_pair(http::verb::put, support::HttpMethod::PUT),
+        std::make_pair(http::verb::delete_, support::HttpMethod::DELETE),
+        std::make_pair(http::verb::patch, support::HttpMethod::PATCH),
+        std::make_pair(http::verb::unknown, support::HttpMethod::UNKNOWN)};
+
     constexpr auto find = [](const V& value, const auto& map)
     {
-        for (const auto& pair : map)
+        if constexpr (std::is_same_v<V, http::verb>)
         {
-            if (pair.first == value)
+            for (const auto& pair : map)
             {
-                return pair.second;
+                if (pair.first == value)
+                {
+                    return pair.second;
+                }
+            }
+        }
+        else
+        {
+            for (const auto& pair : map)
+            {
+                if (pair.second == value)
+                {
+                    return pair.first;
+                }
             }
         }
 
@@ -36,30 +57,7 @@ constexpr auto ConvertVerbBeast(const V& value)
         }
     };
 
-    if constexpr (std::is_same_v<V, http::verb>)
-    {
-        constexpr auto map = std::array<std::pair<http::verb, support::HttpMethod>, 6> {
-            std::make_pair(http::verb::get, support::HttpMethod::GET),
-            std::make_pair(http::verb::post, support::HttpMethod::POST),
-            std::make_pair(http::verb::put, support::HttpMethod::PUT),
-            std::make_pair(http::verb::delete_, support::HttpMethod::DELETE),
-            std::make_pair(http::verb::patch, support::HttpMethod::PATCH),
-            std::make_pair(http::verb::unknown, support::HttpMethod::UNKNOWN)};
-
-        return find(value, map);
-    }
-    else
-    {
-        constexpr auto map = std::array<std::pair<support::HttpMethod, http::verb>, 6> {
-            std::make_pair(support::HttpMethod::GET, http::verb::get),
-            std::make_pair(support::HttpMethod::POST, http::verb::post),
-            std::make_pair(support::HttpMethod::PUT, http::verb::put),
-            std::make_pair(support::HttpMethod::DELETE, http::verb::delete_),
-            std::make_pair(support::HttpMethod::PATCH, http::verb::patch),
-            std::make_pair(support::HttpMethod::UNKNOWN, http::verb::unknown)};
-
-        return find(value, map);
-    }
+    return find(value, map);
 }
 
 }  // namespace game::test
