@@ -45,8 +45,6 @@ template <typename CallbackT>
 class RouteManagerBase
 {
   public:
-    friend class PocBuilder<CallbackT>;
-
     RouteManagerBase() = default;
     RouteManagerBase(const RouteManagerBase&) = delete;
     RouteManagerBase(RouteManagerBase&&) = delete;
@@ -60,12 +58,15 @@ class RouteManagerBase
         const RequestT& request,
         ResponseT& response)
     {
-        auto& cb = GetCallback(method, endpoint);
-        std::invoke(cb, request, response);
+        auto cb = GetCallback(method, endpoint);
+        if (cb)
+        {
+            std::invoke(*cb, request, response);
+        }
     }
 
   protected:
-    virtual CallbackT& GetCallback(HttpMethod method, const Endpoint& endpoint)
+    virtual CallbackT* GetCallback(HttpMethod method, const Endpoint& endpoint)
     {
         auto method_it = callbacks_.find(method);
         if (method_it != callbacks_.end())
@@ -73,12 +74,14 @@ class RouteManagerBase
             auto endpointIt = method_it->second.find(endpoint);
             if (endpointIt != method_it->second.end())
             {
-                return endpointIt->second;
+                return &endpointIt->second;
             }
         }
+        return nullptr;
     }
 
   private:
+    friend class PocBuilder<CallbackT>;
     void AddCallback(HttpMethod method, const Endpoint& endpoint, CallbackT&& callback)
     {
         callbacks_[method].emplace(endpoint, std::move(callback));
