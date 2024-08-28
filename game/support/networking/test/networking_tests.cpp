@@ -10,22 +10,20 @@ namespace game::test
 {
 
 template <typename V>
-constexpr auto ConvertVerbBeast(const V value)
+constexpr auto ConvertVerbBeast(const V& value)
 {
     static_assert(
         std::is_same_v<V, http::verb> or std::is_same_v<V, support::HttpMethod>,
         "Must be http::verb or support::HttpMethod");
 
-    auto find = [&value](const auto& map)
+    constexpr auto find = [](const V& value, const auto& map)
     {
-        auto it = std::find_if(
-            map.begin(),
-            map.end(),
-            [value](const auto& pair) { return pair.first == value; });
-
-        if (it != map.end())
+        for (const auto& pair : map)
         {
-            return it->second;
+            if (pair.first == value)
+            {
+                return pair.second;
+            }
         }
 
         if constexpr (std::is_same_v<V, support::HttpMethod>)
@@ -48,7 +46,7 @@ constexpr auto ConvertVerbBeast(const V value)
             std::make_pair(http::verb::patch, support::HttpMethod::PATCH),
             std::make_pair(http::verb::unknown, support::HttpMethod::UNKNOWN)};
 
-        return find(map);
+        return find(value, map);
     }
     else
     {
@@ -60,7 +58,7 @@ constexpr auto ConvertVerbBeast(const V value)
             std::make_pair(support::HttpMethod::PATCH, http::verb::patch),
             std::make_pair(support::HttpMethod::UNKNOWN, http::verb::unknown)};
 
-        return find(map);
+        return find(value, map);
     }
 }
 
@@ -68,7 +66,7 @@ constexpr auto ConvertVerbBeast(const V value)
 
 using ReqT = http::request<http::string_body>;
 using ResT = bool;
-TEST(RouteManager, WhenCallbackIsCalled_ThenCallbackIsCalled)
+TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
 {
     auto route_manager_ptr = game::support::Add(
                                  game::test::ConvertVerbBeast(http::verb::get),
@@ -86,7 +84,7 @@ TEST(RouteManager, WhenCallbackIsCalled_ThenCallbackIsCalled)
     ResT res2 {false};
 
     route_manager_ptr->HandleRequest(
-        game::test::ConvertVerbBeast(http::verb::link), "/test", req, res);
+        game::test::ConvertVerbBeast(http::verb::trace), "/test", req, res);
     EXPECT_FALSE(res2);
 
     ResT res3 {false};
