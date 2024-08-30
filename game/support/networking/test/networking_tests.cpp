@@ -16,7 +16,7 @@ constexpr auto ConvertVerbBeast(const V& value)
         std::is_same_v<V, http::verb> or std::is_same_v<V, support::HttpMethod>,
         "Must be http::verb or support::HttpMethod");
 
-    constexpr auto map = std::array<std::pair<http::verb, support::HttpMethod>, 6> {
+    constexpr std::array map {
         std::make_pair(http::verb::get, support::HttpMethod::GET),
         std::make_pair(http::verb::post, support::HttpMethod::POST),
         std::make_pair(http::verb::put, support::HttpMethod::PUT),
@@ -30,30 +30,23 @@ constexpr auto ConvertVerbBeast(const V& value)
         {
             for (const auto& pair : map)
             {
-                if (pair.first == value)
+                if (std::get<0>(pair) == value)
                 {
-                    return pair.second;
+                    return std::get<1>(pair);
                 }
             }
+            return support::HttpMethod::UNKNOWN;
         }
         else
         {
             for (const auto& pair : map)
             {
-                if (pair.second == value)
+                if (std::get<1>(pair) == value)
                 {
-                    return pair.first;
+                    return std::get<0>(pair);
                 }
             }
-        }
-
-        if constexpr (std::is_same_v<V, support::HttpMethod>)
-        {
             return http::verb::unknown;
-        }
-        else
-        {
-            return support::HttpMethod::UNKNOWN;
         }
     };
 
@@ -66,28 +59,40 @@ using ReqT = http::request<http::string_body>;
 using ResT = bool;
 TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
 {
-    auto route_manager_ptr = game::support::Add(
-                                 game::test::ConvertVerbBeast(http::verb::get),
-                                 "/test",
-                                 [](const ReqT& req, ResT& res) { res = true; })
-                                 .Build();
+    using namespace game::test;
+    std::function<void(const ReqT& req, ResT&)> callback =
+        [](const ReqT& req, ResT& res) -> void { res = true; };
+
+    auto route_manager_ptr =
+        game::support::RouteManagerBuilder<ReqT, ResT> {}
+            .Add(
+                ConvertVerbBeast(http::verb::get),
+                "/test",
+                [](const ReqT& req, ResT& res) -> void { res = true; })
+            .Add(
+                ConvertVerbBeast(http::verb::post),
+                "/test_post",
+                [](const ReqT& req, ResT& res) -> void { res = true; })
+            .Build();
+
     ReqT req {};
     req.body() = "test";
     ResT res {false};
-
     route_manager_ptr->HandleRequest(
-        game::test::ConvertVerbBeast(http::verb::get), "/test", req, res);
+        ConvertVerbBeast(http::verb::get), "/test", req, res);
     EXPECT_TRUE(res);
 
     ResT res2 {false};
-
     route_manager_ptr->HandleRequest(
-        game::test::ConvertVerbBeast(http::verb::trace), "/test", req, res);
+        ConvertVerbBeast(http::verb::trace), "/test", req, res2);
     EXPECT_FALSE(res2);
 
     ResT res3 {false};
-
-    route_manager_ptr->HandleRequest(
-        game::test::ConvertVerbBeast(http::verb::get), "/", req, res);
+    route_manager_ptr->HandleRequest(ConvertVerbBeast(http::verb::get), "/", req, res3);
     EXPECT_FALSE(res3);
+
+    ResT res4 {false};
+    route_manager_ptr->HandleRequest(
+        ConvertVerbBeast(http::verb::post), "/test_post", req, res4);
+    EXPECT_TRUE(res4);
 }
