@@ -28,9 +28,6 @@ using Endpoint = std::string;
 template <typename RequestT, typename ResponseT>
 class RouteManagerBuilder;
 
-template <typename RequestT>
-Endpoint GetEndpoint(const RequestT& req);
-
 enum class HttpMethod
 {
     UNKNOWN,
@@ -41,6 +38,18 @@ enum class HttpMethod
     PATCH
 };
 
+/**
+ * \brief Base class for handling HTTP requests.
+ *
+ * This class is used to map HTTP endpoints and methods to callbacks, which are
+ * then called when an HTTP request is handled.
+ *
+ * The user of this class can configure this class by extending and implementing the
+ * virtual functions. The user can then call HandleRequest() to handle an HTTP request.
+ *
+ * @tparam RequestT The type of the request.
+ * @tparam ResponseT The type of the response.
+ */
 template <typename RequestT, typename ResponseT>
 class RouteManagerBase
 {
@@ -73,7 +82,7 @@ class RouteManagerBase
         const RequestT& request,
         ResponseT& response)
     {
-        const auto cbs = GetCallback(method, endpoint);
+        const auto cbs = GetCallbacks(method, endpoint);
         if (not cbs.empty())
         {
             for (const auto& cb : cbs)
@@ -115,7 +124,7 @@ class RouteManagerBase
      * @param endpoint The endpoint to which this request corresponds.
      * @return A vector of callbacks for the given HTTP method and endpoint.
      */
-    virtual std::vector<std::reference_wrapper<CallbackT>> GetCallback(
+    virtual std::vector<std::reference_wrapper<CallbackT>> GetCallbacks(
         const HttpMethod method, const Endpoint& endpoint)
     {
         auto method_it = callbacks_.find(method);
