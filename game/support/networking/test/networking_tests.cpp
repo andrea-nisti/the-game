@@ -1,7 +1,7 @@
 #include <boost/beast/http.hpp>
 #include <gtest/gtest.h>
 
-#include "support/networking/beast_utils.hpp"
+#include "support/networking/http/beast_utils.hpp"
 #include "support/networking/route_manager_base.hpp"
 
 using namespace boost::beast;

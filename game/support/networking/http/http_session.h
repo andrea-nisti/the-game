@@ -1,8 +1,7 @@
-#ifndef SUPPORT_NETWORKING_HTTP_SESSION_H
-#define SUPPORT_NETWORKING_HTTP_SESSION_H
+#ifndef SUPPORT_NETWORKING_HTTP_HTTP_SESSION_H
+#define SUPPORT_NETWORKING_HTTP_HTTP_SESSION_H
 
 #include <cstdlib>
-#include <iostream>
 #include <memory>
 #include <utility>
 
@@ -14,8 +13,8 @@
 #include <boost/optional.hpp>
 #include <boost/throw_exception.hpp>
 
-#include "session_base.h"
 #include "support/networking/route_manager_base.hpp"
+#include "support/networking/session_base.h"
 
 namespace beast = boost::beast;    // from <boost/beast.hpp>
 namespace http = beast::http;      // from <boost/beast/http.hpp>
@@ -138,4 +137,4 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
 
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_HTTP_SESSION_H
+#endif  // SUPPORT_NETWORKING_HTTP_HTTP_SESSION_H

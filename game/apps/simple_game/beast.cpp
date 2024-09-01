@@ -3,8 +3,8 @@
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/address_v4.hpp>
 
-#include "support/networking/beast_utils.hpp"
-#include "support/networking/http_session.h"
+#include "support/networking/http/beast_utils.hpp"
+#include "support/networking/http/http_session.h"
 #include "support/networking/route_manager_base.hpp"
 #include "support/networking/tcp_listener_base.h"
 

@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_BEAT_UTILS_H
-#define SUPPORT_NETWORKING_BEAT_UTILS_H
+#ifndef SUPPORT_NETWORKING_HTTP_BEAST_UTILS_H
+#define SUPPORT_NETWORKING_HTTP_BEAST_UTILS_H
 
 #include <boost/beast/http.hpp>
 
@@ -76,4 +76,4 @@ constexpr auto ConvertVerbBeast(const V& value)
 }
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_BEAT_UTILS_H
+#endif  // SUPPORT_NETWORKING_HTTP_BEAST_UTILS_H

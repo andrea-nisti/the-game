@@ -6,8 +6,8 @@ cc_test(
     srcs = ["networking_tests.cpp"],
     args = ["--gtest_color=yes"],
     deps = [
-        "//support/networking:route_manager_base",
         "//support/networking:net_utils",
+        "//support/networking:route_manager_base",
         "@boost//:beast",
         "@googletest//:gtest",
         "@googletest//:gtest_main",

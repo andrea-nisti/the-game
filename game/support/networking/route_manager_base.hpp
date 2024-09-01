@@ -5,7 +5,8 @@
 #include <memory>
 #include <utility>
 
-#include "common.hpp"
+#include "support/networking/http/common.hpp"
+#include "support/networking/websocket/ws_handler.hpp"
 
 namespace game::support
 {
@@ -45,6 +46,7 @@ class RouteManagerBase
     using CallbackT = std::function<void(const RequestT&, ResponseT&)>;
     using CallbackMap =
         std::unordered_map<HttpMethod, std::unordered_map<Path, CallbackT>>;
+    using WSHandlerMap = std::unordered_map<Path, WSHandler>;
     friend class RouteManagerBuilder<RequestT, ResponseT>;
 
     RouteManagerBase() = default;
@@ -148,13 +150,20 @@ class RouteManagerBase
         callbacks[method].emplace(path, std::move(callback));
     }
 
-  private:
-    virtual void AddCallbackInternal(
+  protected:
+    void AddCallbackInternal(
         const HttpMethod method, const Path& path, CallbackT&& callback)
     {
         AddCallback(callbacks_, method, path, std::move(callback));
     }
+
+    void AddWSCallbackInternal(const Path& path, WSHandler&& handler)
+    {
+        ws_callbacks_.emplace(path, std::move(handler));
+    }
+
     CallbackMap callbacks_;
+    WSHandlerMap ws_callbacks_;
 };
 
 /**
@@ -203,6 +212,12 @@ class RouteManagerBuilder
         const HttpMethod method, const Path& path, CallbackT callback)
     {
         rm_ptr->AddCallbackInternal(method, path, std::move(callback));
+        return *this;
+    }
+
+    RouteManagerBuilder<RequestT, ResponseT>& AddWS(const Path& path, WSHandler handler)
+    {
+        rm_ptr->AddWSCallbackInternal(path, std::move(handler));
         return *this;
     }
 

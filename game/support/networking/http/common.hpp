@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_COMMON_H
-#define SUPPORT_NETWORKING_COMMON_H
+#ifndef SUPPORT_NETWORKING_HTTP_COMMON_H
+#define SUPPORT_NETWORKING_HTTP_COMMON_H
 
 #include <string>
 
@@ -20,4 +20,4 @@ enum class HttpMethod
 
 }  // namespace game::support
 
-#endif
+#endif  // SUPPORT_NETWORKING_HTTP_COMMON_H

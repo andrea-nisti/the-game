@@ -2,8 +2,8 @@
 
 #include <boost/beast/http/message.hpp>
 
-#include "net_utils.hpp"
-#include "support/networking/beast_utils.hpp"
+#include "beast_utils.hpp"
+#include "support/networking/net_utils.hpp"
 
 #define VERSION SERVER_VERSION
 
@@ -69,10 +69,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     response_->set(http::field::server, TO_STRING(VERSION));
 
     route_manager_->HandleRequest(
-        ConvertVerbBeast(request.method()),
-        request.target(),
-        parser_->release(),
-        response_.value());
+        ConvertVerbBeast(request.method()), request.target(), request, response_.value());
 
     Write();
     Read();
