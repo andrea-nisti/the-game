@@ -149,9 +149,16 @@ class RouteManagerBuilder
      *
      * @return The created RouteManagerBase instance.
      */
-
     RMPtr Build() { return std::move(rm_ptr_); }
 
+    /**
+     * @brief Creates a new RouteManagerBuilder with a RouteManagerBase instance built
+     * using the BuilderType.
+     *
+     * @param args Parameters to be forwarded to the BuilderType constructor.
+     * @return A new RouteManagerBuilder with the RouteManagerBase instance built
+     * using the BuilderType.
+     */
     template <typename BuilderType, typename... Args>
     RouteManagerBuilder<RequestT, ResponseT>& WithBuilderType(Args&&... args)
     {

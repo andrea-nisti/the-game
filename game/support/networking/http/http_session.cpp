@@ -65,6 +65,9 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     auto const target = request.target();
     bool const is_upgrade = beast::websocket::is_upgrade(request);
 
+    response_.emplace(http::status::ok, request.version());
+    response_->keep_alive(request.keep_alive());
+    response_->set(http::field::server, TO_STRING(VERSION));
     bool target_found = false;
     if (is_upgrade)
     {
@@ -79,10 +82,6 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     }
     else
     {
-        response_.emplace(http::status::ok, request.version());
-        response_->keep_alive(request.keep_alive());
-        response_->set(http::field::server, TO_STRING(VERSION));
-
         auto const cb = route_manager_->GetCallback(method, target);
         target_found = cb.has_value();
         if (target_found)
@@ -96,7 +95,6 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
         // manage target not found
         response_->result(http::status::not_found);
         response_->body() = "Unknown HTTP-target: " + std::string(target);
-        response_->prepare_payload();
     }
 
     Write();
