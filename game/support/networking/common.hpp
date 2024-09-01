@@ -6,7 +6,7 @@
 namespace game::support
 {
 
-using Endpoint = std::string;
+using Path = std::string;
 
 enum class HttpMethod
 {
