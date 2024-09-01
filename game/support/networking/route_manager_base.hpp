@@ -55,66 +55,21 @@ class RouteManagerBase
     RouteManagerBase& operator=(const RouteManagerBase&) = delete;
     RouteManagerBase& operator=(RouteManagerBase&&) = delete;
 
-    /**
-     * @brief Handle an HTTP request.
-     *
-     * This function takes an HTTP request and a response, and calls the appropriate
-     * callback function for the given HTTP method and path.
-     *
-     * @param method The HTTP method to which this request corresponds.
-     * @param path The path to which this request corresponds.
-     * @param request The request.
-     * @param response The response.
-     */
-    void HandleRequest(
-        const HttpMethod method,
-        const Path& path,
-        const RequestT& request,
-        ResponseT& response)
+    std::optional<std::reference_wrapper<WSHandler>> GetWSHandler(
+        const HttpMethod method, const Path& path)
     {
-        const auto cbs = GetCallbacks(method, path);
-        if (not cbs.empty())
+        if (method == HttpMethod::GET)
         {
-            for (const auto& cb : cbs)
-                std::invoke(cb, request, response);
+            auto it = ws_handlers_.find(path);
+            if (it != ws_handlers_.end())
+            {
+                return it->second;
+            }
         }
+        return {};
     }
 
-  protected:
-    /**
-     * @brief Get the callbacks for the given HTTP method and path.
-     *
-     * This function will return a vector of callbacks for the given HTTP method and
-     * path. This function is virtual so that you can implement a more
-     * sophisticated search like regex pattern matching.
-     *
-     * Example:
-     * @code
-     * class MyRouteManager : public RouteManagerBase<RequestT, ResponseT>
-     * {
-     *  public:
-     *   using RouteManagerBase::RouteManagerBase;
-     *   std::vector<std::reference_wrapper<CallbackT>> GetCallback(
-     *       const HttpMethod method, const path& path) override
-     *   {
-     *     std::vector<std::reference_wrapper<CallbackT>> callbacks;
-     *     for (const auto& cb : callbacks_)
-     *     {
-     *       if (std::regex_search(cb.first, std::regex(path)))
-     *       {
-     *         callbacks.push_back(cb.second);
-     *       }
-     *     }
-     *     return callbacks;
-     *   }
-     * };
-     * @endcode
-     *
-     * @param method The HTTP method to which this request corresponds.
-     * @param path The path to which this request corresponds.
-     * @return A vector of callbacks for the given HTTP method and path.
-     */
-    virtual std::vector<std::reference_wrapper<CallbackT>> GetCallbacks(
+    virtual std::optional<std::reference_wrapper<CallbackT>> GetCallback(
         const HttpMethod method, const Path& path)
     {
         auto method_it = callbacks_.find(method);
@@ -123,12 +78,13 @@ class RouteManagerBase
             auto pathIt = method_it->second.find(path);
             if (pathIt != method_it->second.end())
             {
-                return {pathIt->second};
+                return pathIt->second;
             }
         }
         return {};
     }
 
+  protected:
     /**
      * @brief Add a callback to the callback map.
      *
@@ -150,7 +106,7 @@ class RouteManagerBase
         callbacks[method].emplace(path, std::move(callback));
     }
 
-  protected:
+  private:
     void AddCallbackInternal(
         const HttpMethod method, const Path& path, CallbackT&& callback)
     {
@@ -159,11 +115,11 @@ class RouteManagerBase
 
     void AddWSCallbackInternal(const Path& path, WSHandler&& handler)
     {
-        ws_callbacks_.emplace(path, std::move(handler));
+        ws_handlers_.emplace(path, std::move(handler));
     }
 
     CallbackMap callbacks_;
-    WSHandlerMap ws_callbacks_;
+    WSHandlerMap ws_handlers_;
 };
 
 /**

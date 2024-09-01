@@ -74,6 +74,7 @@ constexpr auto ConvertVerbBeast(const V& value)
 
     return find(value, map);
 }
+
 }  // namespace game::support
 
 #endif  // SUPPORT_NETWORKING_HTTP_BEAST_UTILS_H

@@ -1,14 +1,14 @@
 #include "http_session.h"
 
 #include <boost/beast/http/message.hpp>
+#include <boost/beast/http/status.hpp>
+#include <boost/beast/websocket.hpp>
 
 #include "beast_utils.hpp"
 #include "support/networking/net_utils.hpp"
+#include "support/networking/websocket/websocket_session.h"
 
 #define VERSION SERVER_VERSION
-
-#define VALUE(string) #string
-#define TO_STRING(s) VALUE(s)
 
 namespace game::support
 {
@@ -49,12 +49,10 @@ void HttpSession::Read()
 }
 void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transferred)
 {
-    std::cout << "on read" << std::endl;
-    boost::ignore_unused(bytes_transferred);
-
-    // This means they closed the connection
     if (ec == http::error::end_of_stream)
+    {
         return Close();
+    }
 
     if (ec)
     {
@@ -63,13 +61,43 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     }
 
     auto request = parser_->release();
+    auto const method = ConvertVerbBeast(request.method());
+    auto const target = request.target();
+    bool const is_upgrade = beast::websocket::is_upgrade(request);
 
-    response_.emplace(http::status::ok, request.version());
-    response_->keep_alive(request.keep_alive());
-    response_->set(http::field::server, TO_STRING(VERSION));
+    bool target_found = false;
+    if (is_upgrade)
+    {
+        auto const cb = route_manager_->GetWSHandler(method, target);
+        target_found = cb.has_value();
+        if (target_found)
+        {
+            // std::make_shared<WebSocketSession>(
+            //     std::move(stream_), std::move(request), std::move(cb.value()))
+            //     ->Run();
+        }
+    }
+    else
+    {
+        response_.emplace(http::status::ok, request.version());
+        response_->keep_alive(request.keep_alive());
+        response_->set(http::field::server, TO_STRING(VERSION));
 
-    route_manager_->HandleRequest(
-        ConvertVerbBeast(request.method()), request.target(), request, response_.value());
+        auto const cb = route_manager_->GetCallback(method, target);
+        target_found = cb.has_value();
+        if (target_found)
+        {
+            std::invoke(cb.value(), request, response_.value());
+        }
+    }
+
+    if (not target_found)
+    {
+        // manage target not found
+        response_->result(http::status::not_found);
+        response_->body() = "Unknown HTTP-target: " + std::string(target);
+        response_->prepare_payload();
+    }
 
     Write();
     Read();

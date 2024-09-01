@@ -19,3 +19,17 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [":ws_context"],
 )
+
+cc_library(
+    name = "websocket_session",
+    srcs = [
+        # "websocket_session.cpp",
+    ],
+    hdrs = ["websocket_session.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":ws_handler",
+        "//support/networking:net_utils",
+        "//support/networking:session_base",
+    ],
+)

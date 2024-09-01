@@ -9,6 +9,9 @@
 #include <boost/optional.hpp>
 #include <boost/throw_exception.hpp>
 
+#define VALUE(string) #string
+#define TO_STRING(s) VALUE(s)
+
 namespace game::support
 {
 
