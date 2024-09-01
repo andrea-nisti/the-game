@@ -25,3 +25,15 @@ cc_library(
     deps = [
     ],
 )
+
+cc_library(
+    name = "beast_utils",
+    srcs = [
+        "beast_utils.hpp",
+    ],
+    hdrs = ["beast_utils.hpp"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@boost//:beast",
+    ],
+)

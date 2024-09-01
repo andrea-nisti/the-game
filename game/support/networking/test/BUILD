@@ -8,7 +8,7 @@ cc_test(
     deps = [
         "//support/networking:net_utils",
         "//support/networking:route_manager_base",
-        "@boost//:beast",
+        "//support/networking/http:beast_utils",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],

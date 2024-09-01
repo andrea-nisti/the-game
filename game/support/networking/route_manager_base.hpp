@@ -150,7 +150,14 @@ class RouteManagerBuilder
      * @return The created RouteManagerBase instance.
      */
 
-    RMPtr Build() { return std::move(rm_ptr); }
+    RMPtr Build() { return std::move(rm_ptr_); }
+
+    template <typename BuilderType, typename... Args>
+    RouteManagerBuilder<RequestT, ResponseT>& WithBuilderType(Args&&... args)
+    {
+        rm_ptr_ = std::make_unique<BuilderType>(std::forward<Args>(args)...);
+        return *this;
+    }
 
     /**
      * @brief Add a callback to the RouteManagerBase instance.
@@ -167,18 +174,18 @@ class RouteManagerBuilder
     RouteManagerBuilder<RequestT, ResponseT>& Add(
         const HttpMethod method, const Path& path, CallbackT callback)
     {
-        rm_ptr->AddCallbackInternal(method, path, std::move(callback));
+        rm_ptr_->AddCallbackInternal(method, path, std::move(callback));
         return *this;
     }
 
     RouteManagerBuilder<RequestT, ResponseT>& AddWS(const Path& path, WSHandler handler)
     {
-        rm_ptr->AddWSCallbackInternal(path, std::move(handler));
+        rm_ptr_->AddWSCallbackInternal(path, std::move(handler));
         return *this;
     }
 
   private:
-    RMPtr rm_ptr = std::make_unique<RouteManagerBase<RequestT, ResponseT>>();
+    RMPtr rm_ptr_ = std::make_unique<RouteManagerBase<RequestT, ResponseT>>();
 };
 
 /// @}

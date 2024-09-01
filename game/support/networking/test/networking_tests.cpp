@@ -8,6 +8,23 @@ using namespace boost::beast;
 
 using ReqT = http::request<http::string_body>;
 using ResT = bool;
+
+struct RouteManagerWithHandleRequest : public game::support::RouteManagerBase<ReqT, ResT>
+{
+    void HandleRequest(
+        const game::support::HttpMethod method,
+        const std::string& path,
+        const ReqT& req,
+        ResT& res)
+    {
+        auto cb = RouteManagerBase<ReqT, ResT>::GetCallback(method, path);
+        if (cb.has_value())
+        {
+            std::invoke(cb.value(), req, res);
+        }
+    }
+};
+
 TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
 {
     using namespace game::support;
@@ -16,6 +33,7 @@ TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
 
     auto route_manager_ptr =
         game::support::RouteManagerBuilder<ReqT, ResT> {}
+            .WithBuilderType<RouteManagerWithHandleRequest>()
             .Add(
                 ConvertVerbBeast(http::verb::get),
                 "/test",
@@ -26,24 +44,22 @@ TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
                 [](const ReqT& req, ResT& res) -> void { res = true; })
             .Build();
 
+    auto rm = dynamic_cast<RouteManagerWithHandleRequest*>(route_manager_ptr.get());
     ReqT req {};
     req.body() = "test";
     ResT res {false};
-    route_manager_ptr->HandleRequest(
-        ConvertVerbBeast(http::verb::get), "/test", req, res);
+    rm->HandleRequest(game::support::HttpMethod::GET, "/test", req, res);
     EXPECT_TRUE(res);
 
     ResT res2 {false};
-    route_manager_ptr->HandleRequest(
-        ConvertVerbBeast(http::verb::trace), "/test", req, res2);
+    rm->HandleRequest(game::support::HttpMethod::UNKNOWN, "/test", req, res2);
     EXPECT_FALSE(res2);
 
     ResT res3 {false};
-    route_manager_ptr->HandleRequest(ConvertVerbBeast(http::verb::get), "/", req, res3);
+    rm->HandleRequest(game::support::HttpMethod::GET, "/", req, res3);
     EXPECT_FALSE(res3);
 
     ResT res4 {false};
-    route_manager_ptr->HandleRequest(
-        ConvertVerbBeast(http::verb::post), "/test_post", req, res4);
+    rm->HandleRequest(game::support::HttpMethod::POST, "/test_post", req, res4);
     EXPECT_TRUE(res4);
 }

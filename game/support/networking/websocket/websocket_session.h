@@ -63,7 +63,7 @@ class WebSocketSession final
             {
                 res.set(
                     http::field::server,
-                    std::string(BOOST_BEAST_VERSION_STRING) + " advanced-server");
+                    std::string(BOOST_STRINGIZE(SERVER_VERSION)) + " advanced-server");
             }));
 
         std::cout << req_.body() << std::endl;

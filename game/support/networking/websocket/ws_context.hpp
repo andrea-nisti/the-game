@@ -25,7 +25,7 @@ struct WSContext
     std::string target;
     // attributes attributes;
 
-    std::string route_path;
+    // std::string route_path;
 };
 }  // namespace game::support
 
