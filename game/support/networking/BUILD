@@ -1,5 +1,8 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
+
+_SERVER_VERSION = "game-server-v0"
+
 cc_library(
     name = "net_utils",
     srcs = [
@@ -37,6 +40,7 @@ cc_library(
     ],
     hdrs = ["session_base.h"],
     visibility = ["//visibility:public"],
+    defines = ["SERVER_VERSION={}".format(_SERVER_VERSION)],
     deps = [
         ":net_utils",
         "@boost//:asio",

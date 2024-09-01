@@ -93,6 +93,7 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
      */
     void Write() override;
 
+  private:
     /**
      * @brief This method is called when data is read from the session.
      *
@@ -109,7 +110,6 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
      */
     void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) override;
 
-  private:
     /**
      * @brief The parser for the session.
      */

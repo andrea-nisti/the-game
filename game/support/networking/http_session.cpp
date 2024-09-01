@@ -5,6 +5,11 @@
 #include "net_utils.hpp"
 #include "support/networking/beast_utils.hpp"
 
+#define VERSION SERVER_VERSION
+
+#define VALUE(string) #string
+#define TO_STRING(s) VALUE(s)
+
 namespace game::support
 {
 
@@ -61,7 +66,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
 
     response_.emplace(http::status::ok, request.version());
     response_->keep_alive(request.keep_alive());
-    response_->set(http::field::server, "TheGameServer-v0");
+    response_->set(http::field::server, TO_STRING(VERSION));
 
     route_manager_->HandleRequest(
         ConvertVerbBeast(request.method()),

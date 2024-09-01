@@ -10,6 +10,27 @@ using namespace boost::beast;
 namespace game::support
 {
 
+/**
+ * @brief Convert between boost::beast::http::verb and support::HttpMethod.
+ *
+ * This function takes a value of type V and returns the corresponding value of
+ * type U, where U is the other type of either http::verb or support::HttpMethod.
+ *
+ * The conversion is done by looking up the value in a static array of pairs,
+ * where each pair contains a value of type V and the corresponding value of type
+ * U.
+ *
+ * If the value is not found in the array, the function returns the value of type
+ * U that corresponds to http::verb::unknown or support::HttpMethod::UNKNOWN,
+ * depending on the type of the input value.
+ *
+ * @tparam V The type of the value to convert. Must be either http::verb or
+ * support::HttpMethod.
+ *
+ * @param value The value to convert.
+ *
+ * @return The converted value.
+ */
 template <typename V>
 constexpr auto ConvertVerbBeast(const V& value)
 {
