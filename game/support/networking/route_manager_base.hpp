@@ -3,9 +3,9 @@
 
 #include <functional>
 #include <memory>
-#include <type_traits>
-#include <unordered_map>
 #include <utility>
+
+#include "common.hpp"
 
 namespace game::support
 {
@@ -23,20 +23,8 @@ namespace game::support
  * @{
  */
 
-using Endpoint = std::string;
-
 template <typename RequestT, typename ResponseT>
 class RouteManagerBuilder;
-
-enum class HttpMethod
-{
-    UNKNOWN,
-    GET,
-    POST,
-    PUT,
-    DELETE,
-    PATCH
-};
 
 /**
  * \brief Base class for handling HTTP requests.

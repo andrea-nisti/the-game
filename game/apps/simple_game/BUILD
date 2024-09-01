@@ -6,5 +6,7 @@ build_app(
     deps = [
         "//support/networking:tcp_listener_base",
         "//support/networking:http_session",
+        "//support/networking:route_manager_base",
+        "//support/networking:net_utils",
     ],
 )

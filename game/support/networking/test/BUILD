@@ -7,6 +7,7 @@ cc_test(
     args = ["--gtest_color=yes"],
     deps = [
         "//support/networking:route_manager_base",
+        "//support/networking:net_utils",
         "@boost//:beast",
         "@googletest//:gtest",
         "@googletest//:gtest_main",

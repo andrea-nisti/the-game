@@ -1,12 +1,19 @@
+#include <memory>
+
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/address_v4.hpp>
 
+#include "support/networking/beast_utils.hpp"
 #include "support/networking/http_session.h"
+#include "support/networking/route_manager_base.hpp"
 #include "support/networking/tcp_listener_base.h"
 
 namespace game::test
 {
+
 using namespace support;
+using ReqT = http::request<http::string_body>;
+using ResT = http::response<http::string_body>;
 
 class TestListener : public support::TcpListenerBase
 {
@@ -15,11 +22,27 @@ class TestListener : public support::TcpListenerBase
   private:
     void OnAccept(tcp::socket socket) override
     {
-        http = std::make_shared<HttpSession>(std::move(socket));
+        auto http =
+            std::make_shared<HttpSession>(std::move(socket), route_manager_.get());
         http->Run();
         return;
     }
-    std::shared_ptr<HttpSession> http;
+
+    std::unique_ptr<RouteManagerBase<
+        http::request<http::string_body>,
+        http::response<http::string_body>>>
+        route_manager_ =
+            game::support::RouteManagerBuilder<ReqT, ResT> {}
+                .Add(
+                    ConvertVerbBeast(http::verb::get),
+                    "/test",
+                    [](const ReqT& req, ResT& res) -> void
+                    {
+                        std::string res_body = "UwU Kawaiiiiiiii!";
+                        res.set(http::field::content_type, "text/plain; charset=utf-8");
+                        res.body() = res_body;
+                    })
+                .Build();
 };
 
 }  // namespace game::test

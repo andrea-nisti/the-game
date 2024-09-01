@@ -4,6 +4,9 @@ cc_library(
     name = "net_utils",
     srcs = [
         "net_utils.hpp",
+        "beast_utils.hpp",
+        "common.hpp"
+        
     ],
     hdrs = ["net_utils.hpp"],
     visibility = ["//visibility:public"],
@@ -50,7 +53,8 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":net_utils",
-        ":session_base"
+        ":session_base",
+        ":route_manager_base",
     ],
 )
 
@@ -58,6 +62,7 @@ cc_library(
     name = "route_manager_base",
     srcs = [
         "route_manager_base.hpp",
+        "common.hpp"
     ],
     hdrs = ["route_manager_base.hpp"],
     visibility = ["//visibility:public"],

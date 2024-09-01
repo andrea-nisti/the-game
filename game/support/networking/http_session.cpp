@@ -3,33 +3,16 @@
 #include <boost/beast/http/message.hpp>
 
 #include "net_utils.hpp"
+#include "support/networking/beast_utils.hpp"
 
 namespace game::support
 {
 
-namespace
-{
-http::response<http::string_body> handle_request(
-    http::request<http::string_body>&& request)
-{
-    std::string res_body = "UwU Kawaiiiiiiii!";
-
-    http::response<http::string_body> response {http::status::ok, request.version()};
-
-    response.set(http::field::server, "TheGameServer-v0");
-    response.set(http::field::content_type, "text/plain; charset=utf-8");
-    response.body() = res_body;
-    response.keep_alive(request.keep_alive());
-
-    return response;
-}
-
-}  // namespace
 void HttpSession::Run()
 {
     std::cout << "run" << std::endl;
     net::dispatch(
-        stream_.get_executor(), [self = this->shared_from_this()]() { self->Read(); });
+        stream_.get_executor(), [self = shared_from_this()]() { self->Read(); });
 }
 void HttpSession::Close()
 {
@@ -74,18 +57,30 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
         return;
     }
 
-    response_ = handle_request(parser_->release());
+    auto request = parser_->release();
+
+    response_.emplace(http::status::ok, request.version());
+    response_->keep_alive(request.keep_alive());
+    response_->set(http::field::server, "TheGameServer-v0");
+
+    route_manager_->HandleRequest(
+        ConvertVerbBeast(request.method()),
+        request.target(),
+        parser_->release(),
+        response_.value());
+
     Write();
     Read();
 }
+
 void HttpSession::Write()
 {
-    keep_alive_ = response_.keep_alive();
-    response_.prepare_payload();
+    keep_alive_ = response_.value().keep_alive();
+    response_.value().prepare_payload();
 
     beast::async_write(
         stream_,
-        http::message_generator {std::move(response_)},
+        http::message_generator {std::move(response_.value())},
         [self = shared_from_this()](
             boost::system::error_code ec, std::size_t bytes_transferred)
         { self->OnWrite(ec, bytes_transferred); });
