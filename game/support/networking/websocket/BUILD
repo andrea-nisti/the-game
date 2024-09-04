@@ -23,7 +23,7 @@ cc_library(
 cc_library(
     name = "websocket_session",
     srcs = [
-        # "websocket_session.cpp",
+        "websocket_session.cpp",
     ],
     hdrs = ["websocket_session.h"],
     visibility = ["//visibility:public"],

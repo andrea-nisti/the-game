@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -13,6 +14,8 @@
 
 #include "support/networking/net_utils.hpp"
 #include "support/networking/session_base.h"
+#include "support/networking/websocket/ws_context.hpp"
+#include "support/networking/websocket/ws_handler.hpp"
 
 namespace beast = boost::beast;          // from <boost/beast.hpp>
 namespace websocket = beast::websocket;  // from <boost/beast/websocket.hpp>
@@ -40,10 +43,17 @@ class WebSocketSession final
       public std::enable_shared_from_this<WebSocketSession>
 {
   public:
-    WebSocketSession(tcp::socket&& socket, http::request<http::string_body> req)
+    WebSocketSession(const WebSocketSession &) = delete;
+    WebSocketSession(WebSocketSession &&) = delete;
+    WebSocketSession &operator=(const WebSocketSession &) = delete;
+    WebSocketSession &operator=(WebSocketSession &&) = delete;
+    WebSocketSession(
+        tcp::socket &&socket, http::request<http::string_body> req, WSHandler handler)
         : SessionBase<websocket::stream<beast::tcp_stream>, beast::flat_buffer>(
               std::move(socket)),
-          req_(std::move(req))
+
+          req_(std::move(req)),
+          handler_(std::move(handler))
     {}
 
     virtual ~WebSocketSession() { Close(); }
@@ -51,52 +61,74 @@ class WebSocketSession final
     /**
      * @brief Starts the session and begins processing requests.
      */
-    void Run() override
-    {
-        // Set suggested timeout settings for the websocket
-        stream_.set_option(
-            websocket::stream_base::timeout::suggested(beast::role_type::server));
-
-        // Set a decorator to change the Server of the handshake
-        stream_.set_option(websocket::stream_base::decorator(
-            [](websocket::response_type& res)
-            {
-                res.set(
-                    http::field::server,
-                    std::string(BOOST_STRINGIZE(SERVER_VERSION)) + " advanced-server");
-            }));
-
-        std::cout << req_.body() << std::endl;
-        // Accept the websocket handshake
-        stream_.async_accept(
-            req_,
-            [self = shared_from_this()](boost::system::error_code ec)
-            { self->OnAccept(ec); });
-    }
+    void Run() override;
 
     void OnAccept(boost::system::error_code ec)
     {
         if (ec)
+        {
             Fail(ec, "accept");
-        std::cout << "ws accept" << std::endl;
-        return;
+            std::invoke(handler_.on_error, ec, "accept");
+            return;
+        }
+
+        ctx_.ws_session = shared_from_this();
+        ctx_.uuid = req_.at("Sec-WebSocket-Key");
+        std::invoke(handler_.on_connect, ctx_);
 
         // Read a message
-        // do_read();
+        Read();
     }
-
+    void Write() override {}
     void Close() override {}
 
-    void Read() override {}
-
-    void Write() override {}
-
-    void OnRead(boost::system::error_code ec, std::size_t bytes_transferred) override {}
-
-    void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) override {}
-
   private:
+    void Read() override;
+
+    void OnRead(boost::system::error_code ec, std::size_t bytes_transferred) override
+    {
+        boost::ignore_unused(bytes_transferred);
+
+        // This indicates that the websocket_session was closed
+        if (ec == websocket::error::closed)
+        {
+            std::invoke(handler_.on_disconnect, ctx_);
+            return;
+        }
+
+        if (ec)
+        {
+            Fail(ec, "on read");
+            std::invoke(handler_.on_error, ec, "on read");
+            return;
+        }
+
+        // Echo the message
+        // stream_.text(stream_.got_text());
+        // std::string message = boost::beast::buffers_to_string(buffer_.data());
+        // message += " UwU";
+
+        // Append " UwU" to the buffer
+        std::string message = " UwU";
+        net::buffer_copy(buffer_.prepare(message.size()), net::buffer(message));
+        buffer_.commit(message.size());
+
+        stream_.async_write(
+            buffer_.cdata(),
+            [self = shared_from_this()](
+                boost::system::error_code ec, std::size_t bytes_transferred)
+            { self->OnWrite(ec, bytes_transferred); });
+    }
+
+    void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) override
+    {
+        buffer_.consume(bytes_transferred);
+        Read();
+    }
+
+    WSContext ctx_;
     http::request<http::string_body> req_;
+    WSHandler handler_;
 };
 
 /// @}

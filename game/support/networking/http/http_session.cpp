@@ -76,7 +76,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
         if (target_found)
         {
             std::make_shared<WebSocketSession>(
-                stream_.release_socket(), std::move(request))
+                stream_.release_socket(), std::move(request), std::move(cb.value()))
                 ->Run();
             return;
         }

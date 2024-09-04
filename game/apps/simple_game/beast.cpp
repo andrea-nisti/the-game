@@ -2,11 +2,13 @@
 
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/address_v4.hpp>
+#include <sys/types.h>
 
 #include "support/networking/http/beast_utils.hpp"
 #include "support/networking/http/http_session.h"
 #include "support/networking/route_manager_base.hpp"
 #include "support/networking/tcp_listener_base.h"
+#include "support/networking/websocket/ws_handler.hpp"
 
 namespace game::test
 {
@@ -17,6 +19,7 @@ using ResT = http::response<http::string_body>;
 
 class TestListener : public support::TcpListenerBase
 {
+  public:
     using support::TcpListenerBase::TcpListenerBase;
 
   private:
@@ -42,7 +45,24 @@ class TestListener : public support::TcpListenerBase
                         res.set(http::field::content_type, "text/plain; charset=utf-8");
                         res.body() = res_body;
                     })
-                .AddWS("/", {})
+                // clang-format off
+                .AddWS(
+                    "/",
+                    {
+                        .on_connect = 
+                            [](const WSContext& ctx){ 
+                                std::cout << ctx.uuid << " connected" << std::endl;
+                            },
+                        .on_disconnect =
+                            [](const WSContext& ctx) {
+                                std::cout << ctx.uuid << " disconnected" << std::endl;
+                            },
+                        .on_receive = [](const WSContext& ctx,
+                                         const char* buf,
+                                         std::size_t size,
+                                         bool is_binary) {}
+                    })
+                // clang-format on
                 .Build();
 };
 
