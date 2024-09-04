@@ -2,6 +2,7 @@
 #define SUPPORT_NETWORKING_WEBSOCKET_SESSION_H
 
 #include <cstdlib>
+#include <iostream>
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -43,8 +44,7 @@ class WebSocketSession final
         : SessionBase<websocket::stream<beast::tcp_stream>, beast::flat_buffer>(
               std::move(socket)),
           req_(std::move(req))
-    {
-    }
+    {}
 
     virtual ~WebSocketSession() { Close(); }
 
@@ -70,13 +70,15 @@ class WebSocketSession final
         // Accept the websocket handshake
         stream_.async_accept(
             req_,
-            beast::bind_front_handler(&WebSocketSession::OnAccept, shared_from_this()));
+            [self = shared_from_this()](boost::system::error_code ec)
+            { self->OnAccept(ec); });
     }
 
-    void OnAccept(beast::error_code ec)
+    void OnAccept(boost::system::error_code ec)
     {
         if (ec)
             Fail(ec, "accept");
+        std::cout << "ws accept" << std::endl;
         return;
 
         // Read a message

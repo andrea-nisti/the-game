@@ -75,9 +75,10 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
         target_found = cb.has_value();
         if (target_found)
         {
-            // std::make_shared<WebSocketSession>(
-            //     std::move(stream_), std::move(request), std::move(cb.value()))
-            //     ->Run();
+            std::make_shared<WebSocketSession>(
+                stream_.release_socket(), std::move(request))
+                ->Run();
+            return;
         }
     }
     else

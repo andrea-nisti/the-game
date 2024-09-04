@@ -42,6 +42,7 @@ class TestListener : public support::TcpListenerBase
                         res.set(http::field::content_type, "text/plain; charset=utf-8");
                         res.body() = res_body;
                     })
+                .AddWS("/", {})
                 .Build();
 };
 
