@@ -8,7 +8,6 @@
 #include "support/networking/http/http_session.h"
 #include "support/networking/route_manager_base.hpp"
 #include "support/networking/tcp_listener_base.h"
-#include "support/networking/websocket/ws_handler.hpp"
 
 namespace game::test
 {

@@ -1,5 +1,7 @@
 #include "websocket_session.h"
 
+#include "support/networking/net_utils.hpp"
+
 namespace game::support
 {
 
@@ -39,4 +41,62 @@ void WebSocketSession::Read()
         { self->OnRead(ec, bytes_transferred); });
 }
 
+void WebSocketSession::OnRead(boost::system::error_code ec, std::size_t bytes_transferred)
+{
+    boost::ignore_unused(bytes_transferred);
+
+    // This indicates that the websocket_session was closed
+    if (ec == websocket::error::closed)
+    {
+        std::invoke(handler_.on_disconnect, ctx_);
+        return;
+    }
+
+    if (ec)
+    {
+        Fail(ec, "on read");
+        std::invoke(handler_.on_error, ec, "on read");
+        return;
+    }
+
+    // Echo the message
+    // stream_.text(stream_.got_text());
+    // std::string message = boost::beast::buffers_to_string(buffer_.data());
+    // message += " UwU";
+
+    // Append " UwU" to the buffer
+    std::string message = " UwU";
+    net::buffer_copy(buffer_.prepare(message.size()), net::buffer(message));
+    buffer_.commit(message.size());
+
+    stream_.async_write(
+        buffer_.cdata(),
+        [self = shared_from_this()](
+            boost::system::error_code ec, std::size_t bytes_transferred)
+        { self->OnWrite(ec, bytes_transferred); });
+}
+
+void WebSocketSession::OnWrite(
+    boost::system::error_code ec, std::size_t bytes_transferred)
+{
+    buffer_.consume(bytes_transferred);
+    Read();
+}
+
+void WebSocketSession::OnAccept(boost::system::error_code ec)
+{
+    if (ec)
+    {
+        Fail(ec, "accept");
+        std::invoke(handler_.on_error, ec, "accept");
+        return;
+    }
+
+    ctx_.ws_session = shared_from_this();
+    ctx_.uuid = req_.at("Sec-WebSocket-Key");
+    std::invoke(handler_.on_connect, ctx_);
+
+    // Read a message
+    Read();
+}
 }  // namespace game::support

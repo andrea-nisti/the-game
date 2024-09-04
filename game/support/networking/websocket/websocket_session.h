@@ -2,7 +2,6 @@
 #define SUPPORT_NETWORKING_WEBSOCKET_SESSION_H
 
 #include <cstdlib>
-#include <iostream>
 #include <memory>
 
 #include <boost/beast/core.hpp>
@@ -12,7 +11,6 @@
 #include <boost/optional.hpp>
 #include <boost/throw_exception.hpp>
 
-#include "support/networking/net_utils.hpp"
 #include "support/networking/session_base.h"
 #include "support/networking/websocket/ws_context.hpp"
 #include "support/networking/websocket/ws_handler.hpp"
@@ -55,76 +53,17 @@ class WebSocketSession final
           req_(std::move(req)),
           handler_(std::move(handler))
     {}
-
     virtual ~WebSocketSession() { Close(); }
 
-    /**
-     * @brief Starts the session and begins processing requests.
-     */
     void Run() override;
 
-    void OnAccept(boost::system::error_code ec)
-    {
-        if (ec)
-        {
-            Fail(ec, "accept");
-            std::invoke(handler_.on_error, ec, "accept");
-            return;
-        }
-
-        ctx_.ws_session = shared_from_this();
-        ctx_.uuid = req_.at("Sec-WebSocket-Key");
-        std::invoke(handler_.on_connect, ctx_);
-
-        // Read a message
-        Read();
-    }
-    void Write() override {}
-    void Close() override {}
-
   private:
+    void OnAccept(boost::system::error_code ec);
     void Read() override;
-
-    void OnRead(boost::system::error_code ec, std::size_t bytes_transferred) override
-    {
-        boost::ignore_unused(bytes_transferred);
-
-        // This indicates that the websocket_session was closed
-        if (ec == websocket::error::closed)
-        {
-            std::invoke(handler_.on_disconnect, ctx_);
-            return;
-        }
-
-        if (ec)
-        {
-            Fail(ec, "on read");
-            std::invoke(handler_.on_error, ec, "on read");
-            return;
-        }
-
-        // Echo the message
-        // stream_.text(stream_.got_text());
-        // std::string message = boost::beast::buffers_to_string(buffer_.data());
-        // message += " UwU";
-
-        // Append " UwU" to the buffer
-        std::string message = " UwU";
-        net::buffer_copy(buffer_.prepare(message.size()), net::buffer(message));
-        buffer_.commit(message.size());
-
-        stream_.async_write(
-            buffer_.cdata(),
-            [self = shared_from_this()](
-                boost::system::error_code ec, std::size_t bytes_transferred)
-            { self->OnWrite(ec, bytes_transferred); });
-    }
-
-    void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) override
-    {
-        buffer_.consume(bytes_transferred);
-        Read();
-    }
+    void OnRead(boost::system::error_code ec, std::size_t bytes_transferred) override;
+    void Write() override {}
+    void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) override;
+    void Close() override {}
 
     WSContext ctx_;
     http::request<http::string_body> req_;
