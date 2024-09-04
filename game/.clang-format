@@ -1,7 +1,9 @@
----
 Language: Cpp
 BasedOnStyle: Google
 AccessModifierOffset: -2
+IndentWidth: 4
+ColumnLimit: 90
+
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortFunctionsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: false
@@ -10,9 +12,24 @@ AllowShortLoopsOnASingleLine: false
 AlwaysBreakBeforeMultilineStrings: true
 BinPackArguments: false
 BinPackParameters: false
-BreakBeforeBraces: Allman
-ColumnLimit: 90
-IndentWidth: 4
+LambdaBodyIndentation: Signature
+
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: false
+  SplitEmptyFunction: false
+  BeforeLambdaBody: true
+BreakBeforeBraces: Custom
+
 IncludeCategories:
   - Regex: '^(<|")(cstdlib|csignal|csetjmp|cstdarg|typeinfo|typeindex|type_traits|bitset|functional|utility|ctime|chrono|cstddef|initializer_list|tuple|any|optional|variant|new|memory|scoped_allocator|memory_resource|climits|cfloat|cstdint|cinttypes|limits|exception|stdexcept|cassert|system_error|cerrno|cctype|cwctype|cstring|cwchar|cuchar|string|string_view|array|vector|deque|list|forward_list|set|map|unordered_set|unordered_map|stack|queue|algorithm|execution|teratorslibrary|iterator|cmath|complex|valarray|random|numeric|ratio|cfenv|iosfwd|ios|istream|ostream|iostream|fstream|sstream|strstream|iomanip|streambuf|cstdio|locale|clocale|codecvt|regex|atomic|thread|mutex|shared_mutex|future|condition_variable|filesystem|ciso646|ccomplex|ctgmath|cstdalign|cstdbool)(>|")$'
     Priority: 2
@@ -22,9 +39,13 @@ IncludeCategories:
     Priority: 4
   - Regex: '"*.h"'
     Priority: 4
-KeepEmptyLinesAtTheStartOfBlocks: true
+SortIncludes: CaseInsensitive
+
 Cpp11BracedListStyle: true
 EmptyLineBeforeAccessModifier: LogicalBlock
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 1
 
 # spaces in parenthesis
 SpaceBeforeParens: ControlStatements
@@ -36,4 +57,3 @@ SpacesInContainerLiterals: true
 SpaceBeforeCpp11BracedList: true
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
-SortIncludes: CaseInsensitive
