@@ -46,17 +46,39 @@ class TestListener : public support::TcpListenerBase
                         res.set(http::field::content_type, "text/plain; charset=utf-8");
                         res.body() = res_body;
                     })
+                .Add(
+                    ConvertVerbBeast(http::verb::post),
+                    "/test/set_state",
+                    [this](const ReqT& req, ResT& res) -> void
+                    {
+                        state_ = req.body();
+                        res.set(http::field::content_type, "text/json; charset=utf-8");
+                        res.body() = "Set state to: \n" + state_;
+
+                        // broadcast state
+                        for (auto& ctx : ctxs_)
+                        {
+                            if (auto s = ctx.second->ws_session.lock(); s)
+                            {
+                                s->Send(state_);
+                            }
+                        }
+                    })
                 // clang-format off
                 .AddWS(
                     "/",
                     {
                         .on_connect = 
-                            [](const WSContext& ctx){ 
+                            [this](const WSContext& ctx){ 
                                 std::cout << ctx.uuid << " connected" << std::endl;
+                                this->ctxs_[ctx.uuid] = &ctx; 
                             },
                         .on_disconnect =
-                            [](const WSContext& ctx) {
+                            [this](const WSContext& ctx) {
                                 std::cout << ctx.uuid << " disconnected" << std::endl;
+                                if(ctxs_.count(ctx.uuid)) {
+                                    ctxs_.erase(ctx.uuid);
+                                }
                             },
                         .on_receive = [](const WSContext& ctx,
                                          std::string_view buf,
@@ -72,6 +94,9 @@ class TestListener : public support::TcpListenerBase
                     })
                 // clang-format on
                 .Build();
+
+    std::unordered_map<std::string, WSContext const*> ctxs_;
+    std::string state_ {};
 };
 
 }  // namespace game::test
