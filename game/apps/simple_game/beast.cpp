@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 
 #include <boost/asio/ip/address.hpp>
@@ -8,6 +9,7 @@
 #include "support/networking/http/http_session.h"
 #include "support/networking/route_manager_base.hpp"
 #include "support/networking/tcp_listener_base.h"
+#include "support/networking/websocket/websocket_session.h"
 
 namespace game::test
 {
@@ -57,9 +59,16 @@ class TestListener : public support::TcpListenerBase
                                 std::cout << ctx.uuid << " disconnected" << std::endl;
                             },
                         .on_receive = [](const WSContext& ctx,
-                                         const char* buf,
+                                         std::string_view buf,
                                          std::size_t size,
-                                         bool is_binary) {}
+                                         bool is_binary) 
+                                         {
+                                            if (auto s = ctx.ws_session.lock(); s) {
+                                                s->Send(std::string{buf} + " UwU Kawaiiiiiiii!");
+                                            }else {
+                                                // remove this session from the list
+                                            }
+                                         }
                     })
                 // clang-format on
                 .Build();

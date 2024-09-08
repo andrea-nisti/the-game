@@ -1,5 +1,7 @@
 #include "websocket_session.h"
 
+#include <string_view>
+
 #include "support/networking/net_utils.hpp"
 
 namespace game::support
@@ -54,23 +56,25 @@ void WebSocketSession::OnRead(boost::system::error_code ec, std::size_t bytes_tr
 
     if (ec)
     {
-        Fail(ec, "on read");
-        std::invoke(handler_.on_error, ec, "on read");
+        const auto where = "on read";
+        Fail(ec, where);
+        std::invoke(handler_.on_error, ec, where);
         return;
     }
 
-    // Echo the message
-    // stream_.text(stream_.got_text());
-    // std::string message = boost::beast::buffers_to_string(buffer_.data());
-    // message += " UwU";
+    const auto& p = buffer_.data();
+    stream_.text(stream_.got_text());
+    std::string_view data_view {boost::asio::buffer_cast<const char*>(p), p.size()};
+    std::invoke(handler_.on_receive, ctx_, data_view, p.size(), stream_.binary());
+    buffer_.consume(p.size());
 
-    // Append " UwU" to the buffer
-    std::string message = " UwU";
-    net::buffer_copy(buffer_.prepare(message.size()), net::buffer(message));
-    buffer_.commit(message.size());
+    Read();
+}
 
+void WebSocketSession::Write()
+{
     stream_.async_write(
-        buffer_.cdata(),
+        write_buf_.cdata(),
         [self = shared_from_this()](
             boost::system::error_code ec, std::size_t bytes_transferred)
         { self->OnWrite(ec, bytes_transferred); });
@@ -79,16 +83,25 @@ void WebSocketSession::OnRead(boost::system::error_code ec, std::size_t bytes_tr
 void WebSocketSession::OnWrite(
     boost::system::error_code ec, std::size_t bytes_transferred)
 {
-    buffer_.consume(bytes_transferred);
-    Read();
+    boost::ignore_unused(bytes_transferred);
+    if (ec)
+    {
+        const auto where = "on write";
+        Fail(ec, where);
+        std::invoke(handler_.on_error, ec, where);
+        return;
+    }
+
+    write_buf_.consume(bytes_transferred);
 }
 
 void WebSocketSession::OnAccept(boost::system::error_code ec)
 {
     if (ec)
     {
-        Fail(ec, "accept");
-        std::invoke(handler_.on_error, ec, "accept");
+        const auto where = "on accept";
+        Fail(ec, where);
+        std::invoke(handler_.on_error, ec, where);
         return;
     }
 

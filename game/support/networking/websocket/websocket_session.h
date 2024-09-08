@@ -2,8 +2,10 @@
 #define SUPPORT_NETWORKING_WEBSOCKET_SESSION_H
 
 #include <cstdlib>
+#include <iostream>
 #include <memory>
 
+#include <boost/asio/buffer.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
@@ -56,16 +58,23 @@ class WebSocketSession final
     virtual ~WebSocketSession() { Close(); }
 
     void Run() override;
+    void Send(std::string data)
+    {
+        net::buffer_copy(write_buf_.prepare(data.size()), net::buffer(data));
+        write_buf_.commit(data.size());
+        Write();
+    }
 
   private:
     void OnAccept(boost::system::error_code ec);
     void Read() override;
     void OnRead(boost::system::error_code ec, std::size_t bytes_transferred) override;
-    void Write() override {}
+    void Write() override;
     void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) override;
     void Close() override {}
 
     WSContext ctx_;
+    beast::flat_buffer write_buf_;
     http::request<http::string_body> req_;
     WSHandler handler_;
 };
