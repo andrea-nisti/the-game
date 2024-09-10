@@ -80,9 +80,7 @@ class TestListener : public support::TcpListenerBase
                                     ctxs_.erase(ctx.uuid);
                                 }
                             },
-                        .on_receive = [](const WSContext& ctx,
-                                         std::string_view buf,
-                                         std::size_t size,
+                        .on_receive = [](const WSContext& ctx, std::string_view buf, std::size_t size,
                                          bool is_binary) 
                                          {
                                             if (auto s = ctx.ws_session.lock(); s) {

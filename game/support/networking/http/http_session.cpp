@@ -1,8 +1,11 @@
 #include "http_session.h"
 
+#include <string>
+
 #include <boost/beast/http/message.hpp>
 #include <boost/beast/http/status.hpp>
 #include <boost/beast/websocket.hpp>
+#include <boost/url.hpp>
 
 #include "beast_utils.hpp"
 #include "support/networking/net_utils.hpp"
@@ -10,8 +13,36 @@
 
 #define VERSION SERVER_VERSION
 
-namespace game::support
+namespace game::support {
+
+namespace {
+using namespace boost::urls;
+using namespace boost::asio::ip;
+std::optional<url> ParseUri(const basic_endpoint<tcp>& endpoint, std::string target)
 {
+    std::string const local_address = endpoint.address().to_string();
+    std::string const port = std::to_string(endpoint.port());
+    std::string const protocol = "http";
+
+    std::string full_path {protocol + "://" + local_address + ":" + port + target};
+    std::cout << "uri " << full_path << std::endl;
+    auto const parsed = parse_uri(full_path);
+
+    if (parsed.has_value())
+    {
+        auto const& p = parsed.value();
+        std::cout << "scheme: " << p.scheme() << std::endl;
+        std::cout << "host: " << p.host() << std::endl;
+        std::cout << "port: " << p.port() << std::endl;
+        std::cout << "path: " << p.path() << std::endl;
+        std::cout << "query: " << p.query() << std::endl;
+        std::cout << "fragment: " << p.fragment() << std::endl;
+        return parsed.value();
+    }
+
+    return {};
+}
+}  // namespace
 
 void HttpSession::Run()
 {
@@ -60,34 +91,39 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
         return;
     }
 
-    auto request = parser_->release();
-    auto const method = ConvertVerbBeast(request.method());
-    auto const target = request.target();
-    bool const is_upgrade = beast::websocket::is_upgrade(request);
+    const auto request = parser_->release();
+    const auto method = ConvertVerbBeast(request.method());
+    const auto full_target = request.target();
+    const bool is_upgrade = beast::websocket::is_upgrade(request);
+    const auto uri = ParseUri(stream_.socket().local_endpoint(), full_target);
 
-    response_.emplace(http::status::ok, request.version());
-    response_->keep_alive(request.keep_alive());
-    response_->set(http::field::server, TO_STRING(VERSION));
     bool target_found = false;
-    if (is_upgrade)
+    if (uri.has_value())
     {
-        auto const cb = route_manager_->GetWSHandler(method, target);
-        target_found = cb.has_value();
-        if (target_found)
+        const auto& target = uri.value().path();
+        response_.emplace(http::status::ok, request.version());
+        response_->keep_alive(request.keep_alive());
+        response_->set(http::field::server, TO_STRING(VERSION));
+        if (is_upgrade)
         {
-            std::make_shared<WebSocketSession>(
-                stream_.release_socket(), std::move(request), std::move(cb.value()))
-                ->Run();
-            return;
+            const auto cb = route_manager_->GetWSHandler(method, target);
+            target_found = cb.has_value();
+            if (target_found)
+            {
+                std::make_shared<WebSocketSession>(
+                    stream_.release_socket(), request, std::move(cb.value()))
+                    ->Run();
+                return;
+            }
         }
-    }
-    else
-    {
-        auto const cb = route_manager_->GetCallback(method, target);
-        target_found = cb.has_value();
-        if (target_found)
+        else
         {
-            std::invoke(cb.value(), request, response_.value());
+            const auto cb = route_manager_->GetCallback(method, target);
+            target_found = cb.has_value();
+            if (target_found)
+            {
+                std::invoke(cb.value(), request, response_.value());
+            }
         }
     }
 
@@ -95,7 +131,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     {
         // manage target not found
         response_->result(http::status::not_found);
-        response_->body() = "Unknown HTTP-target: " + std::string(target);
+        response_->body() = "Unknown HTTP-target: " + std::string(full_target);
     }
 
     Write();

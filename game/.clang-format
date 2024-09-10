@@ -19,7 +19,7 @@ BraceWrapping:
   AfterControlStatement: true
   AfterEnum: true
   AfterFunction: true
-  AfterNamespace: true
+  AfterNamespace: false
   AfterObjCDeclaration: true
   AfterStruct: true
   AfterUnion: true
