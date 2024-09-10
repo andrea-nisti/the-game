@@ -23,9 +23,8 @@ BraceWrapping:
   AfterObjCDeclaration: true
   AfterStruct: true
   AfterUnion: true
-  BeforeCatch: true
-  BeforeElse: true
-  IndentBraces: false
+  BeforeCatch: false
+  BeforeElse: false
   SplitEmptyFunction: false
   BeforeLambdaBody: true
 BreakBeforeBraces: Custom

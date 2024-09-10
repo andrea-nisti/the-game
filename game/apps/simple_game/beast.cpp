@@ -11,8 +11,7 @@
 #include "support/networking/tcp_listener_base.h"
 #include "support/networking/websocket/websocket_session.h"
 
-namespace game::test
-{
+namespace game::test {
 
 using namespace support;
 using ReqT = http::request<http::string_body>;
@@ -64,33 +63,42 @@ class TestListener : public support::TcpListenerBase
                             }
                         }
                     })
-                // clang-format off
                 .AddWS(
                     "/",
-                    {
-                        .on_connect = 
-                            [this](const WSContext& ctx){ 
-                                std::cout << ctx.uuid << " connected" << std::endl;
-                                this->ctxs_[ctx.uuid] = &ctx; 
-                            },
-                        .on_disconnect =
-                            [this](const WSContext& ctx) {
-                                std::cout << ctx.uuid << " disconnected" << std::endl;
-                                if(ctxs_.count(ctx.uuid)) {
-                                    ctxs_.erase(ctx.uuid);
-                                }
-                            },
-                        .on_receive = [](const WSContext& ctx, std::string_view buf, std::size_t size,
-                                         bool is_binary) 
-                                         {
-                                            if (auto s = ctx.ws_session.lock(); s) {
-                                                s->Send(std::string{buf} + " UwU Kawaiiiiiiii!");
-                                            }else {
-                                                // remove this session from the list
-                                            }
-                                         }
-                    })
-                // clang-format on
+                    {.on_connect =
+                         [this](const WSContext& ctx)
+                     {
+                         std::cout << ctx.uuid << " connected" << std::endl;
+                         this->ctxs_[ctx.uuid] = &ctx;
+                     },
+                     .on_disconnect =
+                         [this](const WSContext& ctx)
+                     {
+                         std::cout << ctx.uuid << " disconnected" << std::endl;
+                         if (ctxs_.count(ctx.uuid))
+                         {
+                             ctxs_.erase(ctx.uuid);
+                         }
+                     },
+                     .on_receive =
+                         [this](
+                             const WSContext& ctx,
+                             std::string_view buf,
+                             std::size_t size,
+                             bool is_binary)
+                     {
+                         if (auto s = ctx.ws_session.lock(); s)
+                         {
+                             s->Send(std::string {buf} + " UwU Kawaiiiiiiii!");
+                         } else
+                         {
+                             // remove this session from the list
+                             if (ctxs_.count(ctx.uuid))
+                             {
+                                 ctxs_.erase(ctx.uuid);
+                             }
+                         }
+                     }})
                 .Build();
 
     std::unordered_map<std::string, WSContext const*> ctxs_;
