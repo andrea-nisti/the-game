@@ -18,11 +18,11 @@ namespace game::support {
 namespace {
 using namespace boost::urls;
 using namespace boost::asio::ip;
-std::optional<url> ParseUri(const basic_endpoint<tcp>& endpoint, std::string target)
+std::optional<url> ParseUri(
+    const std::string protocol, const basic_endpoint<tcp>& endpoint, std::string target)
 {
     std::string const local_address = endpoint.address().to_string();
     std::string const port = std::to_string(endpoint.port());
-    std::string const protocol = "http";
 
     std::string full_path {protocol + "://" + local_address + ":" + port + target};
     std::cout << "uri " << full_path << std::endl;
@@ -91,13 +91,11 @@ void HttpSession::Read()
 }
 void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transferred)
 {
-    if (ec == http::error::end_of_stream)
-    {
-        return Close();
-    }
-
     if (ec)
     {
+        if (ec == http::error::end_of_stream)
+            return Close();
+
         Fail(ec, "on read");
         return;
     }
@@ -106,7 +104,8 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     const auto method = ConvertVerbBeast(request.method());
     const auto full_target = request.target();
     const bool is_upgrade = beast::websocket::is_upgrade(request);
-    const auto uri = ParseUri(stream_.socket().local_endpoint(), full_target);
+    const auto uri = ParseUri(
+        is_upgrade ? "ws" : "http", stream_.socket().local_endpoint(), full_target);
 
     bool target_found = false;
     if (uri.has_value())
