@@ -37,6 +37,17 @@ std::optional<url> ParseUri(const basic_endpoint<tcp>& endpoint, std::string tar
         std::cout << "path: " << p.path() << std::endl;
         std::cout << "query: " << p.query() << std::endl;
         std::cout << "fragment: " << p.fragment() << std::endl;
+
+        auto query = parse_query(p.query());
+        if (query.has_value())
+        {
+            for (auto const [key, value, has_value] : query.value())
+            {
+                std::cout << "key: " << key << " value: " << value
+                          << " has_value: " << has_value << std::endl;
+            }
+        }
+
         return parsed.value();
     }
 
@@ -111,7 +122,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
             if (target_found)
             {
                 std::make_shared<WebSocketSession>(
-                    stream_.release_socket(), request, std::move(cb.value()))
+                    stream_.release_socket(), request, cb.value())
                     ->Run();
                 return;
             }
