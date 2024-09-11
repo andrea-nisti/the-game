@@ -86,9 +86,8 @@ void HttpSession::Read()
         buffer_,
         *parser_,
         [self = shared_from_this()](
-            boost::system::error_code ec, std::size_t bytes_transferred) {
-            self->OnRead(ec, bytes_transferred);
-        });
+            boost::system::error_code ec, std::size_t bytes_transferred)
+        { self->OnRead(ec, bytes_transferred); });
 }
 void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transferred)
 {
@@ -157,9 +156,8 @@ void HttpSession::Write()
         stream_,
         http::message_generator {std::move(response_.value())},
         [self = shared_from_this()](
-            boost::system::error_code ec, std::size_t bytes_transferred) {
-            self->OnWrite(ec, bytes_transferred);
-        });
+            boost::system::error_code ec, std::size_t bytes_transferred)
+        { self->OnWrite(ec, bytes_transferred); });
 }
 void HttpSession::OnWrite(boost::system::error_code ec, std::size_t bytes_transferred)
 {
