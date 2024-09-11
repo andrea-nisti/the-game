@@ -1,6 +1,5 @@
 # ide/config ignores
 compile_commands.json
-.bazelrc
 
 # artifacts ignores
 apps/deploy/*.tar

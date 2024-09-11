@@ -1,0 +1,12 @@
+# All options comming from this file will be announced on the terminal.
+common --announce_rc
+
+# If a command fails, print out the full command line.
+build --verbose_failures
+
+# Print the full error of the test that fails.
+test --test_output=all
+
+# Build options
+build --repo_env=BAZEL_CXXOPTS="-std=c++17"
+build --color=yes
