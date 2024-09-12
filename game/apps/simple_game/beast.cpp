@@ -59,6 +59,7 @@ class TestListener : public support::TcpListenerBase
                         {
                             if (auto s = ctx.second->ws_session.lock(); s)
                             {
+                                // TODO: add customizable delay and jitter
                                 s->Send(state_);
                             }
                         }
