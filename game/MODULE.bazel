@@ -29,10 +29,10 @@ bazel_dep(name = "rules_pkg", version = "0.10.1")
 bazel_dep(name = "rules_boost", repo_name = "com_github_nelhage_rules_boost")
 archive_override(
     module_name = "rules_boost",
-    urls = "https://github.com/nelhage/rules_boost/archive/refs/heads/master.tar.gz",
-    strip_prefix = "rules_boost-master",
+    urls = "https://github.com/nelhage/rules_boost/archive/58be4e7e851d19e9ba14ced7bdba6fc8895af1d3.zip",
+    strip_prefix = "rules_boost-58be4e7e851d19e9ba14ced7bdba6fc8895af1d3",
     # It is recommended to edit the above URL and the below sha256 to point to a specific version of this repository.
-    integrity = "sha256-xqio9MINvtGWX+qzC+vDMhvWpY6L8Om8QqTJ8CunzHM=",
+    integrity = "sha256-L/OrK2IF3FL5+pddXmt5XmVH9mZT0+zca/SMp//Y++4=",
 )
 
 non_module_boost_repositories = use_extension("@com_github_nelhage_rules_boost//:boost/repositories.bzl", "non_module_dependencies")
