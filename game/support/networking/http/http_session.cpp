@@ -8,6 +8,7 @@
 #include <boost/url.hpp>
 
 #include "beast_utils.hpp"
+#include "support/networking/http/common.hpp"
 #include "support/networking/net_utils.hpp"
 #include "support/networking/websocket/websocket_session.h"
 
@@ -37,22 +38,28 @@ std::optional<url> ParseUri(
         std::cout << "path: " << p.path() << std::endl;
         std::cout << "query: " << p.query() << std::endl;
         std::cout << "fragment: " << p.fragment() << std::endl;
-
-        auto query = parse_query(p.query());
-        if (query.has_value())
-        {
-            for (auto const [key, value, has_value] : query.value())
-            {
-                std::cout << "key: " << key << " value: " << value
-                          << " has_value: " << has_value << std::endl;
-            }
-        }
-
         return parsed.value();
     }
 
     return {};
 }
+
+std::optional<Params> ParseQuery(url const& url)
+{
+    auto query = parse_query(url.query());
+    if (query.has_value())
+    {
+        Params params;
+        for (const auto& q : url.encoded_params())
+        {
+            params.emplace(q.key, q.has_value ? q.value : "");
+            std::cout << "key: " << q.key << " value: " << q.value << std::endl;
+        }
+        return params;
+    }
+    return {};
+}
+
 }  // namespace
 
 void HttpSession::Run()
@@ -110,6 +117,11 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     bool target_found = false;
     if (uri.has_value())
     {
+        auto params = ParseQuery(uri.value());
+        if (params.has_value())
+        {
+            // TODO: handle params in custom response type
+        }
         const auto& target = uri.value().path();
         response_.emplace(http::status::ok, request.version());
         response_->keep_alive(request.keep_alive());
