@@ -118,10 +118,6 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     if (uri.has_value())
     {
         auto params = ParseQuery(uri.value());
-        if (params.has_value())
-        {
-            // TODO: handle params in custom response type
-        }
         const auto& target = uri.value().path();
         response_.emplace(http::status::ok, request.version());
         response_->keep_alive(request.keep_alive());
@@ -133,7 +129,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
             if (target_found)
             {
                 std::make_shared<WebSocketSession>(
-                    stream_.release_socket(), request, cb.value())
+                    stream_.release_socket(), request, std::move(params), cb.value())
                     ->Run();
                 return;
             }

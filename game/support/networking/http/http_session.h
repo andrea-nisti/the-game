@@ -21,8 +21,7 @@ namespace http = beast::http;      // from <boost/beast/http.hpp>
 namespace net = boost::asio;       // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
 
-namespace game::support
-{
+namespace game::support {
 
 /**
  * \addtogroup support Support
@@ -64,8 +63,7 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
             http::response<http::string_body>>* route_manager)
         : SessionBase<beast::tcp_stream, beast::flat_buffer>(std::move(socket)),
           route_manager_(route_manager)
-    {
-    }
+    {}
 
     /**
      * @brief Destructor. Closes the session.
