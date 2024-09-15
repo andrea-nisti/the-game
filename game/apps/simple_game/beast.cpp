@@ -1,11 +1,13 @@
 #include <iostream>
 #include <memory>
+#include <optional>
 
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/address_v4.hpp>
 #include <sys/types.h>
 
 #include "support/networking/http/beast_utils.hpp"
+#include "support/networking/http/common.hpp"
 #include "support/networking/http/http_session.h"
 #include "support/networking/route_manager_base.hpp"
 #include "support/networking/tcp_listener_base.h"
@@ -39,16 +41,27 @@ class TestListener : public support::TcpListenerBase
                 .Add(
                     ConvertVerbBeast(http::verb::get),
                     "/test",
-                    [](const ReqT& req, ResT& res) -> void
+                    [](const ReqT& req, std::optional<Params> params, ResT& res) -> void
                     {
                         std::string res_body = "UwU Kawaiiiiiiii!";
+                        if (params.has_value())
+                        {
+                            res_body += "\n";
+                            res_body += "Params: {";
+                            for (auto& [key, value] : params.value())
+                            {
+                                res_body += "\n  \"" + key + "\" : \"" + value + "\",";
+                            }
+                            res_body += "\n}";
+                        }
                         res.set(http::field::content_type, "text/plain; charset=utf-8");
                         res.body() = res_body;
                     })
                 .Add(
                     ConvertVerbBeast(http::verb::post),
                     "/test/set_state",
-                    [this](const ReqT& req, ResT& res) -> void
+                    [this](
+                        const ReqT& req, std::optional<Params> params, ResT& res) -> void
                     {
                         state_ = req.body();
                         res.set(http::field::content_type, "text/json; charset=utf-8");

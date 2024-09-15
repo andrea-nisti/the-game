@@ -8,8 +8,7 @@
 #include "support/networking/http/common.hpp"
 #include "support/networking/websocket/ws_handler.hpp"
 
-namespace game::support
-{
+namespace game::support {
 
 /**
  * \addtogroup support Support
@@ -43,7 +42,8 @@ template <typename RequestT, typename ResponseT>
 class RouteManagerBase
 {
   public:
-    using CallbackT = std::function<void(const RequestT&, ResponseT&)>;
+    using CallbackT = std::function<void(
+        const RequestT&, const std::optional<Params> params, ResponseT&)>;
     using CallbackMap =
         std::unordered_map<HttpMethod, std::unordered_map<Path, CallbackT>>;
     using WSHandlerMap = std::unordered_map<Path, WSHandler>;
@@ -136,7 +136,7 @@ template <typename RequestT, typename ResponseT>
 class RouteManagerBuilder
 {
   public:
-    using CallbackT = std::function<void(const RequestT&, ResponseT&)>;
+    using CallbackT = typename RouteManagerBase<RequestT, ResponseT>::CallbackT;
     using RMPtr = std::unique_ptr<RouteManagerBase<RequestT, ResponseT>>;
 
     /**

@@ -46,14 +46,15 @@ std::optional<url> ParseUri(
 
 std::optional<Params> ParseQuery(url const& url)
 {
+    static constexpr std::string_view empty_param = "";
     auto query = parse_query(url.query());
     if (query.has_value())
     {
         Params params;
         for (const auto& q : url.encoded_params())
         {
-            params.emplace(q.key, q.has_value ? q.value : "");
-            std::cout << "key: " << q.key << " value: " << q.value << std::endl;
+            if (q.key != empty_param)
+                params.emplace(q.key, q.has_value ? q.value : std::string {empty_param});
         }
         return params;
     }
@@ -139,7 +140,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
             target_found = cb.has_value();
             if (target_found)
             {
-                std::invoke(cb.value(), request, response_.value());
+                std::invoke(cb.value(), request, std::move(params), response_.value());
             }
         }
     }
