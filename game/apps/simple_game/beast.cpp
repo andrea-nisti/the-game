@@ -108,10 +108,10 @@ class TestListener : public support::TcpListenerBase
                                         [s, this, timer = std::move(timer)](
                                             const boost::system::error_code ec)
                                         { s->Send(state_); });
-
-                                    return;
+                                } else
+                                {
+                                    s->Send(state_);
                                 }
-                                s->Send(state_);
                             }
                         }
                     })
