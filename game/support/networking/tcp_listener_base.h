@@ -7,8 +7,7 @@
 #include "interfaces/i_network_server.h"
 #include "support/networking/net_utils.hpp"
 
-namespace game::support
-{
+namespace game::support {
 
 /**
  * \addtogroup support Support
@@ -63,6 +62,7 @@ class TcpListenerBase : public INetworkServer
     void Stop() override;
 
   protected:
+    boost::asio::io_context& GetIOContextRef() { return io_context_ref_; }
     /**
      * @brief Handle incoming connections.
      *

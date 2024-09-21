@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
 #include <utility>
 
 #include "support/networking/http/common.hpp"
@@ -49,11 +50,15 @@ class RouteManagerBase
     using WSHandlerMap = std::unordered_map<Path, WSHandler>;
     friend class RouteManagerBuilder<RequestT, ResponseT>;
 
+    RouteManagerBase(CallbackMap callbacks, WSHandlerMap ws_handlers)
+        : callbacks_(std::move(callbacks)), ws_handlers_(std::move(ws_handlers))
+    {}
     RouteManagerBase() = default;
     RouteManagerBase(const RouteManagerBase&) = delete;
     RouteManagerBase(RouteManagerBase&&) = delete;
     RouteManagerBase& operator=(const RouteManagerBase&) = delete;
     RouteManagerBase& operator=(RouteManagerBase&&) = delete;
+    virtual ~RouteManagerBase() = default;
 
     std::optional<std::reference_wrapper<WSHandler>> GetWSHandler(
         const HttpMethod method, const Path& path)

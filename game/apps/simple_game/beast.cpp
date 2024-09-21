@@ -1,3 +1,4 @@
+#include <exception>
 #include <iostream>
 #include <memory>
 #include <optional>
@@ -18,6 +19,20 @@ namespace game::test {
 using namespace support;
 using ReqT = http::request<http::string_body>;
 using ResT = http::response<http::string_body>;
+
+namespace {
+template <typename F>
+void ForEachParam(const std::optional<Params>& params, F&& f)
+{
+    if (params.has_value())
+    {
+        for (auto& [key, value] : params.value())
+        {
+            std::invoke(std::forward<F>(f), key, value);
+        }
+    }
+}
+}  // namespace
 
 class TestListener : public support::TcpListenerBase
 {
@@ -43,17 +58,15 @@ class TestListener : public support::TcpListenerBase
                     "/test",
                     [](const ReqT& req, std::optional<Params> params, ResT& res) -> void
                     {
-                        std::string res_body = "UwU Kawaiiiiiiii!";
-                        if (params.has_value())
-                        {
-                            res_body += "\n";
-                            res_body += "Params: {";
-                            for (auto& [key, value] : params.value())
-                            {
-                                res_body += "\n  \"" + key + "\" : \"" + value + "\",";
-                            }
-                            res_body += "\n}";
-                        }
+                        std::string res_body = "UwU Kawaiiiiiiii!\n";
+
+                        res_body += "Params: {";
+                        ForEachParam(
+                            params,
+                            [&](const std::string& key, const std::string& value)
+                            { res_body += "\n  \"" + key + "\" : \"" + value + "\","; });
+                        res_body += "\n}";
+
                         res.set(http::field::content_type, "text/plain; charset=utf-8");
                         res.body() = res_body;
                     })
@@ -65,14 +78,39 @@ class TestListener : public support::TcpListenerBase
                     {
                         state_ = req.body();
                         res.set(http::field::content_type, "text/json; charset=utf-8");
-                        res.body() = "Set state to: \n" + state_;
+                        res.body() = "Setting state to: \n" + state_;
 
                         // broadcast state
                         for (auto& ctx : ctxs_)
                         {
                             if (auto s = ctx.second->ws_session.lock(); s)
                             {
-                                // TODO: add customizable delay and jitter
+                                if (params.has_value() and params.value().count("delay"))
+                                {
+                                    int delay_secs {0};
+                                    try
+                                    {
+                                        delay_secs =
+                                            std::stoi(params.value().at("delay"));
+                                    } catch (const std::exception& e)
+                                    {
+                                        std::cerr << "Failed to parse delay: " << e.what()
+                                                  << std::endl;
+                                    }
+
+                                    auto timer =
+                                        std::make_unique<boost::asio::steady_timer>(
+                                            GetIOContextRef());
+                                    timer->expires_after(
+                                        std::chrono::seconds(delay_secs));
+
+                                    timer->async_wait(
+                                        [s, this, timer = std::move(timer)](
+                                            const boost::system::error_code ec)
+                                        { s->Send(state_); });
+
+                                    return;
+                                }
                                 s->Send(state_);
                             }
                         }
@@ -121,14 +159,26 @@ class TestListener : public support::TcpListenerBase
 
 }  // namespace game::test
 
-// TODO: create an app that uses a post to set the state and the websocket to notify
-// clients
-int main()
+int main(int argc, char* argv[])
 {
     using namespace game::test;
+    int port {8888};
+    if (argc > 1)
+    {
+        try
+        {
+            port = std::stoi(argv[1]);
+        } catch (const std::exception& ia)
+        {
+            std::cerr << "Invalid port: " << argv[1] << " : " << ia.what() << std::endl;
+            return 1;
+        }
+    }
+    std::cout << "Running server on port: " << port << std::endl;
 
     boost::asio::io_context io_context;
-    TestListener listener {io_context, tcp::endpoint {tcp::v4(), 8888}};
+    TestListener listener {
+        io_context, tcp::endpoint {tcp::v4(), net::ip::port_type(port)}};
     listener.Start();
     io_context.run();
 
