@@ -20,7 +20,7 @@ struct RouteManagerWithHandleRequest : public game::support::RouteManagerBase<Re
         auto cb = RouteManagerBase<ReqT, ResT>::GetCallback(method, path);
         if (cb.has_value())
         {
-            std::invoke(cb.value(), req, res);
+            std::invoke(cb.value(), req, std::nullopt, res);
         }
     }
 };
@@ -37,11 +37,13 @@ TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
             .Add(
                 ConvertVerbBeast(http::verb::get),
                 "/test",
-                [](const ReqT& req, ResT& res) -> void { res = true; })
+                [](const ReqT& req, std::optional<Params> params, ResT& res) -> void
+                { res = true; })
             .Add(
                 ConvertVerbBeast(http::verb::post),
                 "/test_post",
-                [](const ReqT& req, ResT& res) -> void { res = true; })
+                [](const ReqT& req, std::optional<Params> params, ResT& res) -> void
+                { res = true; })
             .Build();
 
     auto rm = dynamic_cast<RouteManagerWithHandleRequest*>(route_manager_ptr.get());
