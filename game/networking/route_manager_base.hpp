@@ -6,8 +6,8 @@
 #include <optional>
 #include <utility>
 
-#include "support/networking/http/common.hpp"
-#include "support/networking/websocket/ws_handler.hpp"
+#include "networking/http/common.hpp"
+#include "networking/websocket/ws_handler.hpp"
 
 namespace game::support {
 

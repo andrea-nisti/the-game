@@ -9,9 +9,9 @@ cc_library(
     hdrs = ["http_session.h"],
     visibility = ["//visibility:public"],
     deps = [
-        "//support/networking:net_utils",
-        "//support/networking:route_manager_base",
-        "//support/networking/websocket:websocket_session",
+        "//networking:net_utils",
+        "//networking:route_manager_base",
+        "//networking/websocket:websocket_session",
         "@boost//:url",
     ],
 )

@@ -13,10 +13,10 @@
 #include <boost/optional.hpp>
 #include <boost/throw_exception.hpp>
 
-#include "support/networking/http/common.hpp"
-#include "support/networking/session_base.h"
-#include "support/networking/websocket/ws_context.hpp"
-#include "support/networking/websocket/ws_handler.hpp"
+#include "networking/http/common.hpp"
+#include "networking/session_base.h"
+#include "networking/websocket/ws_context.hpp"
+#include "networking/websocket/ws_handler.hpp"
 
 namespace beast = boost::beast;          // from <boost/beast.hpp>
 namespace websocket = beast::websocket;  // from <boost/beast/websocket.hpp>

@@ -29,8 +29,8 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":ws_handler",
-        "//support/networking:net_utils",
-        "//support/networking:session_base",
-        "//support/networking/http:http_common",
+        "//networking:net_utils",
+        "//networking:session_base",
+        "//networking/http:http_common",
     ],
 )

@@ -4,9 +4,9 @@ build_app(
     name = "app",
     srcs = ["beast.cpp"],
     deps = [
-        "//support/networking:tcp_listener_base",
-        "//support/networking/http:http_session",
-        "//support/networking:route_manager_base",
-        "//support/networking:net_utils",
+        "//networking:net_utils",
+        "//networking:route_manager_base",
+        "//networking:tcp_listener_base",
+        "//networking/http:http_session",
     ],
 )

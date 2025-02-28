@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-#include "support/networking/net_utils.hpp"
+#include "networking/net_utils.hpp"
 
 namespace game::support
 {

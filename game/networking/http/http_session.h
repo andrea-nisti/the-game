@@ -13,8 +13,8 @@
 #include <boost/optional.hpp>
 #include <boost/throw_exception.hpp>
 
-#include "support/networking/route_manager_base.hpp"
-#include "support/networking/session_base.h"
+#include "networking/route_manager_base.hpp"
+#include "networking/session_base.h"
 
 namespace beast = boost::beast;    // from <boost/beast.hpp>
 namespace http = beast::http;      // from <boost/beast/http.hpp>

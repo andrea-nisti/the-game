@@ -52,7 +52,7 @@ cc_library(
     hdrs = ["route_manager_base.hpp"],
     visibility = ["//visibility:public"],
     deps = [
-        "//support/networking/http:http_common",
-        "//support/networking/websocket:ws_handler",
+        "//networking/http:http_common",
+        "//networking/websocket:ws_handler",
     ],
 )

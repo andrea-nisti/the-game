@@ -7,12 +7,12 @@
 #include <boost/asio/ip/address_v4.hpp>
 #include <sys/types.h>
 
-#include "support/networking/http/beast_utils.hpp"
-#include "support/networking/http/common.hpp"
-#include "support/networking/http/http_session.h"
-#include "support/networking/route_manager_base.hpp"
-#include "support/networking/tcp_listener_base.h"
-#include "support/networking/websocket/websocket_session.h"
+#include "networking/http/beast_utils.hpp"
+#include "networking/http/common.hpp"
+#include "networking/http/http_session.h"
+#include "networking/route_manager_base.hpp"
+#include "networking/tcp_listener_base.h"
+#include "networking/websocket/websocket_session.h"
 
 namespace game::test {
 

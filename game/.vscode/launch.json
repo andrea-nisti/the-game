@@ -31,7 +31,7 @@
             "description": "Debug target",
             "options": [
                 "support/visit/test/visitable",
-                "support/networking/test/networking",
+                "networking/test/networking",
                 "apps/simple_game/app",
             ]
         }

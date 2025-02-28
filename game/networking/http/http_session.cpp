@@ -8,9 +8,9 @@
 #include <boost/url.hpp>
 
 #include "beast_utils.hpp"
-#include "support/networking/http/common.hpp"
-#include "support/networking/net_utils.hpp"
-#include "support/networking/websocket/websocket_session.h"
+#include "networking/http/common.hpp"
+#include "networking/net_utils.hpp"
+#include "networking/websocket/websocket_session.h"
 
 #define VERSION SERVER_VERSION
 

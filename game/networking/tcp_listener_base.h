@@ -5,7 +5,7 @@
 #include <boost/system/error_code.hpp>
 
 #include "interfaces/i_network_server.h"
-#include "support/networking/net_utils.hpp"
+#include "networking/net_utils.hpp"
 
 namespace game::support {
 
