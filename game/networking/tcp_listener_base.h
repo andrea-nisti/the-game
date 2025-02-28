@@ -53,8 +53,8 @@ class TcpListenerBase : public INetworkServer
 
     TcpListenerBase(const TcpListenerBase&) = delete;
     TcpListenerBase(TcpListenerBase&&) = delete;
-    TcpListenerBase& operator=(const TcpListenerBase&) = delete;
-    TcpListenerBase& operator=(TcpListenerBase&&) = delete;
+    auto operator=(const TcpListenerBase&) -> TcpListenerBase& = delete;
+    auto operator=(TcpListenerBase&&) -> TcpListenerBase& = delete;
     virtual ~TcpListenerBase() { Stop(); }
 
     void Start() override;
@@ -62,7 +62,7 @@ class TcpListenerBase : public INetworkServer
     void Stop() override;
 
   protected:
-    boost::asio::io_context& GetIOContextRef() { return io_context_ref_; }
+    auto GetIOContextRef() -> boost::asio::io_context& { return io_context_ref_; }
     /**
      * @brief Handle incoming connections.
      *

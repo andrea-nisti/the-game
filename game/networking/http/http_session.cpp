@@ -65,7 +65,6 @@ std::optional<Params> ParseQuery(url const& url)
 
 void HttpSession::Run()
 {
-    std::cout << "run" << std::endl;
     net::dispatch(
         stream_.get_executor(), [self = shared_from_this()]() { self->Read(); });
 }
@@ -77,7 +76,6 @@ void HttpSession::Close()
 }
 void HttpSession::Read()
 {
-    std::cout << "read" << std::endl;
     // Construct a new parser for each message
     parser_.emplace();
 

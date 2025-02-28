@@ -45,8 +45,8 @@ class WebSocketSession final
   public:
     WebSocketSession(const WebSocketSession&) = delete;
     WebSocketSession(WebSocketSession&&) = delete;
-    WebSocketSession& operator=(const WebSocketSession&) = delete;
-    WebSocketSession& operator=(WebSocketSession&&) = delete;
+    auto operator=(const WebSocketSession&) -> WebSocketSession& = delete;
+    auto operator=(WebSocketSession&&) -> WebSocketSession& = delete;
     WebSocketSession(
         tcp::socket&& socket,
         http::request<http::string_body> req,

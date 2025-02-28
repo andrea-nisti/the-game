@@ -7,8 +7,7 @@
 
 #include "ws_context.hpp"
 
-namespace game::support
-{
+namespace game::support {
 
 using OnConnect = std::function<void(const WSContext&)>;
 using OnReceive =
