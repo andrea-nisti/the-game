@@ -29,19 +29,19 @@ std::optional<url> ParseUri(
     std::cout << "uri " << full_path << std::endl;
     auto const parsed = parse_uri(full_path);
 
-    if (parsed.has_value())
+    if (not parsed.has_value())
     {
-        auto const& p = parsed.value();
-        std::cout << "scheme: " << p.scheme() << std::endl;
-        std::cout << "host: " << p.host() << std::endl;
-        std::cout << "port: " << p.port() << std::endl;
-        std::cout << "path: " << p.path() << std::endl;
-        std::cout << "query: " << p.query() << std::endl;
-        std::cout << "fragment: " << p.fragment() << std::endl;
-        return parsed.value();
+        return {};
     }
 
-    return {};
+    auto const& p = parsed.value();
+    std::cout << "scheme: " << p.scheme() << std::endl;
+    std::cout << "host: " << p.host() << std::endl;
+    std::cout << "port: " << p.port() << std::endl;
+    std::cout << "path: " << p.path() << std::endl;
+    std::cout << "query: " << p.query() << std::endl;
+    std::cout << "fragment: " << p.fragment() << std::endl;
+    return parsed.value();
 }
 
 std::optional<Params> ParseQuery(url const& url)
