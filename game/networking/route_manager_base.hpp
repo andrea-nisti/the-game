@@ -60,8 +60,8 @@ class RouteManagerBase
     RouteManagerBase& operator=(RouteManagerBase&&) = delete;
     virtual ~RouteManagerBase() = default;
 
-    std::optional<std::reference_wrapper<WSHandler>> GetWSHandler(
-        const HttpMethod method, const Path& path)
+    auto GetWSHandler(const HttpMethod method, const Path& path)
+        -> std::optional<std::reference_wrapper<WSHandler>>
     {
         if (method == HttpMethod::GET)
         {
@@ -74,10 +74,10 @@ class RouteManagerBase
         return {};
     }
 
-    virtual std::optional<std::reference_wrapper<CallbackT>> GetCallback(
-        const HttpMethod method, const Path& path)
+    virtual auto GetCallback(const HttpMethod method, const Path& path)
+        -> std::optional<std::reference_wrapper<CallbackT>>
     {
-        auto method_it = callbacks_.find(method);
+        const auto method_it = callbacks_.find(method);
         if (method_it != callbacks_.end())
         {
             auto pathIt = method_it->second.find(path);
@@ -154,7 +154,7 @@ class RouteManagerBuilder
      *
      * @return The created RouteManagerBase instance.
      */
-    RMPtr Build() { return std::move(rm_ptr_); }
+    auto Build() -> RMPtr { return std::move(rm_ptr_); }
 
     /**
      * @brief Creates a new RouteManagerBuilder with a RouteManagerBase instance built
@@ -165,7 +165,7 @@ class RouteManagerBuilder
      * using the BuilderType.
      */
     template <typename BuilderType, typename... Args>
-    RouteManagerBuilder<RequestT, ResponseT>& WithBuilderType(Args&&... args)
+    auto WithRouteManagerType(Args&&... args) -> RouteManagerBuilder<RequestT, ResponseT>&
     {
         rm_ptr_ = std::make_unique<BuilderType>(std::forward<Args>(args)...);
         return *this;
@@ -183,14 +183,15 @@ class RouteManagerBuilder
      * @return The instance of RouteManagerBuilder so that this function can be
      *         chained.
      */
-    RouteManagerBuilder<RequestT, ResponseT>& Add(
-        const HttpMethod method, const Path& path, CallbackT callback)
+    auto Add(const HttpMethod method, const Path& path, CallbackT callback)
+        -> RouteManagerBuilder<RequestT, ResponseT>&
     {
         rm_ptr_->AddCallbackInternal(method, path, std::move(callback));
         return *this;
     }
 
-    RouteManagerBuilder<RequestT, ResponseT>& AddWS(const Path& path, WSHandler handler)
+    auto AddWS(const Path& path, WSHandler handler)
+        -> RouteManagerBuilder<RequestT, ResponseT>&
     {
         rm_ptr_->AddWSCallbackInternal(path, std::move(handler));
         return *this;

@@ -5,23 +5,20 @@
 
 #include "core/Deck.h"
 
-namespace game::core
-{
+namespace game::core {
 class Player
 {
-
   public:
     explicit Player(std::string name)
         : uid_(++Player::n_of_players_), name_(std::move(name))
-    {
-    }
+    {}
     ~Player() = default;
 
     // Just delete everything and enable when needed
     Player(const Player&) = delete;
     Player(Player&&) = delete;
-    Player& operator=(const Player&) = delete;
-    Player& operator=(Player&&) = delete;
+    auto operator=(const Player&) -> Player& = delete;
+    auto operator=(Player&&) -> Player& = delete;
 
   private:
     inline static int n_of_players_ {0};

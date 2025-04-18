@@ -33,7 +33,7 @@ TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
 
     auto route_manager_ptr =
         game::support::RouteManagerBuilder<ReqT, ResT> {}
-            .WithBuilderType<RouteManagerWithHandleRequest>()
+            .WithRouteManagerType<RouteManagerWithHandleRequest>()
             .Add(
                 ConvertVerbBeast(http::verb::get),
                 "/test",
