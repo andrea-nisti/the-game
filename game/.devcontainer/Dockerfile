@@ -1,4 +1,7 @@
-FROM mcr.microsoft.com/devcontainers/cpp:ubuntu-24.04
+FROM mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04
+
+# Expose port 8888
+EXPOSE 8888
 
 # Install misc deps
 RUN mkdir /home/vscode/scripts

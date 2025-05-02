@@ -19,7 +19,7 @@ build_app(
 oci_image(
     name = "image",
     base = "@debian_slim",
-    entrypoint = ["/app"],
+    entrypoint = ["bash"],
     tars = [":app_tar"],
 )
 
@@ -28,4 +28,5 @@ oci_image(
 oci_load(
     name = "image_load",
     image = ":image",
+    repo_tags = ["simple_game:latest"],
 )

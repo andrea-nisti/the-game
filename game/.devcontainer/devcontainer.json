@@ -5,6 +5,9 @@
     "build": {
         "dockerfile": "./Dockerfile"
     },
+    "forwardPorts": [
+        8888
+    ],
     "features": {
         "ghcr.io/balazs23/devcontainers-features/bazel:1": {},
         "ghcr.io/devcontainers/features/docker-in-docker:2": {}
