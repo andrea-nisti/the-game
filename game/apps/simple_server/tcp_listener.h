@@ -35,15 +35,62 @@ void ForEachParam(const std::optional<Params>& params, F&& f)
         }
     }
 }
+
+using UUID = std::string;
+
 }  // namespace
 
 class TcpListener : public support::TcpListenerBase
 {
   public:
+    using ReqT = http::request<http::string_body>;
+    using ResT = http::response<http::string_body>;
     using support::TcpListenerBase::TcpListenerBase;
+    using RouteManagerPtr = std::unique_ptr<RouteManagerBase<ReqT, ResT>>;
 
   private:
     void OnAccept(tcp::socket socket) override;
+
+    std::unordered_map<UUID, WSContext const*> ctxs_;
+    RouteManagerPtr route_manager_ =
+        game::support::RouteManagerBuilder<ReqT, ResT> {}
+            .AddWS(
+                "/",
+                {.on_connect =
+                     [this](const WSContext& ctx)
+                 {
+                     std::cout << ctx.uuid << " connected" << std::endl;
+                     this->ctxs_[ctx.uuid] = &ctx;
+                 },
+                 .on_disconnect =
+                     [this](const WSContext& ctx)
+                 {
+                     std::cout << ctx.uuid << " disconnected" << std::endl;
+                     if (ctxs_.count(ctx.uuid))
+                     {
+                         ctxs_.erase(ctx.uuid);
+                     }
+                 },
+                 .on_receive =
+                     [this](
+                         const WSContext& ctx,
+                         std::string_view buf,
+                         std::size_t size,
+                         bool is_binary)
+                 {
+                     if (auto s = ctx.ws_session.lock(); s)
+                     {
+                         s->Send(std::string {buf} + " UwU Kawaiiiiiiii!");
+                     } else
+                     {
+                         // remove this session from the list
+                         if (ctxs_.count(ctx.uuid))
+                         {
+                             ctxs_.erase(ctx.uuid);
+                         }
+                     }
+                 }})
+            .Build();
 };
 
 }  // namespace game::simple_server
