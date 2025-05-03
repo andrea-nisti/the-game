@@ -6,4 +6,6 @@
     "editor.formatOnSave": true,
     "bazel.buildifierExecutable": "buildifier",
     "bazel.lsp.command": "starpls",
+    "C/C++ Include Guard.Comment Style": "Line",
+    "C/C++ Include Guard.Macro Type": "Filepath"
 }
