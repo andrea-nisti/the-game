@@ -43,9 +43,10 @@ using UUID = std::string;
 class TcpListener : public support::TcpListenerBase
 {
   public:
+    using support::TcpListenerBase::TcpListenerBase;
+
     using ReqT = http::request<http::string_body>;
     using ResT = http::response<http::string_body>;
-    using support::TcpListenerBase::TcpListenerBase;
     using RouteManagerPtr = std::unique_ptr<RouteManagerBase<ReqT, ResT>>;
 
   private:
