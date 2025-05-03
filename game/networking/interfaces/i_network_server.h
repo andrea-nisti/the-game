@@ -1,8 +1,7 @@
-#ifndef SUPPORT_NETWORKING_INTERFACES_I_NETWORK_SERVER_H
-#define SUPPORT_NETWORKING_INTERFACES_I_NETWORK_SERVER_H
+#ifndef NETWORKING_INTERFACES_I_NETWORK_SERVER
+#define NETWORKING_INTERFACES_I_NETWORK_SERVER
 
-namespace game::support
-{
+namespace game::support {
 /**
  * @brief The INetowrkServer interface.
  *
@@ -30,4 +29,4 @@ struct INetworkServer
 
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_INTERFACES_I_NETWORK_SERVER_H
+#endif  // NETWORKING_INTERFACES_I_NETWORK_SERVER

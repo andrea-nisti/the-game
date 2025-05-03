@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_HTTP_BEAST_UTILS_H
-#define SUPPORT_NETWORKING_HTTP_BEAST_UTILS_H
+#ifndef NETWORKING_HTTP_BEAST_UTILS
+#define NETWORKING_HTTP_BEAST_UTILS
 
 #include <boost/beast/http.hpp>
 
@@ -7,8 +7,7 @@
 
 using namespace boost::beast;
 
-namespace game::support
-{
+namespace game::support {
 
 /**
  * @brief Convert between boost::beast::http::verb and support::HttpMethod.
@@ -58,8 +57,7 @@ constexpr auto ConvertVerbBeast(const V& value)
                 }
             }
             return support::HttpMethod::UNKNOWN;
-        }
-        else
+        } else
         {
             for (const auto& pair : map)
             {
@@ -77,4 +75,4 @@ constexpr auto ConvertVerbBeast(const V& value)
 
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_HTTP_BEAST_UTILS_H
+#endif  // NETWORKING_HTTP_BEAST_UTILS

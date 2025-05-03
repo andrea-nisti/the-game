@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_WS_HANDLER_H
-#define SUPPORT_NETWORKING_WS_HANDLER_H
+#ifndef NETWORKING_WEBSOCKET_WS_HANDLER
+#define NETWORKING_WEBSOCKET_WS_HANDLER
 
 #include <functional>
 
@@ -25,4 +25,4 @@ struct WSHandler
 
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_WS_HANDLER_H
+#endif  // NETWORKING_WEBSOCKET_WS_HANDLER

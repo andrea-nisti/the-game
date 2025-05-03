@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_WEBSOCKET_WS_CONTEXT_H
-#define SUPPORT_NETWORKING_WEBSOCKET_WS_CONTEXT_H
+#ifndef NETWORKING_WEBSOCKET_WS_CONTEXT
+#define NETWORKING_WEBSOCKET_WS_CONTEXT
 
 #include <memory>
 #include <string>
@@ -9,8 +9,7 @@
 namespace net = boost::asio;       // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
 
-namespace game::support
-{
+namespace game::support {
 class WebSocketSession;
 
 struct WSContext
@@ -23,4 +22,4 @@ struct WSContext
 };
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_WEBSOCKET_WS_CONTEXT_H
+#endif  // NETWORKING_WEBSOCKET_WS_CONTEXT

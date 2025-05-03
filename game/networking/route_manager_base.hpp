@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_ROUTE_MANAGER_BASE_H
-#define SUPPORT_NETWORKING_ROUTE_MANAGER_BASE_H
+#ifndef NETWORKING_ROUTE_MANAGER_BASE
+#define NETWORKING_ROUTE_MANAGER_BASE
 
 #include <functional>
 #include <memory>
@@ -206,4 +206,4 @@ class RouteManagerBuilder
 
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_ROUTE_MANAGER_BASE_H
+#endif  // NETWORKING_ROUTE_MANAGER_BASE

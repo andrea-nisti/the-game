@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_SESSION_BASE_H
-#define SUPPORT_NETWORKING_SESSION_BASE_H
+#ifndef NETWORKING_SESSION_BASE
+#define NETWORKING_SESSION_BASE
 
 #include <cstdlib>
 
@@ -12,8 +12,7 @@
 #define VALUE(string) #string
 #define TO_STRING(s) VALUE(s)
 
-namespace game::support
-{
+namespace game::support {
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -59,4 +58,4 @@ class SessionBase
 
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_SESSION_BASE_H
+#endif  // NETWORKING_SESSION_BASE
