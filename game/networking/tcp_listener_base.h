@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_TCP_LISTENER_BASE_H
-#define SUPPORT_NETWORKING_TCP_LISTENER_BASE_H
+#ifndef NETWORKING_TCP_LISTENER_BASE
+#define NETWORKING_TCP_LISTENER_BASE
 
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/system/error_code.hpp>
@@ -112,4 +112,4 @@ class TcpListenerBase : public INetworkServer
 
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_TCP_LISTENER_BASE_H
+#endif  // NETWORKING_TCP_LISTENER_BASE

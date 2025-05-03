@@ -190,7 +190,7 @@ class RouteManagerBuilder
         return *this;
     }
 
-    auto AddWS(const Path& path, WSHandler handler)
+    auto AddWebsocket(const Path& path, WSHandler handler)
         -> RouteManagerBuilder<RequestT, ResponseT>&
     {
         rm_ptr_->AddWSCallbackInternal(path, std::move(handler));

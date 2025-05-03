@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_HTTP_HTTP_SESSION_H
-#define SUPPORT_NETWORKING_HTTP_HTTP_SESSION_H
+#ifndef NETWORKING_HTTP_HTTP_SESSION
+#define NETWORKING_HTTP_HTTP_SESSION
 
 #include <cstdlib>
 #include <memory>
@@ -135,4 +135,4 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
 
 }  // namespace game::support
 
-#endif  // SUPPORT_NETWORKING_HTTP_HTTP_SESSION_H
+#endif  // NETWORKING_HTTP_HTTP_SESSION

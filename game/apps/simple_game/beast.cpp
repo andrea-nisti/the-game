@@ -115,7 +115,7 @@ class TestListener : public support::TcpListenerBase
                             }
                         }
                     })
-                .AddWS(
+                .AddWebsocket(
                     "/",
                     {.on_connect =
                          [this](const WSContext& ctx)
