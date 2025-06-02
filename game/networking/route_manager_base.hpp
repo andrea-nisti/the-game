@@ -12,15 +12,8 @@
 namespace game::support {
 
 /**
- * \addtogroup support Support
- * \brief Supporting classes and functions
- * @{
- */
-
-/**
  * \addtogroup networking Networking Utilities
  * \brief Utility classes and functions for network operations
- * \ingroup support
  * @{
  */
 
@@ -61,14 +54,14 @@ class RouteManagerBase
     virtual ~RouteManagerBase() = default;
 
     auto GetWSHandler(const HttpMethod method, const Path& path)
-        -> std::optional<std::reference_wrapper<WSHandler>>
+        -> std::optional<std::reference_wrapper<const WSHandler>>
     {
         if (method == HttpMethod::GET)
         {
             auto it = ws_handlers_.find(path);
             if (it != ws_handlers_.end())
             {
-                return it->second;
+                return std::cref(it->second);
             }
         }
         return {};
@@ -190,7 +183,7 @@ class RouteManagerBuilder
         return *this;
     }
 
-    auto AddWebsocket(const Path& path, WSHandler handler)
+    auto AddWebsocket(const Path& path, WSHandler&& handler)
         -> RouteManagerBuilder<RequestT, ResponseT>&
     {
         rm_ptr_->AddWSCallbackInternal(path, std::move(handler));
@@ -201,7 +194,6 @@ class RouteManagerBuilder
     RMPtr rm_ptr_ = std::make_unique<RouteManagerBase<RequestT, ResponseT>>();
 };
 
-/// @}
 /// @}
 
 }  // namespace game::support

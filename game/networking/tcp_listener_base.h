@@ -10,15 +10,8 @@
 namespace game::support {
 
 /**
- * \addtogroup support Support
- * \brief Supporting classes and functions
- * @{
- */
-
-/**
  * \addtogroup networking Networking Utilities
  * \brief Utility classes and functions for network operations
- * \ingroup support
  * @{
  */
 
@@ -107,7 +100,6 @@ class TcpListenerBase : public INetworkServer
     boost::asio::ip::tcp::acceptor acceptor_;
 };
 
-/// @}
 /// @}
 
 }  // namespace game::support

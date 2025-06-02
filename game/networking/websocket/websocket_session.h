@@ -51,13 +51,13 @@ class WebSocketSession final
         tcp::socket&& socket,
         http::request<http::string_body> req,
         std::optional<Params>&& params,
-        WSHandler handler)
+        const WSHandler& handler)
         : SessionBase<websocket::stream<beast::tcp_stream>, beast::flat_buffer>(
               std::move(socket)),
 
           req_(std::move(req)),
           params_(std::move(params)),
-          handler_(std::move(handler))
+          handler_(handler)
     {}
     virtual ~WebSocketSession() { Close(); }
 
@@ -81,7 +81,7 @@ class WebSocketSession final
     beast::flat_buffer write_buf_;
     http::request<http::string_body> req_;
     std::optional<Params> params_;
-    WSHandler handler_;
+    const WSHandler& handler_;
 };
 
 /// @}

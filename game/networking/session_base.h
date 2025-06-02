@@ -14,11 +14,32 @@
 
 namespace game::support {
 
+/**
+ * \addtogroup networking Networking Utilities
+ * \brief Utility classes and functions for network operations
+ * @{
+ */
+
 namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = boost::asio::ip::tcp;
 
+/**
+ * @class SessionBase
+ * @brief Base class template for managing network sessions.
+ *
+ * This abstract class provides a generic interface for handling network sessions
+ * using Boost.Asio and Boost.Beast. It manages the underlying stream and buffer,
+ * and defines pure virtual methods for running the session, reading, writing,
+ * and closing the connection, as well as handling completion of read and write
+ * operations.
+ *
+ * @tparam Stream The type of the stream (e.g., tcp::socket, ssl::stream<tcp::socket>).
+ * @tparam Buffer The type of buffer used for I/O operations.
+ *
+ * @ingroup networking
+ */
 template <typename Stream, typename Buffer>
 class SessionBase
 {
@@ -55,6 +76,8 @@ class SessionBase
     Stream stream_;
     Buffer buffer_;
 };
+
+/// @}
 
 }  // namespace game::support
 

@@ -123,22 +123,26 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
         response_->set(http::field::server, TO_STRING(VERSION));
         if (is_upgrade)
         {
-            const auto cb = route_manager_->GetWSHandler(method, target);
+            auto cb = route_manager_->GetWSHandler(method, target);
             target_found = cb.has_value();
             if (target_found)
             {
                 std::make_shared<WebSocketSession>(
-                    stream_.release_socket(), request, std::move(params), cb.value())
+                    stream_.release_socket(),
+                    request,
+                    std::move(params),
+                    cb.value().get())
                     ->Run();
                 return;
             }
         } else
         {
-            const auto cb = route_manager_->GetCallback(method, target);
+            auto cb = route_manager_->GetCallback(method, target);
             target_found = cb.has_value();
             if (target_found)
             {
-                std::invoke(cb.value(), request, std::move(params), response_.value());
+                std::invoke(
+                    cb.value().get(), request, std::move(params), response_.value());
             }
         }
     }

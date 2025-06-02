@@ -6,7 +6,7 @@ cc_test(
     srcs = ["deck_tests.cpp"],
     args = ["--gtest_color=yes"],
     deps = [
-        "//core:deck",
+        "//support/games:deck",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],
