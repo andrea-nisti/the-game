@@ -1,9 +1,9 @@
-#ifndef GAME_CORE_PLAYER_H
-#define GAME_CORE_PLAYER_H
+#ifndef SUPPORT_GAMES_PLAYER
+#define SUPPORT_GAMES_PLAYER
 
 #include <string>
 
-#include "core/Deck.h"
+#include "Deck.h"
 
 namespace game::core {
 class Player
@@ -27,4 +27,4 @@ class Player
     Hand hand_ {};
 };
 }  // namespace game::core
-#endif  // GAME_CORE_PLAYER_H
+#endif  // SUPPORT_GAMES_PLAYER

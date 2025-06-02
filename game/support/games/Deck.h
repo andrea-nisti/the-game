@@ -1,14 +1,12 @@
-#ifndef GAME_CORE_DECK_H
-#define GAME_CORE_DECK_H
+#ifndef SUPPORT_GAMES_DECK
+#define SUPPORT_GAMES_DECK
 
 #include <cstddef>
-#include <iostream>
 #include <vector>
 
-#include "core/Card.h"
+#include "Card.h"
 
-namespace game::core
-{
+namespace game::core {
 
 using Hand = std::vector<Card>;
 
@@ -22,34 +20,28 @@ class Deck
     // Just delete everything and enable when needed
     Deck(const Deck&) = delete;
     Deck(Deck&&) = default;
-    Deck& operator=(const Deck&) = delete;
-    Deck& operator=(Deck&&) = delete;
+    auto operator=(const Deck&) -> Deck& = delete;
+    auto operator=(Deck&&) -> Deck& = delete;
 
     // Creational utilities
-    static Deck Build(std::size_t n_of_cards)
+    static auto Build(std::size_t n_of_cards) -> Deck
     {
         Deck deck;
 
-        for (std::size_t i{1}; i <= n_of_cards; ++i)
+        for (std::size_t i {1}; i <= n_of_cards; ++i)
         {
-            deck.AddCard(Card{i});
+            deck.AddCard(Card {i});
         }
         deck.Shuffle();
         return deck;
     }
 
-    Hand::iterator begin()
-    {
-        return cards_.begin();
-    }
+    auto begin() -> Hand::iterator { return cards_.begin(); }
 
-    Hand::iterator end()
-    {
-        return cards_.end();
-    }
+    auto end() -> Hand::iterator { return cards_.end(); }
 
-    [[nodiscard]] bool IsSorted() const;
-    [[nodiscard]] bool IsEmpty() const;
+    [[nodiscard]] auto IsSorted() const -> bool;
+    [[nodiscard]] auto IsEmpty() const -> bool;
     [[nodiscard]] std::size_t GetSize() const;
     [[nodiscard]] const Hand& GetCards() const;
 
@@ -60,12 +52,12 @@ class Deck
     void AddCard(Card&& card);
 
     // removes a card from the top of the deck
-    [[nodiscard]] Card PickCard();
+    [[nodiscard]] auto PickCard() -> Card;
 
-    [[nodiscard]] const Card& GetTopCard() const;
+    [[nodiscard]] auto GetTopCard() const -> const Card&;
 
   private:
-    Hand cards_{};
+    Hand cards_ {};
 };
 }  // namespace game::core
-#endif  // GAME_CORE_DECK_H
+#endif  // SUPPORT_GAMES_DECK

@@ -2,35 +2,35 @@
 
 #include <gtest/gtest.h>
 
-#include "core/Card.h"
-#include "core/Deck.h"
+#include "support/games/Card.h"
+#include "support/games/Deck.h"
 
 // Demonstrate some basic assertions.
 TEST(DeckTest_IsSorted, AddNotSortedCards_ExpectIsSortedFalse)
 {
-    game::core::Deck d{};
-    d.AddCard(game::core::Card{2});
-    d.AddCard(game::core::Card{1});
+    game::core::Deck d {};
+    d.AddCard(game::core::Card {2});
+    d.AddCard(game::core::Card {1});
 
     ASSERT_FALSE(d.IsSorted());
 }
 
 TEST(DeckTest_IsSorted, AddSortedCards_ExpectIsSortedTrue)
 {
-    game::core::Deck d{};
-    d.AddCard(game::core::Card{1});
-    d.AddCard(game::core::Card{2});
-    d.AddCard(game::core::Card{3});
+    game::core::Deck d {};
+    d.AddCard(game::core::Card {1});
+    d.AddCard(game::core::Card {2});
+    d.AddCard(game::core::Card {3});
 
     ASSERT_TRUE(d.IsSorted());
 }
 
 TEST(DeckTest_AddPickCard, AddCards_ExpectSizeCorrectAndUniqueCards)
 {
-    constexpr auto n{100};
+    constexpr auto n {100};
     auto deck = game::core::Deck::Build(n);
 
-    std::unordered_map<game::core::Card::value_t, int> value_counts{};
+    std::unordered_map<game::core::Card::value_t, int> value_counts {};
     while (not deck.IsEmpty())
     {
         auto card = deck.PickCard();
