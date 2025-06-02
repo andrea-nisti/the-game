@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-#
+#!/usr/bin/bash
+
 set -e
 
 BIN_DIR=$HOME/.local/bin

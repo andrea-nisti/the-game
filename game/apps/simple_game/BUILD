@@ -1,5 +1,5 @@
 load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
-load("//apps/deploy:build_app.bzl", "build_app")
+load("//apps:build_app.bzl", "build_app")
 
 build_app(
     name = "app",
