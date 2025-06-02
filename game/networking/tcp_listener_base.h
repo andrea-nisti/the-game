@@ -7,7 +7,7 @@
 #include "interfaces/i_network_server.h"
 #include "networking/net_utils.hpp"
 
-namespace game::support {
+namespace game::networking {
 
 /**
  * \addtogroup networking Networking Utilities
@@ -38,9 +38,9 @@ class TcpListenerBase : public INetworkServer
     {
         boost::system::error_code ec;
 
-        if (not InitializeAcceptor(acceptor_, endpoint, ec))
+        if (not support::InitializeAcceptor(acceptor_, endpoint, ec))
         {
-            throw std::runtime_error(Fail(ec, "InitializeAcceptor"));
+            throw std::runtime_error(support::Fail(ec, "InitializeAcceptor"));
         }
     }
 
@@ -102,6 +102,6 @@ class TcpListenerBase : public INetworkServer
 
 /// @}
 
-}  // namespace game::support
+}  // namespace game::networking
 
 #endif  // NETWORKING_TCP_LISTENER_BASE

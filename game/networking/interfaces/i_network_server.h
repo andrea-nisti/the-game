@@ -1,7 +1,7 @@
 #ifndef NETWORKING_INTERFACES_I_NETWORK_SERVER
 #define NETWORKING_INTERFACES_I_NETWORK_SERVER
 
-namespace game::support {
+namespace game::networking {
 /**
  * @brief The INetowrkServer interface.
  *
@@ -27,6 +27,6 @@ struct INetworkServer
     virtual void Stop() = 0;
 };
 
-}  // namespace game::support
+}  // namespace game::networking
 
 #endif  // NETWORKING_INTERFACES_I_NETWORK_SERVER

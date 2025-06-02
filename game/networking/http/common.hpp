@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace game::support {
+namespace game::networking {
 
 using Path = std::string;
 using ParamKey = std::string;
@@ -22,6 +22,6 @@ enum class HttpMethod
     PATCH
 };
 
-}  // namespace game::support
+}  // namespace game::networking
 
 #endif  // SUPPORT_NETWORKING_HTTP_COMMON_H

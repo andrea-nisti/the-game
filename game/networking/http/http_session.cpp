@@ -14,7 +14,7 @@
 
 #define VERSION SERVER_VERSION
 
-namespace game::support {
+namespace game::networking {
 
 namespace {
 using namespace boost::urls;
@@ -102,7 +102,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
         if (ec == http::error::end_of_stream)
             return Close();
 
-        Fail(ec, "on read");
+        support::Fail(ec, "on read");
         return;
     }
 
@@ -176,7 +176,7 @@ void HttpSession::OnWrite(boost::system::error_code ec, std::size_t bytes_transf
     std::cout << "on write" << std::endl;
     if (ec)
     {
-        Fail(ec, "on write");
+        support::Fail(ec, "on write");
         return;
     }
 
@@ -187,4 +187,4 @@ void HttpSession::OnWrite(boost::system::error_code ec, std::size_t bytes_transf
         return Close();
     }
 }
-}  // namespace game::support
+}  // namespace game::networking

@@ -17,7 +17,7 @@ namespace game::simple_server {
 
 namespace http = boost::beast::http;  // from <boost/beast/http.hpp>
 
-using namespace support;
+using namespace networking;
 using Request = http::request<http::string_body>;
 using Response = http::response<http::string_body>;
 
@@ -38,10 +38,10 @@ using UUID = std::string;
 
 }  // namespace
 
-class TcpListener : public support::TcpListenerBase
+class TcpListener : public TcpListenerBase
 {
   public:
-    using support::TcpListenerBase::TcpListenerBase;
+    using TcpListenerBase::TcpListenerBase;
 
     using RouteManagerPtr = std::unique_ptr<RouteManagerBase<Request, Response>>;
 

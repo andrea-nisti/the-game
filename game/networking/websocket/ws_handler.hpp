@@ -7,7 +7,7 @@
 
 #include "ws_context.hpp"
 
-namespace game::support {
+namespace game::networking {
 
 using OnConnect = std::function<void(const WSContext&)>;
 using OnReceive =
@@ -23,6 +23,6 @@ struct WSHandler
     OnError on_error = [](boost::system::error_code ec, std::string_view what) {};
 };
 
-}  // namespace game::support
+}  // namespace game::networking
 
 #endif  // NETWORKING_WEBSOCKET_WS_HANDLER

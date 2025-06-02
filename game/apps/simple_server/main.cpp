@@ -17,6 +17,8 @@
 namespace game::test {
 
 using namespace support;
+using namespace networking;
+
 using ReqT = http::request<http::string_body>;
 using ResT = http::response<http::string_body>;
 
@@ -34,10 +36,10 @@ void ForEachParam(const std::optional<Params>& params, F&& f)
 }
 }  // namespace
 
-class TestListener : public support::TcpListenerBase
+class TestListener : public TcpListenerBase
 {
   public:
-    using support::TcpListenerBase::TcpListenerBase;
+    using TcpListenerBase::TcpListenerBase;
 
   private:
     void OnAccept(tcp::socket socket) override
@@ -53,7 +55,7 @@ class TestListener : public support::TcpListenerBase
         http::response<http::string_body>>>
         route_manager_;
 
-    std::unordered_map<std::string, WSContext const*> ctxs_;
+    std::unordered_map<std::string, networking::WSContext const*> ctxs_;
     std::string state_ {};
 };
 

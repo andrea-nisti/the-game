@@ -12,7 +12,7 @@
 #define VALUE(string) #string
 #define TO_STRING(s) VALUE(s)
 
-namespace game::support {
+namespace game::networking {
 
 /**
  * \addtogroup networking Networking Utilities
@@ -79,6 +79,6 @@ class SessionBase
 
 /// @}
 
-}  // namespace game::support
+}  // namespace game::networking
 
 #endif  // NETWORKING_SESSION_BASE

@@ -16,7 +16,7 @@
 
 namespace game::test {
 
-using namespace support;
+using namespace networking;
 using ReqT = http::request<http::string_body>;
 using ResT = http::response<http::string_body>;
 
@@ -34,10 +34,10 @@ void ForEachParam(const std::optional<Params>& params, F&& f)
 }
 }  // namespace
 
-class TestListener : public support::TcpListenerBase
+class TestListener : public TcpListenerBase
 {
   public:
-    using support::TcpListenerBase::TcpListenerBase;
+    using TcpListenerBase::TcpListenerBase;
 
   private:
     void OnAccept(tcp::socket socket) override
@@ -52,7 +52,7 @@ class TestListener : public support::TcpListenerBase
         http::request<http::string_body>,
         http::response<http::string_body>>>
         route_manager_ =
-            game::support::RouteManagerBuilder<ReqT, ResT> {}
+            RouteManagerBuilder<ReqT, ResT> {}
                 .Add(
                     ConvertVerbBeast(http::verb::get),
                     "/test",
@@ -118,13 +118,13 @@ class TestListener : public support::TcpListenerBase
                 .AddWebsocket(
                     "/",
                     {.on_connect =
-                         [this](const WSContext& ctx)
+                         [this](const networking::WSContext& ctx)
                      {
                          std::cout << ctx.uuid << " connected" << std::endl;
                          this->ctxs_[ctx.uuid] = &ctx;
                      },
                      .on_disconnect =
-                         [this](const WSContext& ctx)
+                         [this](const networking::WSContext& ctx)
                      {
                          std::cout << ctx.uuid << " disconnected" << std::endl;
                          if (ctxs_.count(ctx.uuid))
@@ -134,7 +134,7 @@ class TestListener : public support::TcpListenerBase
                      },
                      .on_receive =
                          [this](
-                             const WSContext& ctx,
+                             const networking::WSContext& ctx,
                              std::string_view buf,
                              std::size_t size,
                              bool is_binary)
@@ -153,7 +153,7 @@ class TestListener : public support::TcpListenerBase
                      }})
                 .Build();
 
-    std::unordered_map<std::string, WSContext const*> ctxs_;
+    std::unordered_map<std::string, networking::WSContext const*> ctxs_;
     std::string state_ {};
 };
 

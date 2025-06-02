@@ -4,8 +4,7 @@
 
 #include "networking/net_utils.hpp"
 
-namespace game::support
-{
+namespace game::networking {
 
 void WebSocketSession::Run()
 {
@@ -57,7 +56,7 @@ void WebSocketSession::OnRead(boost::system::error_code ec, std::size_t bytes_tr
     if (ec)
     {
         const auto where = "on read";
-        Fail(ec, where);
+        support::Fail(ec, where);
         std::invoke(handler_.on_error, ec, where);
         return;
     }
@@ -87,7 +86,7 @@ void WebSocketSession::OnWrite(
     if (ec)
     {
         const auto where = "on write";
-        Fail(ec, where);
+        support::Fail(ec, where);
         std::invoke(handler_.on_error, ec, where);
         return;
     }
@@ -100,7 +99,7 @@ void WebSocketSession::OnAccept(boost::system::error_code ec)
     if (ec)
     {
         const auto where = "on accept";
-        Fail(ec, where);
+        support::Fail(ec, where);
         std::invoke(handler_.on_error, ec, where);
         return;
     }
@@ -112,4 +111,4 @@ void WebSocketSession::OnAccept(boost::system::error_code ec)
     // Read a message
     Read();
 }
-}  // namespace game::support
+}  // namespace game::networking

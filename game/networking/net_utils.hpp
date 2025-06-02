@@ -7,7 +7,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/system/error_code.hpp>
 
-namespace game::  support {
+namespace game::support {
 
 namespace net = boost::asio;
 inline std::string Fail(boost::system::error_code ec, std::string_view what)
@@ -59,4 +59,4 @@ inline bool InitializeAcceptor(
 
 }  // namespace game::support
 
-#endif // NETWORKING_NET_UTILS
+#endif  // NETWORKING_NET_UTILS

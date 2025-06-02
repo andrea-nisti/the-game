@@ -9,10 +9,11 @@ using namespace boost::beast;
 using ReqT = http::request<http::string_body>;
 using ResT = bool;
 
-struct RouteManagerWithHandleRequest : public game::support::RouteManagerBase<ReqT, ResT>
+struct RouteManagerWithHandleRequest
+    : public game::networking::RouteManagerBase<ReqT, ResT>
 {
     void HandleRequest(
-        const game::support::HttpMethod method,
+        const game::networking::HttpMethod method,
         const std::string& path,
         const ReqT& req,
         ResT& res)
@@ -27,12 +28,12 @@ struct RouteManagerWithHandleRequest : public game::support::RouteManagerBase<Re
 
 TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
 {
-    using namespace game::support;
+    using namespace game::networking;
     std::function<void(const ReqT& req, ResT&)> callback =
         [](const ReqT& req, ResT& res) -> void { res = true; };
 
     auto route_manager_ptr =
-        game::support::RouteManagerBuilder<ReqT, ResT> {}
+        game::networking::RouteManagerBuilder<ReqT, ResT> {}
             .WithRouteManagerType<RouteManagerWithHandleRequest>()
             .Add(
                 ConvertVerbBeast(http::verb::get),
@@ -50,18 +51,18 @@ TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
     ReqT req {};
     req.body() = "test";
     ResT res {false};
-    rm->HandleRequest(game::support::HttpMethod::GET, "/test", req, res);
+    rm->HandleRequest(game::networking::HttpMethod::GET, "/test", req, res);
     EXPECT_TRUE(res);
 
     ResT res2 {false};
-    rm->HandleRequest(game::support::HttpMethod::UNKNOWN, "/test", req, res2);
+    rm->HandleRequest(game::networking::HttpMethod::UNKNOWN, "/test", req, res2);
     EXPECT_FALSE(res2);
 
     ResT res3 {false};
-    rm->HandleRequest(game::support::HttpMethod::GET, "/", req, res3);
+    rm->HandleRequest(game::networking::HttpMethod::GET, "/", req, res3);
     EXPECT_FALSE(res3);
 
     ResT res4 {false};
-    rm->HandleRequest(game::support::HttpMethod::POST, "/test_post", req, res4);
+    rm->HandleRequest(game::networking::HttpMethod::POST, "/test_post", req, res4);
     EXPECT_TRUE(res4);
 }

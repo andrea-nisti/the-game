@@ -2,8 +2,7 @@
 
 #include <boost/asio/dispatch.hpp>
 
-namespace game::support
-{
+namespace game::networking {
 
 void TcpListenerBase::Start()
 {
@@ -30,8 +29,7 @@ void TcpListenerBase::OnAcceptContinue(boost::system::error_code ec, tcp::socket
     if (ec)
     {
         OnError(ec, "accept");
-    }
-    else
+    } else
     {
         OnAccept(std::move(socket));
     }
@@ -42,7 +40,7 @@ void TcpListenerBase::OnAcceptContinue(boost::system::error_code ec, tcp::socket
 
 void TcpListenerBase::OnError(boost::system::error_code ec, std::string_view what)
 {
-    Fail(ec, what);
+    support::Fail(ec, what);
 }
 
-}  // namespace game::support
+}  // namespace game::networking

@@ -23,7 +23,7 @@ namespace websocket = beast::websocket;  // from <boost/beast/websocket.hpp>
 namespace net = boost::asio;             // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;        // from <boost/asio/ip/tcp.hpp>
 
-namespace game::support {
+namespace game::networking {
 
 /**
  * \addtogroup support Support
@@ -77,7 +77,7 @@ class WebSocketSession final
     void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) override;
     void Close() override {}
 
-    WSContext ctx_;
+    networking::WSContext ctx_;
     beast::flat_buffer write_buf_;
     http::request<http::string_body> req_;
     std::optional<Params> params_;
@@ -87,6 +87,6 @@ class WebSocketSession final
 /// @}
 /// @}
 
-}  // namespace game::support
+}  // namespace game::networking
 
 #endif  // NETWORKING_WEBSOCKET_WEBSOCKET_SESSION

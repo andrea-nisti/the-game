@@ -9,7 +9,7 @@
 namespace net = boost::asio;       // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
 
-namespace game::support {
+namespace game::networking {
 class WebSocketSession;
 
 struct WSContext
@@ -20,6 +20,6 @@ struct WSContext
     std::weak_ptr<WebSocketSession> ws_session;
     std::string target;
 };
-}  // namespace game::support
+}  // namespace game::networking
 
 #endif  // NETWORKING_WEBSOCKET_WS_CONTEXT

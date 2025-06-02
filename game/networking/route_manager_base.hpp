@@ -9,7 +9,7 @@
 #include "networking/http/common.hpp"
 #include "networking/websocket/ws_handler.hpp"
 
-namespace game::support {
+namespace game::networking {
 
 /**
  * \addtogroup networking Networking Utilities
@@ -142,7 +142,7 @@ class RouteManagerBuilder
      *
      * This function will move the internal RouteManagerBase instance and return
      * it as a unique pointer of type
-     * @ref game::support::RouteManagerBase<RequestT,
+     * @ref game::networking::RouteManagerBase<RequestT,
      * ResponseT>>;
      *
      * @return The created RouteManagerBase instance.
@@ -196,6 +196,6 @@ class RouteManagerBuilder
 
 /// @}
 
-}  // namespace game::support
+}  // namespace game::networking
 
 #endif  // NETWORKING_ROUTE_MANAGER_BASE

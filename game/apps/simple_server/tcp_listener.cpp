@@ -5,6 +5,8 @@
 
 namespace game::simple_server {
 
+using namespace networking;
+
 void TcpListener::OnAccept(tcp::socket socket)
 {
     auto http = std::make_shared<HttpSession>(std::move(socket), route_manager_.get());
@@ -14,7 +16,7 @@ void TcpListener::OnAccept(tcp::socket socket)
 
 auto TcpListener::BuildRouteManager() -> RouteManagerPtr
 {
-    return game::support::RouteManagerBuilder<Request, Response> {}
+    return RouteManagerBuilder<Request, Response> {}
         .AddWebsocket(
             "/",
             {.on_connect =

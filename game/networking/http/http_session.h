@@ -21,7 +21,7 @@ namespace http = beast::http;      // from <boost/beast/http.hpp>
 namespace net = boost::asio;       // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
 
-namespace game::support {
+namespace game::networking {
 
 /**
  * \addtogroup support Support
@@ -133,6 +133,6 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
 /// @}
 /// @}
 
-}  // namespace game::support
+}  // namespace game::networking
 
 #endif  // NETWORKING_HTTP_HTTP_SESSION
