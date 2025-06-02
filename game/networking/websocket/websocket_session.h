@@ -75,7 +75,15 @@ class WebSocketSession final
     void OnRead(boost::system::error_code ec, std::size_t bytes_transferred) override;
     void Write() override;
     void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred) override;
-    void Close() override {}
+    void Close() override
+    {
+        boost::system::error_code ec;
+        if (this->stream_.is_open())
+        {
+            this->stream_.close(websocket::close_code::normal, ec);
+            // Optionally log or handle ec if needed
+        }
+    }
 
     networking::WSContext ctx_;
     beast::flat_buffer write_buf_;

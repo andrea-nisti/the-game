@@ -5,7 +5,7 @@
 #include <string>
 
 #include "apps/simple_server/player_controller_base.hpp"
-#include "networking/websocket/ws_context.hpp"
+#include "networking/websocket/websocket_session.h"
 
 namespace game::core {
 
@@ -13,7 +13,7 @@ template <typename Command>
 class WebSocketPlayerController : public PlayerControllerBase<Command>
 {
   public:
-    WebSocketPlayerController(boost::asio::io_context& io_ctx, support::WSContext ctx)
+    WebSocketPlayerController(boost::asio::io_context& io_ctx, networking::WSContext ctx)
         : PlayerControllerBase<Command>(io_ctx), ws_context_(std::move(ctx))
     {}
 
@@ -22,7 +22,10 @@ class WebSocketPlayerController : public PlayerControllerBase<Command>
         // Ensure commands are processed sequentially using the strand
         boost::asio::post(
             this->io_ctx_.get_executor(),
-            [this, command]() { this->ProcessCommand(command); });
+            [this, command]()
+            {
+                // TODO: call command dispatcher
+            });
     }
 
     void SendMessage(const std::string& message) override
@@ -37,16 +40,11 @@ class WebSocketPlayerController : public PlayerControllerBase<Command>
     {
         if (auto session = ws_context_.ws_session.lock())
         {
-            session->Close();
+            // session->Close();
         }
     }
 
   private:
-    void ProcessCommand(const Command& command)
-    {
-        // Process the command - to be implemented by derived classes
-    }
-
     networking::WSContext ws_context_;
 };
 
