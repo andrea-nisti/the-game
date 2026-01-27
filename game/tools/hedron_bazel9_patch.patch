@@ -1,0 +1,128 @@
+diff --git a/BUILD b/BUILD
+index e120f11..fb68fcc 100644
+--- a/BUILD
++++ b/BUILD
+@@ -1,3 +1,4 @@
++load("@rules_cc//cc:defs.bzl", "cc_binary")
+ load(":refresh_compile_commands.bzl", "refresh_compile_commands")
+ 
+ # See README.md for interface.
+@@ -8,24 +9,24 @@ refresh_compile_commands(
+     name = "refresh_all",
+ )
+ 
+-
+ # Stardoc users only: Depend on "@hedron_compile_commands//:bzl_srcs_for_stardoc" as needed.
+ # Why? Stardoc requires all loaded files to be listed as deps; without this we'd prevent users from running Stardoc on their code when they load from this tool in, e.g., their own workspace.bzl or wrapping macros.
+ filegroup(
+     name = "bzl_srcs_for_stardoc",
+-    visibility = ["//visibility:public"],
+     srcs = glob(["**/*.bzl"]) + [
+         "@bazel_tools//tools:bzl_srcs",
+     ],
++    visibility = ["//visibility:public"],
+ )
+ 
+-
+-
+ ########################################
+ # Implementation:
+ # If you are looking into the implementation, start with the overview in ImplementationReadme.md.
+ 
+-exports_files(["refresh.template.py", "check_python_version.template.py"])  # For implicit use by the refresh_compile_commands macro, not direct use.
++exports_files([
++    "refresh.template.py",
++    "check_python_version.template.py",
++])  # For implicit use by the refresh_compile_commands macro, not direct use.
+ 
+ cc_binary(
+     name = "print_args",
+diff --git a/ImplementationReadme.md b/ImplementationReadme.md
+index 2a8c708..fdb2776 100644
+--- a/ImplementationReadme.md
++++ b/ImplementationReadme.md
+@@ -116,7 +116,7 @@ We make the choice to set the compilation working directory ("directory" key) to
+ 
+ I'm calling out this decision explicitly, because there's a tempting trap that caught Bazel's official editor plugins (Android Studio, Xcode, ...) before we helped fix them.
+ 
+-Do not be tempted to set the compilation "directory" to the bazel execroot (`bazel info execution_root`). The execroot may seem to work but breaks subtly on the next build; the execroot directory is reconfigured for whatever new target is being built, deleting the links to external workspaces and top-level packages not used by that particular build. Using the execroot might be tempting because that *is* where Bazel says it's going to invoke the command it gave you, but don't do it! It'll only have the subset of the code used for the last build, not for all build, breaking the paths used for editing the rest of the codebase.
++Do not be tempted to set the compilation "directory" to the bazel execroot (`bazel info execution_root`). The execroot may seem to work but breaks subtly on the next build; the execroot directory is reconfigured for whatever new target is being built, deleting the links to external workspaces and top-level packages not used by that particular build. Using the execroot might be tempting because that *is* where Bazel says it's going to invoke the command it gave you, but don't do it! It'll only have the subset of the code used for the last build, not for all builds, breaking the paths used for editing the rest of the codebase.
+ 
+ Remember that the key goal of `compile_commands.json` is to "de-Bazel" the build commands into something `clangd` can understand. Not pointing into Bazel's temporary build scratch space (execroot) is an important part of decoupling from Bazel's transitory state.
+ 
+diff --git a/MODULE.bazel b/MODULE.bazel
+index 23e060f..5bd79f0 100644
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -1,6 +1,12 @@
+ module(name = "hedron_compile_commands")
+ 
++bazel_dep(name = "rules_python", version = "1.0.0")
++bazel_dep(name = "rules_cc", version = "0.2.16")
++
+ p = use_extension("//:workspace_setup.bzl", "hedron_compile_commands_extension")
++
+ pt = use_extension("//:workspace_setup_transitive.bzl", "hedron_compile_commands_extension")
++
+ ptt = use_extension("//:workspace_setup_transitive_transitive.bzl", "hedron_compile_commands_extension")
++
+ pttt = use_extension("//:workspace_setup_transitive_transitive_transitive.bzl", "hedron_compile_commands_extension")
+diff --git a/refresh_compile_commands.bzl b/refresh_compile_commands.bzl
+index 0210d42..bef9b9a 100644
+--- a/refresh_compile_commands.bzl
++++ b/refresh_compile_commands.bzl
+@@ -52,18 +52,18 @@ refresh_compile_commands(
+ ```
+ """
+ 
+-
+ ########################################
+ # Implementation
+ 
+ load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
+-
++load("@rules_python//python:py_binary.bzl", _py_binary = "py_binary")
+ 
+ def refresh_compile_commands(
+         name,
+         targets = None,
+         exclude_headers = None,
+         exclude_external_sources = False,
++        py_binary = _py_binary,
+         **kwargs):  # For the other common attributes. Tags, compatible_with, etc. https://docs.bazel.build/versions/main/be/common-definitions.html#common-attributes.
+     # Convert the various, acceptable target shorthands into the dictionary format
+     # In Python, `type(x) == y` is an antipattern, but [Starlark doesn't support inheritance](https://bazel.build/rules/language), so `isinstance` doesn't exist, and this is the correct way to switch on type.
+@@ -80,7 +80,8 @@ def refresh_compile_commands(
+ 
+     # Make any package-relative labels absolute
+     targets = {
+-        target if target.startswith("/") or target.startswith("@") else "{}//{}:{}".format(native.repository_name(), native.package_name(), target.removeprefix(":")): flags for target, flags in targets.items()
++        target if target.startswith("/") or target.startswith("@") else "{}//{}:{}".format(native.repository_name(), native.package_name(), target.removeprefix(":")): flags
++        for target, flags in targets.items()
+     }
+ 
+     # Create a wrapper script that prints a helpful error message if the python version is too old, generated from check_python_version.template.py
+@@ -92,12 +93,12 @@ def refresh_compile_commands(
+     _expand_template(name = script_name, labels_to_flags = targets, exclude_headers = exclude_headers, exclude_external_sources = exclude_external_sources, **kwargs)
+ 
+     # Combine them so the wrapper calls the main script
+-    native.py_binary(
++    py_binary(
+         name = name,
+         main = version_checker_script_name,
+         srcs = [version_checker_script_name, script_name],
+         data = ["@hedron_compile_commands//:print_args"],
+-        imports = [''], # Allows binary to import templated script, even if this macro is being called inside a sub package. See https://github.com/hedronvision/bazel-compile-commands-extractor/issues/137
++        imports = [""],  # Allows binary to import templated script, even if this macro is being called inside a sub package. See https://github.com/hedronvision/bazel-compile-commands-extractor/issues/137
+         **kwargs
+     )
+ 
+@@ -149,7 +150,7 @@ def _check_python_version_impl(ctx):
+ 
+ _check_python_version = rule(
+     attrs = {
+-        "to_run": attr.string(mandatory = True), # Name of the python module (no .py) to import and call .main() on, should checks succeed.
++        "to_run": attr.string(mandatory = True),  # Name of the python module (no .py) to import and call .main() on, should checks succeed.
+         "_template": attr.label(allow_single_file = True, default = "check_python_version.template.py"),
+     },
+     implementation = _check_python_version_impl,
