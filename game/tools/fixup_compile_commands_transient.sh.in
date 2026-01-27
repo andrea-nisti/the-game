@@ -5,9 +5,9 @@ set -euo pipefail
 cc_file="$BUILD_WORKSPACE_DIRECTORY/compile_commands.json"
 
 if [[ ! -f "$cc_file" ]]; then
-  echo "Error: $cc_file not found"
-  echo "Please run the compile commands generation"
-  exit 1
+    echo "Error: $cc_file not found"
+    echo "Please run the compile commands generation"
+    exit 1
 fi
 
 sed -i 's|bazel-out/k8-fastbuild/bin|bazel-bin|g' "$cc_file"

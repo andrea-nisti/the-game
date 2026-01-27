@@ -9,7 +9,7 @@ load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 def create_aliases(name = "create_aliases"):
     native.alias(
         name = "format",
-        actual = "//common_tools:format",
+        actual = "//tools:format",
     )
 
 def create_compile_commands(name = "compile_commands", targets = {}):
@@ -26,7 +26,7 @@ def create_compile_commands(name = "compile_commands", targets = {}):
         # And if you're working on a header-only library, specify a test or binary target that compiles it.
     )
     expand_template_rule(
-        template = "//common_tools:fixup_compile_commands_transient.sh.in",
+        template = "//tools:fixup_compile_commands_transient.sh.in",
         is_executable = True,
         name = "fix_compile_commands_script",
         out = "fix_compile_commands.sh",
