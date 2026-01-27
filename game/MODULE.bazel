@@ -65,8 +65,6 @@ http_archive(
 
 # OCI container rules for deployment
 # For testing, is recomended https://registry.bazel.build/modules/container_structure_test
-bazel_dep(name = "rules_oci", version = "2.2.6")
-
 oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
 
 # Pull needed base image
