@@ -1,0 +1,6 @@
+brew "llvm@21"
+brew "binutils"
+brew "buildifier"
+
+
+
