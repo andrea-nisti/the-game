@@ -10,7 +10,7 @@
 namespace game::support {
 
 namespace net = boost::asio;
-inline std::string Fail(boost::system::error_code ec, std::string_view what)
+inline auto Fail(boost::system::error_code ec, std::string_view what) -> std::string
 {
     std::ostringstream ss {};
     ss << what << ": " << ec.message() << " ec: " << ec << "\n";
@@ -18,10 +18,10 @@ inline std::string Fail(boost::system::error_code ec, std::string_view what)
     return ss.str();
 }
 
-inline bool InitializeAcceptor(
+inline auto InitializeAcceptor(
     boost::asio::ip::tcp::acceptor& acceptor,
     boost::asio::ip::tcp::endpoint const& endpoint,
-    boost::system::error_code& ec)
+    boost::system::error_code& ec) -> bool
 {
     // Open the acceptor
     acceptor.open(endpoint.protocol(), ec);
