@@ -1,13 +1,12 @@
 #ifndef NETWORKING_ROUTE_MANAGER_BASE
 #define NETWORKING_ROUTE_MANAGER_BASE
 
+#include "networking/http/common.hpp"
+#include "networking/websocket/ws_handler.hpp"
 #include <functional>
 #include <memory>
 #include <optional>
 #include <utility>
-
-#include "networking/http/common.hpp"
-#include "networking/websocket/ws_handler.hpp"
 
 namespace game::networking {
 
@@ -36,16 +35,15 @@ template <typename RequestT, typename ResponseT>
 class RouteManagerBase
 {
   public:
-    using CallbackT = std::function<void(
-        const RequestT&, const std::optional<Params> params, ResponseT&)>;
-    using CallbackMap =
-        std::unordered_map<HttpMethod, std::unordered_map<Path, CallbackT>>;
+    using CallbackT = std::function<void(const RequestT&, const std::optional<Params> params, ResponseT&)>;
+    using CallbackMap = std::unordered_map<HttpMethod, std::unordered_map<Path, CallbackT>>;
     using WSHandlerMap = std::unordered_map<Path, WSHandler>;
     friend class RouteManagerBuilder<RequestT, ResponseT>;
 
     RouteManagerBase(CallbackMap callbacks, WSHandlerMap ws_handlers)
         : callbacks_(std::move(callbacks)), ws_handlers_(std::move(ws_handlers))
-    {}
+    {
+    }
     RouteManagerBase() = default;
     RouteManagerBase(const RouteManagerBase&) = delete;
     RouteManagerBase(RouteManagerBase&&) = delete;
@@ -95,18 +93,13 @@ class RouteManagerBase
      * @param path The path to which this request corresponds.
      * @param callback The callback to add.
      */
-    virtual void AddCallback(
-        CallbackMap& callbacks,
-        const HttpMethod method,
-        const Path& path,
-        CallbackT&& callback)
+    virtual void AddCallback(CallbackMap& callbacks, const HttpMethod method, const Path& path, CallbackT&& callback)
     {
         callbacks[method].emplace(path, std::move(callback));
     }
 
   private:
-    void AddCallbackInternal(
-        const HttpMethod method, const Path& path, CallbackT&& callback)
+    void AddCallbackInternal(const HttpMethod method, const Path& path, CallbackT&& callback)
     {
         AddCallback(callbacks_, method, path, std::move(callback));
     }
@@ -176,15 +169,13 @@ class RouteManagerBuilder
      * @return The instance of RouteManagerBuilder so that this function can be
      *         chained.
      */
-    auto Add(const HttpMethod method, const Path& path, CallbackT callback)
-        -> RouteManagerBuilder<RequestT, ResponseT>&
+    auto Add(const HttpMethod method, const Path& path, CallbackT callback) -> RouteManagerBuilder<RequestT, ResponseT>&
     {
         rm_ptr_->AddCallbackInternal(method, path, std::move(callback));
         return *this;
     }
 
-    auto AddWebsocket(const Path& path, WSHandler&& handler)
-        -> RouteManagerBuilder<RequestT, ResponseT>&
+    auto AddWebsocket(const Path& path, WSHandler&& handler) -> RouteManagerBuilder<RequestT, ResponseT>&
     {
         rm_ptr_->AddWSCallbackInternal(path, std::move(handler));
         return *this;

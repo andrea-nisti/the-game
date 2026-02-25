@@ -1,27 +1,25 @@
 #ifndef NETWORKING_NET_UTILS
 #define NETWORKING_NET_UTILS
 
-#include <iostream>
-#include <sstream>
-
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/system/error_code.hpp>
+#include <iostream>
+#include <sstream>
 
 namespace game::support {
 
 namespace net = boost::asio;
 inline auto Fail(boost::system::error_code ec, std::string_view what) -> std::string
 {
-    std::ostringstream ss {};
+    std::ostringstream ss{};
     ss << what << ": " << ec.message() << " ec: " << ec << "\n";
     std::cerr << ss.str();
     return ss.str();
 }
 
-inline auto InitializeAcceptor(
-    boost::asio::ip::tcp::acceptor& acceptor,
-    boost::asio::ip::tcp::endpoint const& endpoint,
-    boost::system::error_code& ec) -> bool
+inline auto InitializeAcceptor(boost::asio::ip::tcp::acceptor& acceptor,
+                               boost::asio::ip::tcp::endpoint const& endpoint,
+                               boost::system::error_code& ec) -> bool
 {
     // Open the acceptor
     acceptor.open(endpoint.protocol(), ec);

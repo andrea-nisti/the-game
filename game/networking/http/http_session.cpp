@@ -1,16 +1,13 @@
 #include "http_session.h"
-
-#include <string>
-
-#include <boost/beast/http/message.hpp>
-#include <boost/beast/http/status.hpp>
-#include <boost/beast/websocket.hpp>
-#include <boost/url.hpp>
-
 #include "beast_utils.hpp"
 #include "networking/http/common.hpp"
 #include "networking/net_utils.hpp"
 #include "networking/websocket/websocket_session.h"
+#include <boost/beast/http/message.hpp>
+#include <boost/beast/http/status.hpp>
+#include <boost/beast/websocket.hpp>
+#include <boost/url.hpp>
+#include <string>
 
 #define VERSION SERVER_VERSION
 
@@ -19,13 +16,12 @@ namespace game::networking {
 namespace {
 using namespace boost::urls;
 using namespace boost::asio::ip;
-std::optional<url> ParseUri(
-    const std::string protocol, const basic_endpoint<tcp>& endpoint, std::string target)
+std::optional<url> ParseUri(const std::string protocol, const basic_endpoint<tcp>& endpoint, std::string target)
 {
     std::string const local_address = endpoint.address().to_string();
     std::string const port = std::to_string(endpoint.port());
 
-    std::string full_path {protocol + "://" + local_address + ":" + port + target};
+    std::string full_path{protocol + "://" + local_address + ":" + port + target};
     std::cout << "uri " << full_path << std::endl;
     auto const parsed = parse_uri(full_path);
 
@@ -54,7 +50,9 @@ std::optional<Params> ParseQuery(url const& url)
         for (const auto& q : url.encoded_params())
         {
             if (q.key != empty_param)
-                params.emplace(q.key, q.has_value ? q.value : std::string {empty_param});
+            {
+                params.emplace(q.key, q.has_value ? q.value : std::string{empty_param});
+            }
         }
         return params;
     }
@@ -65,8 +63,7 @@ std::optional<Params> ParseQuery(url const& url)
 
 void HttpSession::Run()
 {
-    net::dispatch(
-        stream_.get_executor(), [self = shared_from_this()]() { self->Read(); });
+    net::dispatch(stream_.get_executor(), [self = shared_from_this()]() { self->Read(); });
 }
 void HttpSession::Close()
 {
@@ -87,20 +84,21 @@ void HttpSession::Read()
     stream_.expires_after(std::chrono::seconds(30));
 
     // Read a request using the parser-oriented interface
-    http::async_read(
-        stream_,
-        buffer_,
-        *parser_,
-        [self = shared_from_this()](
-            boost::system::error_code ec, std::size_t bytes_transferred)
-        { self->OnRead(ec, bytes_transferred); });
+    http::async_read(stream_,
+                     buffer_,
+                     *parser_,
+                     [self = shared_from_this()](boost::system::error_code ec, std::size_t bytes_transferred) {
+                         self->OnRead(ec, bytes_transferred);
+                     });
 }
 void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transferred)
 {
     if (ec)
     {
         if (ec == http::error::end_of_stream)
+        {
             return Close();
+        }
 
         support::Fail(ec, "on read");
         return;
@@ -110,8 +108,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
     const auto method = ConvertVerbBeast(request.method());
     const auto full_target = request.target();
     const bool is_upgrade = beast::websocket::is_upgrade(request);
-    const auto uri = ParseUri(
-        is_upgrade ? "ws" : "http", stream_.socket().local_endpoint(), full_target);
+    const auto uri = ParseUri(is_upgrade ? "ws" : "http", stream_.socket().local_endpoint(), full_target);
 
     bool target_found = false;
     if (uri.has_value())
@@ -128,21 +125,18 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
             if (target_found)
             {
                 std::make_shared<WebSocketSession>(
-                    stream_.release_socket(),
-                    request,
-                    std::move(params),
-                    cb.value().get())
+                    stream_.release_socket(), request, std::move(params), cb.value().get())
                     ->Run();
                 return;
             }
-        } else
+        }
+        else
         {
             auto cb = route_manager_->GetCallback(method, target);
             target_found = cb.has_value();
             if (target_found)
             {
-                std::invoke(
-                    cb.value().get(), request, std::move(params), response_.value());
+                std::invoke(cb.value().get(), request, std::move(params), response_.value());
             }
         }
     }
@@ -163,12 +157,11 @@ void HttpSession::Write()
     keep_alive_ = response_.value().keep_alive();
     response_.value().prepare_payload();
 
-    beast::async_write(
-        stream_,
-        http::message_generator {std::move(response_.value())},
-        [self = shared_from_this()](
-            boost::system::error_code ec, std::size_t bytes_transferred)
-        { self->OnWrite(ec, bytes_transferred); });
+    beast::async_write(stream_,
+                       http::message_generator{std::move(response_.value())},
+                       [self = shared_from_this()](boost::system::error_code ec, std::size_t bytes_transferred) {
+                           self->OnWrite(ec, bytes_transferred);
+                       });
 }
 void HttpSession::OnWrite(boost::system::error_code ec, std::size_t bytes_transferred)
 {

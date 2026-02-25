@@ -1,13 +1,12 @@
 #ifndef NETWORKING_SESSION_BASE
 #define NETWORKING_SESSION_BASE
 
-#include <cstdlib>
-
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/optional.hpp>
 #include <boost/throw_exception.hpp>
+#include <cstdlib>
 
 #define VALUE(string) #string
 #define TO_STRING(s) VALUE(s)
@@ -45,7 +44,7 @@ class SessionBase
 {
   public:
     // Take ownership of the socket
-    SessionBase(tcp::socket&& socket) : stream_(std::move(socket)) {}
+    explicit SessionBase(tcp::socket&& socket) : stream_(std::move(socket)) {}
 
     /**
      * Start the session

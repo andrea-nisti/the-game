@@ -1,22 +1,16 @@
-#include <boost/beast/http.hpp>
-#include <gtest/gtest.h>
-
 #include "networking/http/beast_utils.hpp"
 #include "networking/route_manager_base.hpp"
+#include <boost/beast/http.hpp>
+#include <gtest/gtest.h>
 
 using namespace boost::beast;
 
 using ReqT = http::request<http::string_body>;
 using ResT = bool;
 
-struct RouteManagerWithHandleRequest
-    : public game::networking::RouteManagerBase<ReqT, ResT>
+struct RouteManagerWithHandleRequest : public game::networking::RouteManagerBase<ReqT, ResT>
 {
-    void HandleRequest(
-        const game::networking::HttpMethod method,
-        const std::string& path,
-        const ReqT& req,
-        ResT& res)
+    void HandleRequest(const game::networking::HttpMethod method, const std::string& path, const ReqT& req, ResT& res)
     {
         auto cb = RouteManagerBase<ReqT, ResT>::GetCallback(method, path);
         if (cb.has_value())
@@ -29,40 +23,35 @@ struct RouteManagerWithHandleRequest
 TEST(RouteManager, WhenHandleRequest_CheckCallbackIsCalled)
 {
     using namespace game::networking;
-    std::function<void(const ReqT& req, ResT&)> callback =
-        [](const ReqT& req, ResT& res) -> void { res = true; };
+    std::function<void(const ReqT& req, ResT&)> callback = [](const ReqT& req, ResT& res) -> void { res = true; };
 
     auto route_manager_ptr =
-        game::networking::RouteManagerBuilder<ReqT, ResT> {}
+        game::networking::RouteManagerBuilder<ReqT, ResT>{}
             .WithRouteManagerType<RouteManagerWithHandleRequest>()
-            .Add(
-                ConvertVerbBeast(http::verb::get),
-                "/test",
-                [](const ReqT& req, std::optional<Params> params, ResT& res) -> void
-                { res = true; })
-            .Add(
-                ConvertVerbBeast(http::verb::post),
-                "/test_post",
-                [](const ReqT& req, std::optional<Params> params, ResT& res) -> void
-                { res = true; })
+            .Add(ConvertVerbBeast(http::verb::get),
+                 "/test",
+                 [](const ReqT& req, std::optional<Params> params, ResT& res) -> void { res = true; })
+            .Add(ConvertVerbBeast(http::verb::post),
+                 "/test_post",
+                 [](const ReqT& req, std::optional<Params> params, ResT& res) -> void { res = true; })
             .Build();
 
     auto rm = dynamic_cast<RouteManagerWithHandleRequest*>(route_manager_ptr.get());
-    ReqT req {};
+    ReqT req{};
     req.body() = "test";
-    ResT res {false};
+    ResT res{false};
     rm->HandleRequest(game::networking::HttpMethod::GET, "/test", req, res);
     EXPECT_TRUE(res);
 
-    ResT res2 {false};
+    ResT res2{false};
     rm->HandleRequest(game::networking::HttpMethod::UNKNOWN, "/test", req, res2);
     EXPECT_FALSE(res2);
 
-    ResT res3 {false};
+    ResT res3{false};
     rm->HandleRequest(game::networking::HttpMethod::GET, "/", req, res3);
     EXPECT_FALSE(res3);
 
-    ResT res4 {false};
+    ResT res4{false};
     rm->HandleRequest(game::networking::HttpMethod::POST, "/test_post", req, res4);
     EXPECT_TRUE(res4);
 }

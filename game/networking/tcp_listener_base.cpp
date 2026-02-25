@@ -1,5 +1,4 @@
 #include "tcp_listener_base.h"
-
 #include <boost/asio/dispatch.hpp>
 
 namespace game::networking {
@@ -18,10 +17,8 @@ void TcpListenerBase::Stop()
 
 void TcpListenerBase::DoAccept()
 {  // The new connection gets its own strand
-    acceptor_.async_accept(
-        io_context_ref_,
-        [this](auto ec, auto socket) -> void
-        { this->OnAcceptContinue(ec, std::move(socket)); });
+    acceptor_.async_accept(io_context_ref_,
+                           [this](auto ec, auto socket) -> void { this->OnAcceptContinue(ec, std::move(socket)); });
 }
 
 void TcpListenerBase::OnAcceptContinue(boost::system::error_code ec, tcp::socket socket)
@@ -29,7 +26,8 @@ void TcpListenerBase::OnAcceptContinue(boost::system::error_code ec, tcp::socket
     if (ec)
     {
         OnError(ec, "accept");
-    } else
+    }
+    else
     {
         OnAccept(std::move(socket));
     }

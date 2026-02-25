@@ -6,10 +6,11 @@ Checks: "
   -altera-*,
   -android-*,
   -fuchsia-*,
-  -google-*,
+  google-*,
   -llvm*,
   # cppcoreguidelines-*,
   modernize-*,
+  -modernize-use-trailing-return-type
 "
 WarningsAsErrors: true
 HeaderFilterRegex: ""

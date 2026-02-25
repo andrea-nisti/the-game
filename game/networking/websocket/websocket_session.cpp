@@ -1,8 +1,6 @@
 #include "websocket_session.h"
-
-#include <string_view>
-
 #include "networking/net_utils.hpp"
+#include <string_view>
 
 namespace game::networking {
 
@@ -10,36 +8,27 @@ void WebSocketSession::Run()
 {
     ctx_.remote_endpoint = stream_.next_layer().socket().remote_endpoint();
     ctx_.local_endpoint = stream_.next_layer().socket().local_endpoint();
-    ctx_.target = std::string {req_.target()};
+    ctx_.target = std::string{req_.target()};
 
     // Set suggested timeout settings for the websocket
-    stream_.set_option(
-        websocket::stream_base::timeout::suggested(beast::role_type::server));
+    stream_.set_option(websocket::stream_base::timeout::suggested(beast::role_type::server));
 
     // Set a decorator to change the Server of the handshake
-    stream_.set_option(websocket::stream_base::decorator(
-        [](websocket::response_type& res)
-        {
-            res.set(
-                http::field::server,
-                std::string(BOOST_STRINGIZE(SERVER_VERSION)) + " advanced-server");
-        }));
+    stream_.set_option(websocket::stream_base::decorator([](websocket::response_type& res) {
+        res.set(http::field::server, std::string(BOOST_STRINGIZE(SERVER_VERSION)) + " advanced-server");
+    }));
 
     // Accept the websocket handshake
-    stream_.async_accept(
-        req_,
-        [self = shared_from_this()](boost::system::error_code ec)
-        { self->OnAccept(ec); });
+    stream_.async_accept(req_, [self = shared_from_this()](boost::system::error_code ec) { self->OnAccept(ec); });
 }
 
 void WebSocketSession::Read()
 {
     // Read a message into our buffer
-    stream_.async_read(
-        buffer_,
-        [self = shared_from_this()](
-            boost::system::error_code ec, std::size_t bytes_transferred)
-        { self->OnRead(ec, bytes_transferred); });
+    stream_.async_read(buffer_,
+                       [self = shared_from_this()](boost::system::error_code ec, std::size_t bytes_transferred) {
+                           self->OnRead(ec, bytes_transferred);
+                       });
 }
 
 void WebSocketSession::OnRead(boost::system::error_code ec, std::size_t bytes_transferred)
@@ -63,7 +52,7 @@ void WebSocketSession::OnRead(boost::system::error_code ec, std::size_t bytes_tr
 
     const auto& p = buffer_.data();
     stream_.text(stream_.got_text());
-    std::string_view data_view {boost::asio::buffer_cast<const char*>(p), p.size()};
+    std::string_view data_view{boost::asio::buffer_cast<const char*>(p), p.size()};
     std::invoke(handler_.on_receive, ctx_, data_view, p.size(), stream_.binary());
     buffer_.consume(p.size());
 
@@ -72,15 +61,13 @@ void WebSocketSession::OnRead(boost::system::error_code ec, std::size_t bytes_tr
 
 void WebSocketSession::Write()
 {
-    stream_.async_write(
-        write_buf_.cdata(),
-        [self = shared_from_this()](
-            boost::system::error_code ec, std::size_t bytes_transferred)
-        { self->OnWrite(ec, bytes_transferred); });
+    stream_.async_write(write_buf_.cdata(),
+                        [self = shared_from_this()](boost::system::error_code ec, std::size_t bytes_transferred) {
+                            self->OnWrite(ec, bytes_transferred);
+                        });
 }
 
-void WebSocketSession::OnWrite(
-    boost::system::error_code ec, std::size_t bytes_transferred)
+void WebSocketSession::OnWrite(boost::system::error_code ec, std::size_t bytes_transferred)
 {
     boost::ignore_unused(bytes_transferred);
     if (ec)

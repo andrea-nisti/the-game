@@ -1,9 +1,8 @@
 #ifndef NETWORKING_HTTP_BEAST_UTILS
 #define NETWORKING_HTTP_BEAST_UTILS
 
-#include <boost/beast/http.hpp>
-
 #include "common.hpp"
+#include <boost/beast/http.hpp>
 
 using namespace boost::beast;
 
@@ -33,20 +32,16 @@ namespace game::networking {
 template <typename V>
 constexpr auto ConvertVerbBeast(const V& value)
 {
-    static_assert(
-        std::is_same_v<V, http::verb> or std::is_same_v<V, HttpMethod>,
-        "Must be http::verb or HttpMethod");
+    static_assert(std::is_same_v<V, http::verb> or std::is_same_v<V, HttpMethod>, "Must be http::verb or HttpMethod");
 
-    constexpr std::array map {
-        std::make_pair(http::verb::get, HttpMethod::GET),
-        std::make_pair(http::verb::post, HttpMethod::POST),
-        std::make_pair(http::verb::put, HttpMethod::PUT),
-        std::make_pair(http::verb::delete_, HttpMethod::DELETE),
-        std::make_pair(http::verb::patch, HttpMethod::PATCH),
-        std::make_pair(http::verb::unknown, HttpMethod::UNKNOWN)};
+    constexpr std::array map{std::make_pair(http::verb::get, HttpMethod::GET),
+                             std::make_pair(http::verb::post, HttpMethod::POST),
+                             std::make_pair(http::verb::put, HttpMethod::PUT),
+                             std::make_pair(http::verb::delete_, HttpMethod::DELETE),
+                             std::make_pair(http::verb::patch, HttpMethod::PATCH),
+                             std::make_pair(http::verb::unknown, HttpMethod::UNKNOWN)};
 
-    constexpr auto find = [](const V& value, const auto& map)
-    {
+    constexpr auto find = [](const V& value, const auto& map) {
         if constexpr (std::is_same_v<V, http::verb>)
         {
             for (const auto& pair : map)
@@ -57,7 +52,8 @@ constexpr auto ConvertVerbBeast(const V& value)
                 }
             }
             return HttpMethod::UNKNOWN;
-        } else
+        }
+        else
         {
             for (const auto& pair : map)
             {

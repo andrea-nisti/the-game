@@ -1,15 +1,15 @@
 #ifndef NETWORKING_WEBSOCKET_WS_CONTEXT
 #define NETWORKING_WEBSOCKET_WS_CONTEXT
 
+#include <boost/asio.hpp>
 #include <memory>
 #include <string>
-
-#include <boost/asio.hpp>
 
 namespace net = boost::asio;       // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;  // from <boost/asio/ip/tcp.hpp>
 
 namespace game::networking {
+
 class WebSocketSession;
 
 struct WSContext

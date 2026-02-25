@@ -23,6 +23,7 @@ bazel_dep(name = "aspect_bazel_lib", version = "2.20.0")
 bazel_dep(name = "rules_oci", version = "2.2.7")
 bazel_dep(name = "tar.bzl", version = "0.7.0")
 bazel_dep(name = "rules_python", version = "1.1.0")
+bazel_dep(name = "rules_appimage", version = "1.19.0")
 
 # Hedron's Compile Commands Extractor for Bazel
 # https://github.com/hedronvision/bazel-compile-commands-extractor

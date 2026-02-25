@@ -1,11 +1,10 @@
 #ifndef NETWORKING_TCP_LISTENER_BASE
 #define NETWORKING_TCP_LISTENER_BASE
 
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/system/error_code.hpp>
-
 #include "interfaces/i_network_server.h"
 #include "networking/net_utils.hpp"
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/system/error_code.hpp>
 
 namespace game::networking {
 
@@ -33,8 +32,7 @@ using tcp = net::ip::tcp;
 class TcpListenerBase : public INetworkServer
 {
   public:
-    TcpListenerBase(net::io_context& ioc, tcp::endpoint endpoint)
-        : io_context_ref_(ioc), acceptor_(ioc)
+    TcpListenerBase(net::io_context& ioc, tcp::endpoint endpoint) : io_context_ref_(ioc), acceptor_(ioc)
     {
         boost::system::error_code ec;
 

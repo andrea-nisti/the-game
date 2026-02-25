@@ -13,7 +13,6 @@
 //
 //------------------------------------------------------------------------------
 
-#include <algorithm>
 #include <boost/asio/bind_executor.hpp>
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/signal_set.hpp>
@@ -24,6 +23,7 @@
 #include <boost/beast/websocket.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/optional.hpp>
+#include <algorithm>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
@@ -43,11 +43,10 @@ using tcp = boost::asio::ip::tcp;        // from <boost/asio/ip/tcp.hpp>
 beast::string_view mime_type(beast::string_view path)
 {
     using beast::iequals;
-    auto const ext = [&path]
-    {
+    auto const ext = [&path] {
         auto const pos = path.rfind(".");
         if (pos == beast::string_view::npos)
-            return beast::string_view {};
+            return beast::string_view{};
         return path.substr(pos);
     }();
     if (iequals(ext, ".htm"))
@@ -124,15 +123,12 @@ std::string path_cat(beast::string_view base, beast::string_view path)
 // The concrete type of the response message (which depends on the
 // request), is type-erased in message_generator.
 template <class Body, class Allocator>
-http::message_generator handle_request(
-    beast::string_view doc_root,
-    http::request<Body, http::basic_fields<Allocator>>&& request)
+http::message_generator handle_request(beast::string_view doc_root,
+                                       http::request<Body, http::basic_fields<Allocator>>&& request)
 {
     // Function to return a bad request response
-    auto make_bad_request_response = [&request](beast::string_view reason)
-    {
-        http::response<http::string_body> response {
-            http::status::bad_request, request.version()};
+    auto make_bad_request_response = [&request](beast::string_view reason) {
+        http::response<http::string_body> response{http::status::bad_request, request.version()};
         response.set(http::field::server, BOOST_BEAST_VERSION_STRING);
         response.set(http::field::content_type, "text/html");
         response.keep_alive(request.keep_alive());
@@ -142,10 +138,8 @@ http::message_generator handle_request(
     };
 
     // Function to return a not found response
-    auto make_not_found_response = [&request](beast::string_view target)
-    {
-        http::response<http::string_body> response {
-            http::status::not_found, request.version()};
+    auto make_not_found_response = [&request](beast::string_view target) {
+        http::response<http::string_body> response{http::status::not_found, request.version()};
         response.set(http::field::server, BOOST_BEAST_VERSION_STRING);
         response.set(http::field::content_type, "text/html");
         response.keep_alive(request.keep_alive());
@@ -155,10 +149,8 @@ http::message_generator handle_request(
     };
 
     // Function to return a server error response
-    auto make_server_error_response = [&request](beast::string_view error)
-    {
-        http::response<http::string_body> response {
-            http::status::internal_server_error, request.version()};
+    auto make_server_error_response = [&request](beast::string_view error) {
+        http::response<http::string_body> response{http::status::internal_server_error, request.version()};
         response.set(http::field::server, BOOST_BEAST_VERSION_STRING);
         response.set(http::field::content_type, "text/html");
         response.keep_alive(request.keep_alive());
@@ -200,7 +192,7 @@ http::message_generator handle_request(
     // Respond to HEAD request
     if (request.method() == http::verb::head)
     {
-        http::response<http::empty_body> response {http::status::ok, request.version()};
+        http::response<http::empty_body> response{http::status::ok, request.version()};
         response.set(http::field::server, BOOST_BEAST_VERSION_STRING);
         response.set(http::field::content_type, mime_type(path));
         response.content_length(file_size);
@@ -209,10 +201,9 @@ http::message_generator handle_request(
     }
 
     // Respond to GET request
-    http::response<http::file_body> response {
-        std::piecewise_construct,
-        std::make_tuple(std::move(file_body)),
-        std::make_tuple(http::status::ok, request.version())};
+    http::response<http::file_body> response{std::piecewise_construct,
+                                             std::make_tuple(std::move(file_body)),
+                                             std::make_tuple(http::status::ok, request.version())};
     response.set(http::field::server, BOOST_BEAST_VERSION_STRING);
     response.set(http::field::content_type, mime_type(path));
     response.content_length(file_size);
@@ -243,22 +234,15 @@ class websocket_session : public std::enable_shared_from_this<websocket_session>
     void do_accept(http::request<Body, http::basic_fields<Allocator>> req)
     {
         // Set suggested timeout settings for the websocket
-        ws_.set_option(
-            websocket::stream_base::timeout::suggested(beast::role_type::server));
+        ws_.set_option(websocket::stream_base::timeout::suggested(beast::role_type::server));
 
         // Set a decorator to change the Server of the handshake
-        ws_.set_option(websocket::stream_base::decorator(
-            [](websocket::response_type& res)
-            {
-                res.set(
-                    http::field::server,
-                    std::string(BOOST_BEAST_VERSION_STRING) + " advanced-server");
-            }));
+        ws_.set_option(websocket::stream_base::decorator([](websocket::response_type& res) {
+            res.set(http::field::server, std::string(BOOST_BEAST_VERSION_STRING) + " advanced-server");
+        }));
 
         // Accept the websocket handshake
-        ws_.async_accept(
-            req,
-            beast::bind_front_handler(&websocket_session::on_accept, shared_from_this()));
+        ws_.async_accept(req, beast::bind_front_handler(&websocket_session::on_accept, shared_from_this()));
     }
 
   private:
@@ -274,9 +258,7 @@ class websocket_session : public std::enable_shared_from_this<websocket_session>
     void do_read()
     {
         // Read a message into our buffer
-        ws_.async_read(
-            buffer_,
-            beast::bind_front_handler(&websocket_session::on_read, shared_from_this()));
+        ws_.async_read(buffer_, beast::bind_front_handler(&websocket_session::on_read, shared_from_this()));
     }
 
     void on_read(beast::error_code ec, std::size_t bytes_transferred)
@@ -292,9 +274,7 @@ class websocket_session : public std::enable_shared_from_this<websocket_session>
 
         // Echo the message
         ws_.text(ws_.got_text());
-        ws_.async_write(
-            buffer_.data(),
-            beast::bind_front_handler(&websocket_session::on_write, shared_from_this()));
+        ws_.async_write(buffer_.data(), beast::bind_front_handler(&websocket_session::on_write, shared_from_this()));
     }
 
     void on_write(beast::error_code ec, std::size_t bytes_transferred)
@@ -343,9 +323,8 @@ class http_session : public std::enable_shared_from_this<http_session>
         // on the I/O objects in this session. Although not strictly necessary
         // for single-threaded contexts, this example code is written to be
         // thread-safe by default.
-        net::dispatch(
-            stream_.get_executor(),
-            beast::bind_front_handler(&http_session::do_read, this->shared_from_this()));
+        net::dispatch(stream_.get_executor(),
+                      beast::bind_front_handler(&http_session::do_read, this->shared_from_this()));
     }
 
   private:
@@ -363,10 +342,7 @@ class http_session : public std::enable_shared_from_this<http_session>
 
         // Read a request using the parser-oriented interface
         http::async_read(
-            stream_,
-            buffer_,
-            *parser_,
-            beast::bind_front_handler(&http_session::on_read, shared_from_this()));
+            stream_, buffer_, *parser_, beast::bind_front_handler(&http_session::on_read, shared_from_this()));
     }
 
     void on_read(beast::error_code ec, std::size_t bytes_transferred)
@@ -385,8 +361,7 @@ class http_session : public std::enable_shared_from_this<http_session>
         {
             // Create a websocket session, transferring ownership
             // of both the socket and the HTTP request.
-            std::make_shared<websocket_session>(stream_.release_socket())
-                ->do_accept(parser_->release());
+            std::make_shared<websocket_session>(stream_.release_socket())->do_accept(parser_->release());
             return;
         }
 
@@ -416,11 +391,9 @@ class http_session : public std::enable_shared_from_this<http_session>
         {
             bool keep_alive = response_queue_.front().keep_alive();
 
-            beast::async_write(
-                stream_,
-                std::move(response_queue_.front()),
-                beast::bind_front_handler(
-                    &http_session::on_write, shared_from_this(), keep_alive));
+            beast::async_write(stream_,
+                               std::move(response_queue_.front()),
+                               beast::bind_front_handler(&http_session::on_write, shared_from_this(), keep_alive));
         }
     }
 
@@ -467,10 +440,7 @@ class listener : public std::enable_shared_from_this<listener>
     std::shared_ptr<std::string const> doc_root_;
 
   public:
-    listener(
-        net::io_context& ioc,
-        tcp::endpoint endpoint,
-        std::shared_ptr<std::string const> const& doc_root)
+    listener(net::io_context& ioc, tcp::endpoint endpoint, std::shared_ptr<std::string const> const& doc_root)
         : ioc_(ioc), acceptor_(net::make_strand(ioc)), doc_root_(doc_root)
     {
         beast::error_code ec;
@@ -515,18 +485,16 @@ class listener : public std::enable_shared_from_this<listener>
         // on the I/O objects in this session. Although not strictly necessary
         // for single-threaded contexts, this example code is written to be
         // thread-safe by default.
-        net::dispatch(
-            acceptor_.get_executor(),
-            beast::bind_front_handler(&listener::do_accept, this->shared_from_this()));
+        net::dispatch(acceptor_.get_executor(),
+                      beast::bind_front_handler(&listener::do_accept, this->shared_from_this()));
     }
 
   private:
     void do_accept()
     {
         // The new connection gets its own strand
-        acceptor_.async_accept(
-            net::make_strand(ioc_),
-            beast::bind_front_handler(&listener::on_accept, shared_from_this()));
+        acceptor_.async_accept(net::make_strand(ioc_),
+                               beast::bind_front_handler(&listener::on_accept, shared_from_this()));
     }
 
     void on_accept(beast::error_code ec, tcp::socket socket)
@@ -564,21 +532,19 @@ int main(int argc, char* argv[])
     auto const threads = std::max<int>(1, std::atoi(argv[4]));
 
     // The io_context is required for all I/O
-    net::io_context ioc {threads};
+    net::io_context ioc{threads};
 
     // Create and launch a listening port
-    std::make_shared<listener>(ioc, tcp::endpoint {address, port}, doc_root)->run();
+    std::make_shared<listener>(ioc, tcp::endpoint{address, port}, doc_root)->run();
 
     // Capture SIGINT and SIGTERM to perform a clean shutdown
     net::signal_set signals(ioc, SIGINT, SIGTERM);
-    signals.async_wait(
-        [&](beast::error_code const&, int)
-        {
-            // Stop the `io_context`. This will cause `run()`
-            // to return immediately, eventually destroying the
-            // `io_context` and all of the sockets in it.
-            ioc.stop();
-        });
+    signals.async_wait([&](beast::error_code const&, int) {
+        // Stop the `io_context`. This will cause `run()`
+        // to return immediately, eventually destroying the
+        // `io_context` and all of the sockets in it.
+        ioc.stop();
+    });
 
     // Run the I/O service on the requested number of threads
     std::vector<std::thread> v;

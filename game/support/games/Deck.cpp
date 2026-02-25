@@ -1,5 +1,4 @@
 #include "Deck.h"
-
 #include <algorithm>
 #include <random>
 
@@ -25,8 +24,7 @@ void Deck::Shuffle()
     std::random_device rd;
     std::default_random_engine rng(rd());
 
-    std::shuffle(
-        cards_.begin(), cards_.end(), std::default_random_engine{std::random_device{}()});
+    std::shuffle(cards_.begin(), cards_.end(), std::default_random_engine{std::random_device{}()});
 }
 
 void Deck::AddCard(Card&& card)

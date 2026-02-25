@@ -1,10 +1,8 @@
 #ifndef NETWORKING_HTTP_HTTP_SESSION
 #define NETWORKING_HTTP_HTTP_SESSION
 
-#include <cstdlib>
-#include <memory>
-#include <utility>
-
+#include "networking/route_manager_base.hpp"
+#include "networking/session_base.h"
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/http/message.hpp>
@@ -12,9 +10,9 @@
 #include <boost/beast/version.hpp>
 #include <boost/optional.hpp>
 #include <boost/throw_exception.hpp>
-
-#include "networking/route_manager_base.hpp"
-#include "networking/session_base.h"
+#include <cstdlib>
+#include <memory>
+#include <utility>
 
 namespace beast = boost::beast;    // from <boost/beast.hpp>
 namespace http = beast::http;      // from <boost/beast/http.hpp>
@@ -56,14 +54,11 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
      *
      * @param socket The socket to use for the session.
      */
-    HttpSession(
-        tcp::socket&& socket,
-        RouteManagerBase<
-            http::request<http::string_body>,
-            http::response<http::string_body>>* route_manager)
-        : SessionBase<beast::tcp_stream, beast::flat_buffer>(std::move(socket)),
-          route_manager_(route_manager)
-    {}
+    HttpSession(tcp::socket&& socket,
+                RouteManagerBase<http::request<http::string_body>, http::response<http::string_body>>* route_manager)
+        : SessionBase<beast::tcp_stream, beast::flat_buffer>(std::move(socket)), route_manager_(route_manager)
+    {
+    }
 
     /**
      * @brief Destructor. Closes the session.
@@ -116,7 +111,7 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
      * @brief Whether to keep the session alive, set by the client. If false, the session
      * will be closed.
      */
-    bool keep_alive_ {false};
+    bool keep_alive_{false};
 
     /**
      * @brief The response for the session.
@@ -126,8 +121,7 @@ class HttpSession final : public SessionBase<beast::tcp_stream, beast::flat_buff
     /**
      * @brief The route manager for the session.
      */
-    RouteManagerBase<http::request<http::string_body>, http::response<http::string_body>>*
-        route_manager_;
+    RouteManagerBase<http::request<http::string_body>, http::response<http::string_body>>* route_manager_;
 };
 
 /// @}

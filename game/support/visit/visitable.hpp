@@ -7,8 +7,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace game::support
-{
+namespace game::support {
 
 /**
  * \addtogroup support Support
@@ -56,9 +55,7 @@ struct has_get_visitable : std::false_type
  * @tparam T The type to check.
  */
 template <typename T>
-struct has_get_visitable<
-    T,
-    std::enable_if_t<is_i_visitable_v<decltype(T::GetVisitable())>>> : std::true_type
+struct has_get_visitable<T, std::enable_if_t<is_i_visitable_v<decltype(T::GetVisitable())>>> : std::true_type
 {
 };
 
@@ -74,10 +71,7 @@ template <typename InstanceT, typename... Properties>
 class Visitable : public IVisitable
 {
   public:
-    constexpr Visitable(Properties&&... properties)
-        : props_(std::forward<Properties>(properties)...)
-    {
-    }
+    constexpr Visitable(Properties&&... properties) : props_(std::forward<Properties>(properties)...) {}
 
     /**
      * @brief Accepts a visitor and triggers the visiting chain by calling the Visitor
@@ -90,10 +84,7 @@ class Visitable : public IVisitable
     void accept(Visitor&& visitor, InstanceT& instance)
     {
         constexpr auto prop_size = std::tuple_size<decltype(props_)>::value;
-        visit_foreach_property(
-            std::forward<Visitor>(visitor),
-            instance,
-            std::make_index_sequence<prop_size> {});
+        visit_foreach_property(std::forward<Visitor>(visitor), instance, std::make_index_sequence<prop_size>{});
     }
 
   private:
@@ -106,7 +97,7 @@ class Visitable : public IVisitable
         constexpr auto is_visitable = has_get_visitable<inner_instance_t>::value;
         if constexpr (is_visitable)
         {
-            std::string_view name {prop.name_};
+            std::string_view name{prop.name_};
             visitor.visit_nested_base(name);
             inner_instance_t::GetVisitable().accept(visitor, inner_instance);
 
@@ -119,8 +110,7 @@ class Visitable : public IVisitable
     }
 
     template <typename Visitor, std::size_t... Is>
-    void visit_foreach_property(
-        Visitor&& visitor, InstanceT& instance, std::index_sequence<Is...>)
+    void visit_foreach_property(Visitor&& visitor, InstanceT& instance, std::index_sequence<Is...>)
     {
         (visit_property(visitor, instance, std::get<Is>(props_)), ...);
     }
@@ -138,7 +128,7 @@ class Visitable : public IVisitable
 template <typename InstanceT, typename... Properties>
 constexpr inline auto visitable(Properties&&... p)
 {
-    return Visitable<InstanceT, Properties...> {std::forward<Properties>(p)...};
+    return Visitable<InstanceT, Properties...>{std::forward<Properties>(p)...};
 }
 
 ///@}

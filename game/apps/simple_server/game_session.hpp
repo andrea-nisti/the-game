@@ -1,11 +1,10 @@
 #ifndef APPS_SIMPLE_SERVER_GAME_SESSION
 #define APPS_SIMPLE_SERVER_GAME_SESSION
 
+#include <boost/asio.hpp>
 #include <algorithm>
 #include <memory>
 #include <vector>
-
-#include <boost/asio.hpp>
 
 namespace game::core {
 
@@ -24,9 +23,9 @@ class GameSession
     using PlayerControllerPtr = std::shared_ptr<PlayerControllerBase<Command>>;
 
     explicit GameSession(boost::asio::io_context& io_ctx)
-        : command_strand_(boost::asio::make_strand(io_ctx)),
-          player_strand_(boost::asio::make_strand(io_ctx))
-    {}
+        : command_strand_(boost::asio::make_strand(io_ctx)), player_strand_(boost::asio::make_strand(io_ctx))
+    {
+    }
     GameSession(const GameSession&) = delete;
     GameSession(GameSession&&) = delete;
     auto operator=(const GameSession&) -> GameSession& = delete;
@@ -37,59 +36,45 @@ class GameSession
     void OnCommand(const Command& command, PlayerControllerPtr sender)
     {
         // Game commands go through the command strand
-        boost::asio::post(
-            command_strand_,
-            [this, command, sender]() { ProcessCommand(command, sender); });
+        boost::asio::post(command_strand_, [this, command, sender]() { ProcessCommand(command, sender); });
     }
 
     void AddPlayer(PlayerControllerPtr player)
     {
         // Player management goes through the player strand
-        boost::asio::post(
-            player_strand_,
-            [this, player]()
-            {
-                players_.push_back(player);
-                // Notify game logic about new player through command strand
-                boost::asio::post(
-                    command_strand_, [this, player]() { OnPlayerJoined(player); });
-            });
+        boost::asio::post(player_strand_, [this, player]() {
+            players_.push_back(player);
+            // Notify game logic about new player through command strand
+            boost::asio::post(command_strand_, [this, player]() { OnPlayerJoined(player); });
+        });
     }
 
     void RemovePlayer(PlayerControllerPtr player)
     {
         // Player management goes through the player strand
-        boost::asio::post(
-            player_strand_,
-            [this, player]()
+        boost::asio::post(player_strand_, [this, player]() {
+            auto it = std::find(players_.begin(), players_.end(), player);
+            if (it != players_.end())
             {
-                auto it = std::find(players_.begin(), players_.end(), player);
-                if (it != players_.end())
-                {
-                    // Notify game logic about player leaving through command strand
-                    boost::asio::post(
-                        command_strand_, [this, player]() { OnPlayerLeft(player); });
-                    players_.erase(it);
-                }
-            });
+                // Notify game logic about player leaving through command strand
+                boost::asio::post(command_strand_, [this, player]() { OnPlayerLeft(player); });
+                players_.erase(it);
+            }
+        });
     }
 
-    void BroadcastMessage(
-        const std::string& message, PlayerControllerPtr except = nullptr)
+    void BroadcastMessage(const std::string& message, PlayerControllerPtr except = nullptr)
     {
         // Broadcasting goes through player strand since it accesses the player list
-        boost::asio::post(
-            player_strand_,
-            [this, message, except]()
+        boost::asio::post(player_strand_, [this, message, except]() {
+            for (auto& player : players_)
             {
-                for (auto& player : players_)
+                if (player != except)
                 {
-                    if (player != except)
-                    {
-                        player->SendMessage(message);
-                    }
+                    player->SendMessage(message);
                 }
-            });
+            }
+        });
     }
 
   protected:

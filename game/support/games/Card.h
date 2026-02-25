@@ -16,7 +16,7 @@ class Card
     auto GetValue() -> std::size_t { return value_; }
 
   private:
-    std::size_t value_ {};
+    std::size_t value_{};
 };
 }  // namespace game::core
 

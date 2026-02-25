@@ -1,25 +1,22 @@
-#include <gtest/gtest.h>
-
 #include "support/visit/property.hpp"
 #include "support/visit/visitable.hpp"
 #include "support/visit/visitor_base.hpp"
 #include "test_visitors.hpp"
+#include <gtest/gtest.h>
 
-namespace game::test
-{
+namespace game::test {
 
 struct Mock
 {
-    int c {9};
-    double d {6.5};
-    std::string s {"cane"};
+    int c{9};
+    double d{6.5};
+    std::string s{"cane"};
 
     inline static constexpr auto GetVisitable()
     {
-        auto v = game::support::visitable<Mock>(
-            game::support::property("c", &Mock::c),
-            game::support::property("d", &Mock::d),
-            game::support::property("s", &Mock::s));
+        auto v = game::support::visitable<Mock>(game::support::property("c", &Mock::c),
+                                                game::support::property("d", &Mock::d),
+                                                game::support::property("s", &Mock::s));
 
         return v;
     }
@@ -27,19 +24,18 @@ struct Mock
 
 struct MockNested
 {
-    int c_nested {1};
-    double d_nested {1.2};
-    std::string s_nested {"cagna"};
+    int c_nested{1};
+    double d_nested{1.2};
+    std::string s_nested{"cagna"};
 
-    Mock m {};
+    Mock m{};
 
     inline static constexpr auto GetVisitable()
     {
-        auto v = game::support::visitable<MockNested>(
-            game::support::property("c_nested", &MockNested::c_nested),
-            game::support::property("d_nested", &MockNested::d_nested),
-            game::support::property("s_nested", &MockNested::s_nested),
-            game::support::property("m", &MockNested::m));
+        auto v = game::support::visitable<MockNested>(game::support::property("c_nested", &MockNested::c_nested),
+                                                      game::support::property("d_nested", &MockNested::d_nested),
+                                                      game::support::property("s_nested", &MockNested::s_nested),
+                                                      game::support::property("m", &MockNested::m));
 
         return v;
     }
@@ -51,7 +47,7 @@ TEST(Visitable, GivenMockNestedStructureType_MembersTraitAreCorrect)
 {
     using namespace game::test;
 
-    MockNested m {};
+    MockNested m{};
 
     struct NotVisitable
     {
@@ -73,8 +69,8 @@ TEST(Visitable, GivenMockStructure_MembersAreVisited)
     auto r = game::support::is_i_visitable_v<decltype(Mock::GetVisitable())>;
     ASSERT_TRUE(r);
 
-    Mock m {};
-    SimpleVisitor visitor {};
+    Mock m{};
+    SimpleVisitor visitor{};
 
     Mock::GetVisitable().accept(visitor, m);
     EXPECT_TRUE(visitor.c_result.first == "c" and visitor.c_result.second == m.c);
@@ -95,9 +91,9 @@ TEST(Visitable, GivenMockNestedStructure_MembersAreVisited)
 {
     using namespace game::test;
 
-    MockNested m {};
+    MockNested m{};
 
-    NestedVisitor visitor {};
+    NestedVisitor visitor{};
 
     MockNested::GetVisitable().accept(visitor, m);
 

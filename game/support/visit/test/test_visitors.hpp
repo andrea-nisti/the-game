@@ -1,13 +1,11 @@
 #ifndef SUPPORT_VISIT_TEST_TEST_VISITORS_H
 #define SUPPORT_VISIT_TEST_TEST_VISITORS_H
 
+#include "support/visit/visitor_base.hpp"
 #include <iostream>
 #include <vector>
 
-#include "support/visit/visitor_base.hpp"
-
-namespace game::test
-{
+namespace game::test {
 
 struct SimpleVisitor final : public game::support::VisitorBase<SimpleVisitor>
 {
@@ -35,14 +33,13 @@ struct SimpleVisitor final : public game::support::VisitorBase<SimpleVisitor>
         s_result.second = value;
     }
 
-    std::pair<std::string_view, int> c_result {};
-    std::pair<std::string_view, double> d_result {};
-    std::pair<std::string_view, std::string> s_result {};
+    std::pair<std::string_view, int> c_result{};
+    std::pair<std::string_view, double> d_result{};
+    std::pair<std::string_view, std::string> s_result{};
 };
 
 struct NestedVisitor final : public game::support::VisitorBase<NestedVisitor>
 {
-
     template <typename T>
     void visit(std::string_view name, const T& value)
     {
@@ -90,14 +87,14 @@ struct NestedVisitor final : public game::support::VisitorBase<NestedVisitor>
         s_result.second = value;
     }
 
-    std::vector<std::string_view> enter_names {};
-    std::vector<std::string_view> exit_names {};
-    std::pair<std::string_view, int> c_result {};
-    std::pair<std::string_view, double> d_result {};
-    std::pair<std::string_view, std::string> s_result {};
+    std::vector<std::string_view> enter_names{};
+    std::vector<std::string_view> exit_names{};
+    std::pair<std::string_view, int> c_result{};
+    std::pair<std::string_view, double> d_result{};
+    std::pair<std::string_view, std::string> s_result{};
 
   private:
-    bool in_nested {false};
+    bool in_nested{false};
 };
 
 }  // namespace game::test

@@ -1,10 +1,9 @@
 #ifndef SUPPORT_GAMES_DECK
 #define SUPPORT_GAMES_DECK
 
+#include "Card.h"
 #include <cstddef>
 #include <vector>
-
-#include "Card.h"
 
 namespace game::core {
 
@@ -28,9 +27,9 @@ class Deck
     {
         Deck deck;
 
-        for (std::size_t i {1}; i <= n_of_cards; ++i)
+        for (std::size_t i{1}; i <= n_of_cards; ++i)
         {
-            deck.AddCard(Card {i});
+            deck.AddCard(Card{i});
         }
         deck.Shuffle();
         return deck;
@@ -57,7 +56,7 @@ class Deck
     [[nodiscard]] auto GetTopCard() const -> const Card&;
 
   private:
-    Hand cards_ {};
+    Hand cards_{};
 };
 }  // namespace game::core
 #endif  // SUPPORT_GAMES_DECK

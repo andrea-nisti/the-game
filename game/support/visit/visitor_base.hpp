@@ -5,8 +5,7 @@
 #include <string_view>
 #include <type_traits>
 
-namespace game::support
-{
+namespace game::support {
 
 /**
  * \addtogroup support Support
@@ -23,22 +22,19 @@ namespace game::support
  * @{
  */
 
-namespace
-{
+namespace {
 
 template <typename T>
 constexpr auto has_visit_nested(...) -> std::false_type;
 
 template <typename T>
-constexpr auto has_visit_nested(int)
-    -> decltype(std::declval<T>().visit_nested(std::string_view {}), std::true_type {});
+constexpr auto has_visit_nested(int) -> decltype(std::declval<T>().visit_nested(std::string_view{}), std::true_type{});
 
 template <typename T>
 constexpr auto has_exit_nested(...) -> std::false_type;
 
 template <typename T>
-constexpr auto has_exit_nested(int)
-    -> decltype(std::declval<T>().exit_nested(std::string_view {}), std::true_type {});
+constexpr auto has_exit_nested(int) -> decltype(std::declval<T>().exit_nested(std::string_view{}), std::true_type{});
 
 }  // namespace
 

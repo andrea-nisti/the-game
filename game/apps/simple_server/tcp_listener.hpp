@@ -1,17 +1,15 @@
 #ifndef APPS_SIMPLE_SERVER_TCP_LISTENER
 #define APPS_SIMPLE_SERVER_TCP_LISTENER
 
-#include <memory>
-#include <optional>
-
+#include "networking/http/common.hpp"
+#include "networking/route_manager_base.hpp"
+#include "networking/tcp_listener_base.h"
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/address_v4.hpp>
 #include <boost/beast/http.hpp>
 #include <sys/types.h>
-
-#include "networking/http/common.hpp"
-#include "networking/route_manager_base.hpp"
-#include "networking/tcp_listener_base.h"
+#include <memory>
+#include <optional>
 
 namespace game::simple_server {
 
@@ -47,7 +45,8 @@ class TcpListener : public TcpListenerBase
 
     TcpListener(boost::asio::io_context& ioc, tcp::endpoint&& endpoint)
         : TcpListenerBase(ioc, std::move(endpoint)), route_manager_(BuildRouteManager())
-    {}
+    {
+    }
 
   private:
     void OnAccept(tcp::socket socket) override;
