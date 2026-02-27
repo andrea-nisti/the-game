@@ -1,0 +1,4 @@
+# Use system level certificates to download bazel rules PLACE THIS IN .bazelrc.user file
+startup --host_jvm_args=-Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts \
+        --host_jvm_args=-Djavax.net.ssl.trustStorePassword=changeits \
+        --host_jvm_args=-Djdk.http.auth.tunneling.disabledSchemes

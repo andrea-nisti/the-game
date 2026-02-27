@@ -11,9 +11,9 @@
     "runArgs": [
         "--network=host",
     ],
-    "forwardPorts": [
-        8888
-    ],
+    // "forwardPorts": [
+    //     8888
+    // ],
     "features": {
         "ghcr.io/balazs23/devcontainers-features/bazel:1": {},
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1.6.5": {}

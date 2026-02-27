@@ -30,7 +30,7 @@ inline auto InitializeAcceptor(boost::asio::ip::tcp::acceptor& acceptor,
     }
 
     // Allow address reuse
-    acceptor.set_option(net::socket_base::reuse_address(true), ec);
+    acceptor.set_option(net::ip::tcp::acceptor::reuse_address(true), ec);
     if (ec)
     {
         Fail(ec, "set_option");

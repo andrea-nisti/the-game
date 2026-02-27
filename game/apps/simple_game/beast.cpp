@@ -142,7 +142,7 @@ class TestListener : public TcpListenerBase
 auto main(int argc, char* argv[]) -> int
 {
     using namespace game::test;
-    int port{8888};
+    int port{8880};
     if (argc > 1)
     {
         try
