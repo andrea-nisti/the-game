@@ -1,5 +1,6 @@
 # ide/config ignores
 compile_commands.json
+.vscode
 
 # artifacts ignores
 apps/deploy/*.tar

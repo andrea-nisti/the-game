@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04
+FROM mcr.microsoft.com/devcontainers/cpp
 
 # Copy bootstrap script and brew dependencies
 COPY scripts/bootstrap.sh /home/vscode/scripts/bootstrap.sh
