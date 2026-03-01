@@ -10,7 +10,7 @@ cc_library(
     hdrs = ["net_utils.hpp"],
     visibility = ["//visibility:public"],
     deps = [
-        "@boost//:asio",
+        "@boost.asio",
     ],
 )
 
@@ -24,8 +24,8 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":net_utils",
-        "@boost//:asio",
-        "@boost//:beast",
+        "@boost.asio",
+        "@boost.beast",
     ],
 )
 
@@ -39,8 +39,8 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":net_utils",
-        "@boost//:asio",
-        "@boost//:beast",
+        "@boost.asio",
+        "@boost.beast",
     ],
 )
 

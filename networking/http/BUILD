@@ -35,6 +35,6 @@ cc_library(
     hdrs = ["beast_utils.hpp"],
     visibility = ["//visibility:public"],
     deps = [
-        "@boost//:beast",
+        "@boost.beast",
     ],
 )

@@ -98,4 +98,5 @@ void WebSocketSession::OnAccept(boost::system::error_code ec)
     // Read a message
     Read();
 }
+
 }  // namespace game::networking

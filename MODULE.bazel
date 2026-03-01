@@ -36,6 +36,9 @@ git_override(
     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
 )
 
+bazel_dep(name = "boost.asio", version = "1.90.0.bcr.1")
+bazel_dep(name = "boost.beast", version = "1.90.0.bcr.1")
+
 # Makes @boost available for use: For example, add `@boost//:algorithm` to your deps.
 # For more, see https://github.com/nelhage/rules_boost and https://www.boost.org
 bazel_dep(name = "rules_boost", repo_name = "com_github_nelhage_rules_boost")

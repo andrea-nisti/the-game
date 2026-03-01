@@ -22,5 +22,5 @@ cc_library(
     ],
     hdrs = ["game_session.hpp"],
     visibility = ["//visibility:public"],
-    deps = ["@boost//:asio"],
+    deps = ["@boost.asio"],
 )
