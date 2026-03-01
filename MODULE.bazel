@@ -80,4 +80,4 @@ oci.pull(
 )
 
 # Expose the base image
-use_repo(oci, "debian_slim")
+use_repo(oci, "debian_slim", "debian_slim_linux_amd64", "debian_slim_linux_arm64_v8")
