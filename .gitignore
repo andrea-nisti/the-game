@@ -1,2 +1,10 @@
 # ide/config ignores
-.idea
+compile_commands.json
+
+# artifacts ignores
+apps/deploy/*.tar
+.cache
+MODULE.bazel.lock
+bazel-*
+docs/generated
+external
