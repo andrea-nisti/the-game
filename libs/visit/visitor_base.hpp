@@ -22,8 +22,6 @@ namespace game::support {
  * @{
  */
 
-namespace {
-
 template <typename T>
 constexpr auto has_visit_nested(...) -> std::false_type;
 
@@ -35,8 +33,6 @@ constexpr auto has_exit_nested(...) -> std::false_type;
 
 template <typename T>
 constexpr auto has_exit_nested(int) -> decltype(std::declval<T>().exit_nested(std::string_view{}), std::true_type{});
-
-}  // namespace
 
 /**
  * @brief Checks if the derived visitor class has visit_nested member function.

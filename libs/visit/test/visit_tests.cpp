@@ -1,7 +1,7 @@
-#include "support/visit/property.hpp"
-#include "support/visit/test/test_visitors.hpp"
-#include "support/visit/visitable.hpp"
-#include "support/visit/visitor_base.hpp"
+#include "libs/visit/property.hpp"
+#include "libs/visit/test/test_visitors.hpp"
+#include "libs/visit/visitable.hpp"
+#include "libs/visit/visitor_base.hpp"
 #include <gtest/gtest.h>
 
 namespace game::test {

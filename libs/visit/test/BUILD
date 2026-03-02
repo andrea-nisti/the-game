@@ -1,12 +1,16 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
-    name = "deck_tests",
+    name = "visitable",
     size = "small",
-    srcs = ["deck_tests.cpp"],
+    srcs = [
+        "test_visitors.hpp",
+        "visit_tests.cpp",
+    ],
     args = ["--gtest_color=yes"],
     deps = [
-        "//support/games:deck",
+        "//libs/visit:visitable",
+        "//libs/visit:visitor_base",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],

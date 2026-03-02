@@ -1,5 +1,5 @@
-#include "support/games/Card.h"
-#include "support/games/Deck.h"
+#include "domain/Card.h"
+#include "domain/Deck.h"
 #include <gtest/gtest.h>
 #include <unordered_map>
 

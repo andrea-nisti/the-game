@@ -1,7 +1,7 @@
-#ifndef SUPPORT_VISIT_TEST_TEST_VISITORS_H
-#define SUPPORT_VISIT_TEST_TEST_VISITORS_H
+#ifndef LIBS_VISIT_TEST_TEST_VISITORS_HPP
+#define LIBS_VISIT_TEST_TEST_VISITORS_HPP
 
-#include "support/visit/visitor_base.hpp"
+#include "libs/visit/visitor_base.hpp"
 #include <iostream>
 #include <vector>
 
@@ -99,4 +99,4 @@ struct NestedVisitor final : public game::support::VisitorBase<NestedVisitor>
 
 }  // namespace game::test
 
-#endif  // SUPPORT_VISIT_TEST_TEST_VISITORS_H
+#endif  // LIBS_VISIT_TEST_TEST_VISITORS_HPP
