@@ -1,0 +1,7 @@
+load("//apps:deploy_rules.bzl", "create_deploy")
+
+create_deploy(
+    name = "simple_game",
+    target = "//apps/simple_game:app",
+    visibility = ["//visibility:public"],
+)
