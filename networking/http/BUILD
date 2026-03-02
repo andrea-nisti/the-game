@@ -12,7 +12,7 @@ cc_library(
         "//networking:net_utils",
         "//networking:route_manager_base",
         "//networking/websocket:websocket_session",
-        "@boost//:url",
+        "@boost.url",
     ],
 )
 

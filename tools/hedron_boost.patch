@@ -1,0 +1,13 @@
+diff --git a/refresh.template.py b/refresh.template.py
+index 194f365..e710946 100644
+--- a/refresh.template.py
++++ b/refresh.template.py
+@@ -692,7 +692,7 @@ _get_files.has_logged_missing_file_error = False
+ # Setup extensions and flags for the whole C-language family.
+ # Clang has a list: https://github.com/llvm/llvm-project/blob/b9f3b7f89a4cb4cf541b7116d9389c73690f78fa/clang/lib/Driver/Types.cpp#L293
+ _get_files.c_source_extensions = ('.c', '.i')
+-_get_files.cpp_source_extensions = ('.cc', '.cpp', '.cxx', '.c++', '.C', '.CC', '.cp', '.CPP', '.C++', '.CXX', '.ii')
++_get_files.cpp_source_extensions = ('.cc', '.cpp', '.cxx', '.c++', '.C', '.CC', '.cp', '.CPP', '.C++', '.CXX', '.ii', '.ipp', '.hh', '.hpp', '.hxx', '.processed')
+ _get_files.objc_source_extensions = ('.m',)
+ _get_files.objcpp_source_extensions = ('.mm', '.M')
+ _get_files.cuda_source_extensions = ('.cu', '.cui')

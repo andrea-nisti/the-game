@@ -10,6 +10,7 @@ package(default_visibility = ["//visibility:public"])
 exports_files([
     "fixup_compile_commands_transient.sh.in",
     "hedron_bazel9_patch.patch",
+    "hedron_boost.patch",
 ])
 
 sh_binary(

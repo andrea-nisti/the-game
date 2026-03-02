@@ -24,6 +24,7 @@ bazel_dep(name = "rules_python", version = "1.1.0")
 bazel_dep(name = "rules_appimage", version = "1.19.0")
 bazel_dep(name = "boost.asio", version = "1.90.0.bcr.1")
 bazel_dep(name = "boost.beast", version = "1.90.0.bcr.1")
+bazel_dep(name = "boost.url", version = "1.90.0.bcr.1")
 
 # Hedron's Compile Commands Extractor for Bazel
 # https://github.com/hedronvision/bazel-compile-commands-extractor
@@ -32,7 +33,10 @@ git_override(
     module_name = "hedron_compile_commands",
     commit = "abb61a688167623088f8768cc9264798df6a9d10",
     patch_args = ["-p1"],
-    patches = ["//tools:hedron_bazel9_patch.patch"],
+    patches = [
+        "//tools:hedron_bazel9_patch.patch",
+        "//tools:hedron_boost.patch",
+    ],
     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
 )
 
