@@ -10,6 +10,18 @@ module(
     repo_name = "the-game",
 )
 
+bazel_dep(name = "toolchains_llvm", version = "1.6.0")
+
+llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
+llvm.toolchain(
+    name = "llvm_toolchain",
+    cxx_standard = {"": "c++17"},
+    llvm_version = "latest",
+)
+use_repo(llvm, "llvm_toolchain")
+
+register_toolchains("@llvm_toolchain//:all")
+
 bazel_dep(name = "rules_cc", version = "0.0.9")
 bazel_dep(name = "nlohmann_json", version = "3.11.3")
 bazel_dep(name = "rules_pkg", version = "0.10.1")

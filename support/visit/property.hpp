@@ -2,7 +2,33 @@
 #define GAME_SUPPORT_VISIT_PROPERTY_H
 
 #include <string_view>
+
 namespace game::support {
+
+#define BEGIN_VISITABLE(TypeName)               \
+    inline static constexpr auto GetVisitable() \
+    {                                           \
+        using Type = TypeName;                  \
+            auto v = support::visitable<Type>(
+
+#define ADD_PROPERTY_BEGIN(TypeName, PropertyName) \
+    inline static constexpr auto GetVisitable()    \
+    {                                              \
+        using Type = TypeName;                     \
+            auto v = support::visitable<Type>(support::property(#PropertyName, &Type::PropertyName)
+
+#define ADD_PROPERTY(PropertyName) , support::property(#PropertyName, &Type::PropertyName)
+
+#define ADD_PROPERTY_END(PropertyName)                      \
+    , support::property(#PropertyName, &Type::PropertyName) \
+                );                                          \
+    return v;                                               \
+    }
+
+#define END_VISITABLE() \
+                );      \
+    return v;           \
+    }
 
 /**
  * \addtogroup support Support

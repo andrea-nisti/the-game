@@ -76,7 +76,7 @@ class VisitorBase
     template <typename T>
     void visit_base(std::string_view name, T& value)
     {
-        derived_->template visit(name, value);
+        derived_->visit(name, value);
     }
 
     template <typename T, typename... P>
