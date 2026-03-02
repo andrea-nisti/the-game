@@ -52,7 +52,7 @@ void WebSocketSession::OnRead(boost::system::error_code ec, std::size_t bytes_tr
 
     const auto& p = buffer_.data();
     stream_.text(stream_.got_text());
-    std::string_view data_view{boost::asio::buffer_cast<const char*>(p), p.size()};
+    std::string_view data_view{static_cast<const char*>(p.data()), p.size()};
     std::invoke(handler_.on_receive, ctx_, data_view, p.size(), stream_.binary());
     buffer_.consume(p.size());
 
@@ -98,4 +98,5 @@ void WebSocketSession::OnAccept(boost::system::error_code ec)
     // Read a message
     Read();
 }
+
 }  // namespace game::networking

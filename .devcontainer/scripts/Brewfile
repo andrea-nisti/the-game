@@ -1,4 +1,4 @@
-brew "llvm@21"
+brew "llvm"
 brew "binutils"
 brew "buildifier"
 

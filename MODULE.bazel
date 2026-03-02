@@ -11,8 +11,6 @@ module(
 )
 
 bazel_dep(name = "rules_cc", version = "0.0.9")
-
-# bazel_dep(name = "rules_foreign_cc", version = "0.12.0")
 bazel_dep(name = "nlohmann_json", version = "3.11.3")
 bazel_dep(name = "rules_pkg", version = "0.10.1")
 bazel_dep(name = "googletest", version = "1.17.0.bcr.2")
@@ -24,6 +22,8 @@ bazel_dep(name = "rules_oci", version = "2.2.7")
 bazel_dep(name = "tar.bzl", version = "0.7.0")
 bazel_dep(name = "rules_python", version = "1.1.0")
 bazel_dep(name = "rules_appimage", version = "1.19.0")
+bazel_dep(name = "boost.asio", version = "1.90.0.bcr.1")
+bazel_dep(name = "boost.beast", version = "1.90.0.bcr.1")
 
 # Hedron's Compile Commands Extractor for Bazel
 # https://github.com/hedronvision/bazel-compile-commands-extractor
@@ -34,23 +34,6 @@ git_override(
     patch_args = ["-p1"],
     patches = ["//tools:hedron_bazel9_patch.patch"],
     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
-)
-
-# Makes @boost available for use: For example, add `@boost//:algorithm` to your deps.
-# For more, see https://github.com/nelhage/rules_boost and https://www.boost.org
-bazel_dep(name = "rules_boost", repo_name = "com_github_nelhage_rules_boost")
-archive_override(
-    module_name = "rules_boost",
-    strip_prefix = "rules_boost-master",
-    urls = ["https://github.com/nelhage/rules_boost/archive/refs/heads/master.tar.gz"],
-    # It is recommended to edit the above URL and the below sha256 to point to a specific version of this repository.
-    # integrity = "sha256-...",
-)
-
-non_module_boost_repositories = use_extension("@com_github_nelhage_rules_boost//:boost/repositories.bzl", "non_module_dependencies")
-use_repo(
-    non_module_boost_repositories,
-    "boost",
 )
 
 # A C++11 single-file header-only cross platform HTTP/HTTPS library.

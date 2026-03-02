@@ -7,7 +7,7 @@ cc_library(
     ],
     hdrs = ["ws_context.hpp"],
     visibility = ["//visibility:public"],
-    deps = ["@boost//:asio"],
+    deps = ["@boost.asio"],
 )
 
 cc_library(
