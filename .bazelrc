@@ -11,8 +11,10 @@ test --test_output=all
 # build --repo_env=BAZEL_CXXOPTS="-std=c++17"
 build --color=yes
 
-# Compiler
-# build --action_env=CC=clang
-# build --action_env=CXX=clang++
+build --copt=-Wno-error=deprecated-declarations
+build --copt=-Wno-macro-redefined
+build --copt=-Wno-unused-command-line-argument
+build --copt=-Wno-unused-but-set-parameter
+build --copt=-Wno-unused-private-field
 
 try-import %workspace%/.bazelrc.user

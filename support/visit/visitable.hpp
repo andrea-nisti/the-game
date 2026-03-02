@@ -71,7 +71,7 @@ template <typename InstanceT, typename... Properties>
 class Visitable : public IVisitable
 {
   public:
-    constexpr Visitable(Properties&&... properties) : props_(std::forward<Properties>(properties)...) {}
+    constexpr explicit Visitable(Properties&&... properties) : props_(std::forward<Properties>(properties)...) {}
 
     /**
      * @brief Accepts a visitor and triggers the visiting chain by calling the Visitor
