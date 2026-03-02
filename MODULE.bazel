@@ -10,6 +10,10 @@ module(
     repo_name = "the-game",
 )
 
+##############
+# toolchains #
+##############
+bazel_dep(name = "bazel_skylib", version = "1.4.2")
 bazel_dep(name = "toolchains_llvm", version = "1.6.0")
 
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
@@ -22,6 +26,16 @@ use_repo(llvm, "llvm_toolchain")
 
 register_toolchains("@llvm_toolchain//:all")
 
+##############
+# repo rules #
+##############
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+################
+# dependencies #
+################
+
 bazel_dep(name = "rules_cc", version = "0.0.9")
 bazel_dep(name = "nlohmann_json", version = "3.11.3")
 bazel_dep(name = "rules_pkg", version = "0.10.1")
@@ -33,7 +47,6 @@ bazel_dep(name = "aspect_bazel_lib", version = "2.20.0")
 bazel_dep(name = "rules_oci", version = "2.2.7")
 bazel_dep(name = "tar.bzl", version = "0.9.0")
 bazel_dep(name = "rules_python", version = "1.1.0")
-bazel_dep(name = "rules_appimage", version = "1.19.0")
 bazel_dep(name = "boost.asio", version = "1.90.0.bcr.1")
 bazel_dep(name = "boost.beast", version = "1.90.0.bcr.1")
 bazel_dep(name = "boost.url", version = "1.90.0.bcr.1")
@@ -54,13 +67,18 @@ git_override(
 
 # A C++11 single-file header-only cross platform HTTP/HTTPS library.
 # https://github.com/yhirose/cpp-httplib/
-http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
 http_archive(
     name = "cpp_httplib",
     build_file = "//support/third-party:cpp_httplib.BUILD",
     strip_prefix = "cpp-httplib-0.16.0",
     urls = ["https://github.com/yhirose/cpp-httplib/archive/refs/tags/v0.16.0.tar.gz"],
+)
+
+http_archive(
+    name = "rules_bundle",
+    # build_file = "//support/third-party:cpp_httplib.BUILD",
+    strip_prefix = "rules_bundle-main",
+    urls = ["https://github.com/blaizard/rules_bundle/archive/refs/heads/main.zip"],
 )
 
 # OCI container rules for deployment

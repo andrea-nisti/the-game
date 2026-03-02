@@ -1,61 +1,53 @@
-load("@rules_appimage//appimage:appimage.bzl", "appimage")
+"""
+deploy_rules.bzl
+"""
+
+load("@rules_bundle//:defs.bzl", "bundle_tar")
 load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
-load("@tar.bzl", "mtree_mutate", "mtree_spec", "tar")
+load("//libs/bazel:utils.bzl", "executable_path")
 
-# def _get_package_from_target(target):
-#     sender_base_image_name = target.label.package
-#     return sender_base_image_name
+def create_deploy(name, target):
+    """Bundles a cc_binary into a deployable OCI container image.
 
-def data_layer(name, target, visibility, strip_prefix = "", include_runfiles = False):
-    mtree_spec(
-        name = "{}_mtree".format(name),
-        srcs = [target],
-        include_runfiles = include_runfiles,
-    )
+    Args:
+        name: Name of the oci_image target.
+        target: Label of the cc_binary to package, e.g. "//apps:simple_game".
 
-    mtree_mutate(
-        name = "{}_mutate".format(name),
-        mtree = ":{}_mtree".format(name),
-        strip_prefix = strip_prefix,
-    )
+    Creates:
+        name_bundle.tar.gz
+        name_image
+        name_loader
+    """
 
-    tar(
-        name = "{}".format(name),
-        srcs = [target],
-        mtree = ":{}_mutate".format(name),
-        visibility = visibility,
-    )
+    executable_name = "{}_exe".format(name)
 
-def create_deploy(name, target, visibility, strip_prefix = "", include_runfiles = False):
-    executable_name = "{}_appimage".format(name)
-    appimage(
+    executable_path(
         name = executable_name,
         binary = target,
     )
 
-    data_layer(
-        name = "_{}_dl".format(name),
-        include_runfiles = include_runfiles,
-        target = ":{}_appimage".format(name),
-        visibility = ["//visibility:private"],
+    bundle_tar(
+        name = "{}_bundle".format(name),
+        compression = "gz",
+        executables = {
+            "": target,
+        },
+        output = "{}_bundle.tar.gz".format(name),
     )
 
     oci_image(
         name = "{}_image".format(name),
         base = "@debian_slim",
-        entrypoint = [
-            "./apps/{}".format(executable_name),  # TODO: extract path target
-            "--appimage-extract-and-run",
-        ],
+        entrypoint = executable_name,
         tars = [
-            ":_{}_dl".format(name),
+            "{}_bundle".format(name),
         ],
     )
 
     oci_load(
         name = "{}_loader".format(name),
         image = "{}_image".format(name),
-        repo_tags = ["{}_image:latest".format(name)],
+        repo_tags = ["{}:latest".format(name)],
     )
 
     # expand_template_rule(

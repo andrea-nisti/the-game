@@ -8,7 +8,7 @@ build --verbose_failures
 test --test_output=all
 
 # Temporary fix to bazel 9 missing internal cc_rules
-build --incompatible_autoload_externally=+@rules_cc
+# build --incompatible_autoload_externally=+@rules_cc
 
 # Build options
 # build --repo_env=BAZEL_CXXOPTS="-std=c++17"
