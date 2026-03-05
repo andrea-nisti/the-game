@@ -1,8 +1,8 @@
 #ifndef APPS_SIMPLE_SERVER_WEBSOCKET_PLAYER_CONTROLLER
 #define APPS_SIMPLE_SERVER_WEBSOCKET_PLAYER_CONTROLLER
 
-#include "apps/simple_server/player_controller_base.hpp"
 #include "networking/websocket/websocket_session.h"
+#include "player_controller_base.hpp"
 #include <memory>
 #include <string>
 
