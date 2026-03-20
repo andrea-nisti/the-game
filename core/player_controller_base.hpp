@@ -9,7 +9,7 @@ template <typename Command>
 class PlayerControllerBase
 {
   public:
-    explicit PlayerControllerBase(boost::asio::io_context& io_ctx) : io_ctx_(io_ctx) {}
+    explicit PlayerControllerBase(boost::asio::io_context& io_ctx);
     PlayerControllerBase(const PlayerControllerBase&) = delete;
     PlayerControllerBase(PlayerControllerBase&&) = delete;
     auto operator=(const PlayerControllerBase&) -> PlayerControllerBase& = delete;
@@ -26,5 +26,7 @@ class PlayerControllerBase
 };
 
 }  // namespace game::core
+
+#include "player_controller_base.cpp"
 
 #endif  // APPS_SIMPLE_SERVER_PLAYER_CONTROLLER_BASE
