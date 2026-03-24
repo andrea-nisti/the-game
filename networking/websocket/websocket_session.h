@@ -1,7 +1,7 @@
 #ifndef NETWORKING_WEBSOCKET_WEBSOCKET_SESSION
 #define NETWORKING_WEBSOCKET_WEBSOCKET_SESSION
 
-#include "networking/http/common.hpp"
+#include "networking/common.hpp"
 #include "networking/session_base.h"
 #include "networking/websocket/ws_context.hpp"
 #include "networking/websocket/ws_handler.hpp"

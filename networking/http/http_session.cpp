@@ -1,7 +1,7 @@
 #include "http_session.h"
 #include "beast_utils.hpp"
-#include "networking/http/common.hpp"
-#include "networking/net_utils.hpp"
+#include "networking/common.hpp"
+#include "networking/utils/net_utils.hpp"
 #include "networking/websocket/websocket_session.h"
 #include <boost/beast/http/message.hpp>
 #include <boost/beast/http/status.hpp>
@@ -100,7 +100,7 @@ void HttpSession::OnRead(boost::system::error_code ec, std::size_t bytes_transfe
             return Close();
         }
 
-        support::Fail(ec, "on read");
+        Fail(ec, "on read");
         return;
     }
 
@@ -169,7 +169,7 @@ void HttpSession::OnWrite(boost::system::error_code ec, std::size_t bytes_transf
     std::cout << "on write" << std::endl;
     if (ec)
     {
-        support::Fail(ec, "on write");
+        Fail(ec, "on write");
         return;
     }
 

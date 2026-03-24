@@ -16,15 +16,10 @@ cc_library(
     ],
 )
 
-cc_library(
+alias(
     name = "http_common",
-    srcs = [
-        "common.hpp",
-    ],
-    hdrs = ["common.hpp"],
+    actual = "//networking:net_common",
     visibility = ["//visibility:public"],
-    deps = [
-    ],
 )
 
 cc_library(
@@ -35,6 +30,7 @@ cc_library(
     hdrs = ["beast_utils.hpp"],
     visibility = ["//visibility:public"],
     deps = [
+        "//networking:net_common",
         "@boost.beast",
     ],
 )

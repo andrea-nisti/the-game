@@ -1,5 +1,5 @@
 #include "networking/http/beast_utils.hpp"
-#include "networking/http/common.hpp"
+#include "networking/common.hpp"
 #include "networking/http/http_session.h"
 #include "networking/route_manager_base.hpp"
 #include "networking/tcp_listener_base.h"

@@ -10,7 +10,7 @@ cc_library(
     deps = [
         "//networking:route_manager_base",
         "//networking:tcp_listener_base",
-        "//networking/http:http_common",
+        "//networking:net_common",
         "//networking/http:http_session",
     ],
 )

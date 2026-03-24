@@ -1,7 +1,7 @@
 #ifndef NETWORKING_HTTP_BEAST_UTILS
 #define NETWORKING_HTTP_BEAST_UTILS
 
-#include "common.hpp"
+#include "networking/common.hpp"
 #include <boost/beast/http.hpp>
 
 using namespace boost::beast;

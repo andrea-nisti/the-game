@@ -38,7 +38,7 @@ void TcpListenerBase::OnAcceptContinue(boost::system::error_code ec, tcp::socket
 
 void TcpListenerBase::OnError(boost::system::error_code ec, std::string_view what)
 {
-    support::Fail(ec, what);
+    Fail(ec, what);
 }
 
 }  // namespace game::networking

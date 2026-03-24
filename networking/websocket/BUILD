@@ -31,6 +31,6 @@ cc_library(
         ":ws_handler",
         "//networking:net_utils",
         "//networking:session_base",
-        "//networking/http:http_common",
+        "//networking:net_common",
     ],
 )

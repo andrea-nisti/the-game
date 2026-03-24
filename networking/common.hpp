@@ -1,5 +1,5 @@
-#ifndef SUPPORT_NETWORKING_HTTP_COMMON_H
-#define SUPPORT_NETWORKING_HTTP_COMMON_H
+#ifndef NETWORKING_COMMON_H
+#define NETWORKING_COMMON_H
 
 #include <string>
 #include <unordered_map>
@@ -24,4 +24,4 @@ enum class HttpMethod
 
 }  // namespace game::networking
 
-#endif  // SUPPORT_NETWORKING_HTTP_COMMON_H
+#endif  // NETWORKING_COMMON_H

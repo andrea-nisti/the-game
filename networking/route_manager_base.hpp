@@ -1,7 +1,7 @@
 #ifndef NETWORKING_ROUTE_MANAGER_BASE
 #define NETWORKING_ROUTE_MANAGER_BASE
 
-#include "networking/http/common.hpp"
+#include "networking/common.hpp"
 #include "networking/websocket/ws_handler.hpp"
 #include <functional>
 #include <memory>

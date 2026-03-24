@@ -5,13 +5,23 @@ _SERVER_VERSION = "game-server-v0"
 cc_library(
     name = "net_utils",
     srcs = [
-        "net_utils.hpp",
+        "utils/net_utils.hpp",
     ],
-    hdrs = ["net_utils.hpp"],
+    hdrs = ["utils/net_utils.hpp"],
     visibility = ["//visibility:public"],
     deps = [
         "@boost.asio",
     ],
+)
+
+cc_library(
+    name = "net_common",
+    srcs = [
+        "common.hpp",
+    ],
+    hdrs = ["common.hpp"],
+    visibility = ["//visibility:public"],
+    deps = [],
 )
 
 cc_library(
@@ -52,7 +62,7 @@ cc_library(
     hdrs = ["route_manager_base.hpp"],
     visibility = ["//visibility:public"],
     deps = [
-        "//networking/http:http_common",
+        ":net_common",
         "//networking/websocket:ws_handler",
     ],
 )

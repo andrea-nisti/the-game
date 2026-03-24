@@ -1,14 +1,15 @@
-#ifndef NETWORKING_NET_UTILS
-#define NETWORKING_NET_UTILS
+#ifndef NETWORKING_UTILS_NET_UTILS
+#define NETWORKING_UTILS_NET_UTILS
 
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/system/error_code.hpp>
 #include <iostream>
 #include <sstream>
 
-namespace game::support {
+namespace game::networking {
 
 namespace net = boost::asio;
+
 inline auto Fail(boost::system::error_code ec, std::string_view what) -> std::string
 {
     std::ostringstream ss{};
@@ -55,6 +56,6 @@ inline auto InitializeAcceptor(boost::asio::ip::tcp::acceptor& acceptor,
     return true;
 }
 
-}  // namespace game::support
+}  // namespace game::networking
 
-#endif  // NETWORKING_NET_UTILS
+#endif  // NETWORKING_UTILS_NET_UTILS

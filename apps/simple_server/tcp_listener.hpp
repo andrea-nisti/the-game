@@ -1,7 +1,7 @@
 #ifndef APPS_SIMPLE_SERVER_TCP_LISTENER
 #define APPS_SIMPLE_SERVER_TCP_LISTENER
 
-#include "networking/http/common.hpp"
+#include "networking/common.hpp"
 #include "networking/route_manager_base.hpp"
 #include "networking/tcp_listener_base.h"
 #include <boost/asio/ip/address.hpp>

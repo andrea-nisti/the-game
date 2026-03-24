@@ -1,5 +1,5 @@
 #include "websocket_session.h"
-#include "networking/net_utils.hpp"
+#include "networking/utils/net_utils.hpp"
 #include <string_view>
 
 namespace game::networking {
@@ -45,7 +45,7 @@ void WebSocketSession::OnRead(boost::system::error_code ec, std::size_t bytes_tr
     if (ec)
     {
         const auto where = "on read";
-        support::Fail(ec, where);
+        Fail(ec, where);
         std::invoke(handler_.on_error, ec, where);
         return;
     }
@@ -73,7 +73,7 @@ void WebSocketSession::OnWrite(boost::system::error_code ec, std::size_t bytes_t
     if (ec)
     {
         const auto where = "on write";
-        support::Fail(ec, where);
+        Fail(ec, where);
         std::invoke(handler_.on_error, ec, where);
         return;
     }
@@ -86,7 +86,7 @@ void WebSocketSession::OnAccept(boost::system::error_code ec)
     if (ec)
     {
         const auto where = "on accept";
-        support::Fail(ec, where);
+        Fail(ec, where);
         std::invoke(handler_.on_error, ec, where);
         return;
     }
